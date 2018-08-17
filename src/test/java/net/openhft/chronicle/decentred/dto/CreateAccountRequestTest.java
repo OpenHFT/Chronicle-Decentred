@@ -45,7 +45,7 @@ public class CreateAccountRequestTest {
 
         assertEquals("!CreateAccountRequest {\n" +
                 "  timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
-                "  address: \"29da598ba148c03a\",\n" +
+                "  address: \"41.218.89.139:41288:c03a\",\n" +
                 "  publicKey: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +
                 "}\n", ca.toString());
 
@@ -75,10 +75,10 @@ public class CreateAccountRequestTest {
 
         assertEquals("!CreateAccountResponse {\n" +
                 "  timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
-                "  address: \"29da598ba148c03a\",\n" +
+                "  address: \"41.218.89.139:41288:c03a\",\n" +
                 "  createAccountRequest: {\n" +
                 "    timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
-                "    address: \"29da598ba148c03a\",\n" +
+                "    address: \"41.218.89.139:41288:c03a\",\n" +
                 "    publicKey: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +
                 "  }\n" +
                 "}\n", created.toString());

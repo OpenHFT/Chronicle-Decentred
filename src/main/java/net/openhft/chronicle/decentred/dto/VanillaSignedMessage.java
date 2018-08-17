@@ -4,10 +4,10 @@ import net.openhft.chronicle.bytes.*;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.TimeProvider;
+import net.openhft.chronicle.decentred.util.AddressConverter;
 import net.openhft.chronicle.decentred.util.UniqueMicroTimeProvider;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.AbstractBytesMarshallable;
-import net.openhft.chronicle.wire.HexadecimalLongConverter;
 import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
@@ -41,7 +41,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     private transient int messageType, protocol;
     @LongConversion(MicroTimestampLongConverter.class)
     private long timestampUS;
-    @LongConversion(HexadecimalLongConverter.class)
+    @LongConversion(AddressConverter.class)
     private long address;
 
     protected VanillaSignedMessage() {
