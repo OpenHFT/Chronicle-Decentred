@@ -21,7 +21,7 @@ public class ApplicationErrorResponseTest {
         Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
         Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
 
-        CreateAccountCommand ca = new CreateAccountCommand(1, 2);
+        CreateAccountRequest ca = new CreateAccountRequest(1, 2);
         SetTimeProvider timeProvider = new SetTimeProvider(0x05060708090a0bL * 1000);
         ca.sign(secretKey, timeProvider);
 
@@ -53,7 +53,7 @@ public class ApplicationErrorResponseTest {
         assertEquals("!ApplicationErrorResponse {\n" +
                 "  timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
                 "  address: \"29da598ba148c03a\",\n" +
-                "  origMessage: !CreateAccountCommand {\n" +
+                "  origMessage: !CreateAccountRequest {\n" +
                 "    timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
                 "    address: \"29da598ba148c03a\",\n" +
                 "    publicKey: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +

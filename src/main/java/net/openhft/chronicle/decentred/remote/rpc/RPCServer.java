@@ -140,7 +140,7 @@ public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closea
             e2.printStackTrace();
             System.err.println("Failed to marshall object " + e2.toString());
             // we should never get IllegalStateException exceptions, but if we do,
-            // rethrow the exception so that the LocalPostBlockChainProcessor can send a CommandFailedEvent back to the Client
+            // rethrow the exception so that the LocalPostBlockChainProcessor can send a RequestFailedEvent back to the Client
             throw e2;
         } catch (Exception e) {
             e.printStackTrace();

@@ -3,7 +3,7 @@ package net.openhft.chronicle.decentred.verification;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.Verifier;
-import net.openhft.chronicle.decentred.dto.InvalidationCommand;
+import net.openhft.chronicle.decentred.dto.InvalidationEvent;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
 
 import java.util.ArrayList;
@@ -26,23 +26,23 @@ public class VanillaVerifyIP implements Verifier {
         Verifier to = client.to(DEFAULT_CONNECTION);
         for (List<VerificationEvent> verificationEventList : verifyMap.values()) {
             for (VerificationEvent verificationEvent : verificationEventList) {
-                to.verification(verificationEvent);
+                to.verificationEvent(verificationEvent);
             }
         }
     }
 
     @Override
-    public void verification(VerificationEvent verificationEvent) {
+    public void verificationEvent(VerificationEvent verificationEvent) {
         List<VerificationEvent> verificationEventList = verifyMap.computeIfAbsent(verificationEvent.keyVerified(), k -> new ArrayList<>());
         // TODO check it is not already in the list.
         VerificationEvent v2 = verificationEvent.deepCopy();
         verificationEventList.add(v2);
         client.to(DEFAULT_CONNECTION)
-                .verification(verificationEvent);
+                .verificationEvent(verificationEvent);
     }
 
     @Override
-    public void invalidation(InvalidationCommand record) {
+    public void invalidationEvent(InvalidationEvent record) {
         verifyMap.remove(record.publicKey());
     }
 }

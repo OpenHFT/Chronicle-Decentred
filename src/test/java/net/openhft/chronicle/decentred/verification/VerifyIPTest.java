@@ -51,7 +51,7 @@ public class VerifyIPTest {
                 .timestampUS(TimeProvider.get().currentTimeMicros())
                 .publicKey(publicKey)
                 .keyVerified(publicKey2);
-        tester.verification(verificationEvent);
+        tester.verificationEvent(verificationEvent);
 
         System.out.println(wire);
     }

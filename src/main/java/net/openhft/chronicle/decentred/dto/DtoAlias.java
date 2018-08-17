@@ -8,8 +8,8 @@ public enum DtoAlias {
     static {
         ClassAliasPool.CLASS_ALIASES.addAlias(
                 ApplicationErrorResponse.class,
-                CreateAccountCommand.class,
-                AccountCreatedResponse.class,
+                CreateAccountRequest.class,
+                CreateAccountResponse.class,
                 VerificationEvent.class
         );
     }
