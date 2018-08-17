@@ -1,4 +1,4 @@
-to: "0"
+to: "0.0.0.0:0"
 verificationEvent: {
   timestampUS: "2018-08-08T08:03:08.231112",
   address: ab34booole7la,
@@ -6,7 +6,7 @@ verificationEvent: {
   keyVerified: !!binary riUxYqLVMfa4vTGKp64D8nCrhsDLHui/hgeC+vapDpg=
 }
 ---
-to: "0"
+to: "0.0.0.0:0"
 verificationEvent: {
   timestampUS: "2018-08-08T08:03:08.231112",
   address: ab34booole7la,
