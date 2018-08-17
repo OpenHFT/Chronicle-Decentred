@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.util;
 
 import com.koloboke.function.IntObjConsumer;
 
-public class SmallIntObjMap<V> extends XCLIntObjMap<V> {
+public class SmallIntObjMap<V> extends IntObjMap<V> {
     final int[] keys;
     final V[] values;
     int size = 0;

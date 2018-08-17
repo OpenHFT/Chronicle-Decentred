@@ -12,13 +12,13 @@ import org.jetbrains.annotations.NotNull;
  * A long to Object Map.
  */
 @KolobokeMap
-public abstract class XCLIntObjMap<V> extends AbstractMarshallable {
+public abstract class IntObjMap<V> extends AbstractMarshallable {
     Class<V> vClass;
 
-    public static <V> XCLIntObjMap<V> withExpectedSize(Class<V> vClass, int expectedSize) {
+    public static <V> IntObjMap<V> withExpectedSize(Class<V> vClass, int expectedSize) {
         if (expectedSize < 8)
             return new SmallIntObjMap<>(expectedSize + 1);
-        KolobokeXCLIntObjMap<V> map = new KolobokeXCLIntObjMap<>(expectedSize);
+        KolobokeIntObjMap<V> map = new KolobokeIntObjMap<>(expectedSize);
         map.vClass = vClass;
         return map;
     }

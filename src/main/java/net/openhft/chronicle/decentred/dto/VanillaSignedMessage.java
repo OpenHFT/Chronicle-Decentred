@@ -33,7 +33,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     private transient Bytes tempBytes = Bytes.allocateElasticDirect(4L << 10);
     // for reading an existing Bytes
     private transient PointerBytesStore readPointer = BytesStore.nativePointer();
-    private transient Bytes<Void> bytes = readPointer.bytesForRead();
+    protected transient Bytes<Void> bytes = readPointer.bytesForRead();
 
     private transient boolean signed = false;
     private transient ByteBuffer byteBuffer;

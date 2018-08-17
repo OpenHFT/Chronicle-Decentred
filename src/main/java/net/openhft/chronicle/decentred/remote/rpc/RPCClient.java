@@ -11,7 +11,7 @@ import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.remote.net.VanillaTCPClient;
 import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
-import net.openhft.chronicle.decentred.util.XCLLongObjMap;
+import net.openhft.chronicle.decentred.util.LongObjMap;
 import net.openhft.chronicle.wire.AbstractMethodWriterInvocationHandler;
 
 import java.io.IOException;
@@ -32,8 +32,8 @@ public class RPCClient<UP, DOWN> implements Closeable, TCPConnection {
     private final BytesStore secretKey;
     private final DtoRegistry<DOWN> registry;
     private final DtoParser<DOWN> parser;
-    private final XCLLongObjMap<BytesStore> addressToPublicKey =
-            XCLLongObjMap.withExpectedSize(BytesStore.class, 16);
+    private final LongObjMap<BytesStore> addressToPublicKey =
+            LongObjMap.withExpectedSize(BytesStore.class, 16);
     private boolean internal = false;
 
     public RPCClient(String name,

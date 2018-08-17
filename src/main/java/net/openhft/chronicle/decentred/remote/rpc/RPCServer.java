@@ -25,8 +25,8 @@ import java.util.function.Function;
 
 public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closeable {
     static final ThreadLocal<TCPConnection> DEFAULT_CONNECTION_TL = new ThreadLocal<>();
-    private final XCLLongObjMap<TCPConnection> connections = XCLLongObjMap.withExpectedSize(TCPConnection.class, 128);
-    private final XCLLongObjMap<TCPConnection> remoteMap = XCLLongObjMap.withExpectedSize(TCPConnection.class, 128);
+    private final LongObjMap<TCPConnection> connections = LongObjMap.withExpectedSize(TCPConnection.class, 128);
+    private final LongObjMap<TCPConnection> remoteMap = LongObjMap.withExpectedSize(TCPConnection.class, 128);
     private final Map<Long, T> allMessagesMap = new ConcurrentHashMap<>();
     private final PublicKeyRegistry publicKeyRegistry = new VanillaPublicKeyRegistry();
     private final TCPServer tcpServer;

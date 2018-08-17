@@ -13,7 +13,7 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
     public static final int MASK_16 = 0xFFFF;
 
     private final Map<Class, Integer> classToProtocolMessageType = new LinkedHashMap<>();
-    private final XCLIntObjMap<DtoParselet> parseletMap = XCLIntObjMap.withExpectedSize(DtoParselet.class, 128);
+    private final IntObjMap<DtoParselet> parseletMap = IntObjMap.withExpectedSize(DtoParselet.class, 128);
 
     public DtoRegistry() {
         addProtocol(0xFF00, (Class) Verifier.class);
@@ -54,7 +54,7 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
 
     @Override
     public DtoParser<T> get() {
-        XCLIntObjMap<DtoParselet> parseletMap2 = XCLIntObjMap.withExpectedSize(DtoParselet.class, parseletMap.size() * 2);
+        IntObjMap<DtoParselet> parseletMap2 = IntObjMap.withExpectedSize(DtoParselet.class, parseletMap.size() * 2);
         parseletMap.forEach((i, dp) -> parseletMap2.put(i, new DtoParselet(dp)));
         return new VanillaDtoParser<>(parseletMap2);
     }

@@ -14,11 +14,11 @@ import java.util.function.LongFunction;
  * A long to Object Map.
  */
 @KolobokeMap
-public abstract class XCLLongObjMap<V> extends AbstractMarshallable {
+public abstract class LongObjMap<V> extends AbstractMarshallable {
     Class<V> vClass;
 
-    public static <V> XCLLongObjMap<V> withExpectedSize(Class<V> vClass, int expectedSize) {
-        KolobokeXCLLongObjMap<V> kolobokeXCLLongObjMap = new KolobokeXCLLongObjMap<>(expectedSize);
+    public static <V> LongObjMap<V> withExpectedSize(Class<V> vClass, int expectedSize) {
+        KolobokeLongObjMap<V> kolobokeXCLLongObjMap = new KolobokeLongObjMap<>(expectedSize);
         kolobokeXCLLongObjMap.vClass = vClass;
         return kolobokeXCLLongObjMap;
     }

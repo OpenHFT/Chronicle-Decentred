@@ -4,9 +4,9 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 
 public class VanillaDtoParser<T> implements DtoParser<T> {
-    private final XCLIntObjMap<DtoParselet> parseletMap;
+    private final IntObjMap<DtoParselet> parseletMap;
 
-    public VanillaDtoParser(XCLIntObjMap<DtoParselet> parseletMap) {
+    public VanillaDtoParser(IntObjMap<DtoParselet> parseletMap) {
         this.parseletMap = parseletMap;
     }
 
