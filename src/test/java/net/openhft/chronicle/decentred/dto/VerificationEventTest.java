@@ -1,15 +1,13 @@
-package net.openhft.chronicle.decentred.api;
+package net.openhft.chronicle.decentred.dto;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.time.SetTimeProvider;
-import net.openhft.chronicle.decentred.dto.DtoAlias;
-import net.openhft.chronicle.decentred.dto.Verification;
 import net.openhft.chronicle.salt.Ed25519;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class VerificationTest {
+public class VerificationEventTest {
     static {
         DtoAlias.addAliases();
     }
@@ -35,7 +33,7 @@ public class VerificationTest {
                 "........\n" +
                 "00000020 3b 6a 27 bc ce b6 a4 2d  62 a3 a8 d0 2a 6f 0d 73 ;j'····- b···*o·s\n" +
                 "00000030 65 32 15 77 1d e2 43 a6  3a c0 48 a1 8b 59 da 29 e2·w··C· :·H··Y·)\n", secretKey.toHexString());
-        Verification v = new Verification(1, 22);
+        VerificationEvent v = new VerificationEvent(1, 22);
         v.keyVerified(publicKey);
         SetTimeProvider timeProvider = new SetTimeProvider(0x05060708090a0bL * 1000);
         v.sign(secretKey2, timeProvider);
@@ -55,7 +53,7 @@ public class VerificationTest {
                 "0088    0d 73 65 32 15 77 1d e2 43 a6 3a c0 48 a1 8b 59\n" +
                 "0098    da 29\n", v.toHexString());
 
-        assertEquals("!Verification {\n" +
+        assertEquals("!VerificationEvent {\n" +
                 "  timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
                 "  address: fcd43b685d06dfe6,\n" +
                 "  publicKey: !!binary zswVB9wd3XKVlRwpCIjwla25BE0bc9aW5t8GXWg71Pw=,\n" +

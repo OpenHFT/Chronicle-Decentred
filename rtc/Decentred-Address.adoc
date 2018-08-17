@@ -1,0 +1,40 @@
+= Decentred Address
+Peter Lawrey
+
+Chronicle Decentred uses a long for addresses of accounts and destinations. Addresses have a range for different purposes
+
+=== Ranges
+
+An address with a public key requires the address to be the last 8 bytes of the public key (in little endian)
+
+|===
+| Top 16 bits | Purpose | Public key? | format
+| 0x0000 | Temporary connections | no | @IP Address:port
+| 0x0001 - 0x00FF | reserved | na
+| 0x0100 - 0xDFFF | verified IP address | yes | @IP Address:port:lower bits
+| 0xE000 - 0xFFFF | user accounts | yes | @address in base 32
+|===
+
+=== Verified IP address
+
+The format of an address which can be verified consists of
+
+- The IPv4 address of the server (top 32-bits)
+- The port of the server (next 16-bits)
+- Any number which matches the public key (lower 16-bits)
+
+=== User accounts
+
+User accounts have to have the top 3 bits set to distinguish them
+from verified server addresses.
+
+=== Printing addresses.
+
+Addresses come in three formats
+
+|===
+| format | example
+| IP Address:port | 172.10.11.12:12345
+| IP Address:port:lower bit | 172.10.11.12:12345:65432
+| base32 address | abcdefghijkl
+|===

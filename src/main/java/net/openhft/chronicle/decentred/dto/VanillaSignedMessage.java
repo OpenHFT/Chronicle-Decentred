@@ -25,6 +25,8 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     public static final int PROTOCOL = MESSAGE_TYPE_END;
     public static final int PROTOCOL_END = PROTOCOL + Short.BYTES;
     public static final int MESSAGE_START = PROTOCOL_END;
+    public static final int MASK_16 = 0xFFFF;
+
     private static final Field BB_ADDRESS = Jvm.getField(ByteBuffer.allocateDirect(0).getClass(), "address");
     private static final Field BB_CAPACITY = Jvm.getField(ByteBuffer.allocateDirect(0).getClass(), "capacity");
     // for writing to a new set of bytes
@@ -35,15 +37,20 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
 
     private transient boolean signed = false;
     private transient ByteBuffer byteBuffer;
-    private transient short messageType, protocol;
+    // unsigned 16-bit
+    private transient int messageType, protocol;
     @LongConversion(MicroTimestampLongConverter.class)
     private long timestampUS;
     @LongConversion(HexadecimalLongConverter.class)
     private long address;
 
+    protected VanillaSignedMessage() {
+        this(0, 0); // must be set before signing.
+    }
+
     protected VanillaSignedMessage(int protocol, int messageType) {
-        assert protocol == (short) protocol;
-        assert messageType == (short) messageType;
+        assert (protocol | MASK_16) == MASK_16;
+        assert (messageType | MASK_16) == MASK_16;
         this.messageType = (short) messageType;
         this.protocol = (short) protocol;
     }
@@ -161,8 +168,8 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         dump.comment("length").writeUnsignedInt(bytes.readUnsignedInt(LENGTH));
         dump.comment("signature start").write(bytes, (long) SIGNATURE, Ed25519.SIGNATURE_LENGTH);
         dump.comment("signature end");
-        dump.comment("messageType").writeShort(messageType);
-        dump.comment("protocol").writeShort(protocol);
+        dump.comment("messageType").writeUnsignedShort(messageType);
+        dump.comment("protocol").writeUnsignedShort(protocol);
         writeMarshallable0(dump);
         String text = dump.toHexString();
         dump.release();
@@ -181,11 +188,11 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return Ed25519.verify(bytes, publicKey);
     }
 
-    public short protocol() {
+    public int protocol() {
         return protocol;
     }
 
-    public T protocol(short protocol) {
+    public T protocol(int protocol) {
         this.protocol = protocol;
         return (T) this;
     }
@@ -194,11 +201,11 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return getClass().getPackage().getName();
     }
 
-    public short messageType() {
+    public int messageType() {
         return messageType;
     }
 
-    public T messageType(short messageType) {
+    public T messageType(int messageType) {
         this.messageType = messageType;
         return (T) this;
     }

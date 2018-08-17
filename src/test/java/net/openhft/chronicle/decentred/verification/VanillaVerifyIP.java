@@ -3,8 +3,8 @@ package net.openhft.chronicle.decentred.verification;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.Verifier;
-import net.openhft.chronicle.decentred.dto.Invalidation;
-import net.openhft.chronicle.decentred.dto.Verification;
+import net.openhft.chronicle.decentred.dto.InvalidationCommand;
+import net.openhft.chronicle.decentred.dto.VerificationEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import static net.openhft.chronicle.decentred.api.MessageRouter.DEFAULT_CONNECTI
 
 public class VanillaVerifyIP implements Verifier {
     private final MessageRouter<Verifier> client;
-    private final Map<BytesStore, List<Verification>> verifyMap = new HashMap<>();
+    private final Map<BytesStore, List<VerificationEvent>> verifyMap = new HashMap<>();
 
     public VanillaVerifyIP(MessageRouter<Verifier> client) {
         this.client = client;
@@ -24,25 +24,25 @@ public class VanillaVerifyIP implements Verifier {
     @Override
     public void onConnection() {
         Verifier to = client.to(DEFAULT_CONNECTION);
-        for (List<Verification> verificationList : verifyMap.values()) {
-            for (Verification verification : verificationList) {
-                to.verification(verification);
+        for (List<VerificationEvent> verificationEventList : verifyMap.values()) {
+            for (VerificationEvent verificationEvent : verificationEventList) {
+                to.verification(verificationEvent);
             }
         }
     }
 
     @Override
-    public void verification(Verification verification) {
-        List<Verification> verificationList = verifyMap.computeIfAbsent(verification.keyVerified(), k -> new ArrayList<>());
+    public void verification(VerificationEvent verificationEvent) {
+        List<VerificationEvent> verificationEventList = verifyMap.computeIfAbsent(verificationEvent.keyVerified(), k -> new ArrayList<>());
         // TODO check it is not already in the list.
-        Verification v2 = verification.deepCopy();
-        verificationList.add(v2);
-//        client.to(DEFAULT_CONNECTION)
-//                .verification(verification);
+        VerificationEvent v2 = verificationEvent.deepCopy();
+        verificationEventList.add(v2);
+        client.to(DEFAULT_CONNECTION)
+                .verification(verificationEvent);
     }
 
     @Override
-    public void invalidation(Invalidation record) {
+    public void invalidation(InvalidationCommand record) {
         verifyMap.remove(record.publicKey());
     }
 }

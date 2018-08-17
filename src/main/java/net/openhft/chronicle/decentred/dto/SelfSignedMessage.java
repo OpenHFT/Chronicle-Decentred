@@ -10,6 +10,9 @@ import net.openhft.chronicle.salt.Ed25519;
 public class SelfSignedMessage<M extends SelfSignedMessage<M>> extends VanillaSignedMessage<M> {
     private final Bytes publicKey = Bytes.allocateElasticDirect(Ed25519.PUBLIC_KEY_LENGTH);
 
+    public SelfSignedMessage() {
+    }
+
     public SelfSignedMessage(int protocol, int messageType) {
         super(protocol, messageType);
     }

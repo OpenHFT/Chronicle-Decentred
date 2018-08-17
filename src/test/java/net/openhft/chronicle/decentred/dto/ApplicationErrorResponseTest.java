@@ -1,16 +1,13 @@
-package net.openhft.chronicle.decentred.api;
+package net.openhft.chronicle.decentred.dto;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.time.SetTimeProvider;
-import net.openhft.chronicle.decentred.dto.ApplicationError;
-import net.openhft.chronicle.decentred.dto.CreateAccount;
-import net.openhft.chronicle.decentred.dto.DtoAlias;
 import net.openhft.chronicle.salt.Ed25519;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ApplicationErrorTest {
+public class ApplicationErrorResponseTest {
     static {
         DtoAlias.addAliases();
     }
@@ -24,11 +21,11 @@ public class ApplicationErrorTest {
         Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
         Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
 
-        CreateAccount ca = new CreateAccount(1, 2);
+        CreateAccountCommand ca = new CreateAccountCommand(1, 2);
         SetTimeProvider timeProvider = new SetTimeProvider(0x05060708090a0bL * 1000);
         ca.sign(secretKey, timeProvider);
 
-        ApplicationError ae = new ApplicationError(1, 10);
+        ApplicationErrorResponse ae = new ApplicationErrorResponse(1, 10);
         ae.init(ca, "Not implemented");
         ae.sign(secretKey, timeProvider);
 
@@ -53,10 +50,10 @@ public class ApplicationErrorTest {
                         "00d8    70 6c 65 6d 65 6e 74 65 64\n",
                 ae.toHexString());
 
-        assertEquals("!ApplicationError {\n" +
+        assertEquals("!ApplicationErrorResponse {\n" +
                 "  timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
                 "  address: \"29da598ba148c03a\",\n" +
-                "  origMessage: !CreateAccount {\n" +
+                "  origMessage: !CreateAccountCommand {\n" +
                 "    timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
                 "    address: \"29da598ba148c03a\",\n" +
                 "    publicKey: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +

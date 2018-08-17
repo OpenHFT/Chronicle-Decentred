@@ -35,17 +35,17 @@ public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closea
     private final BytesStore publicKey;
     private final BytesStore secretKey;
     private final Class<T> tClass;
-    private final DtoParserBuilder<T> dtoParserBuilder;
+    private final DtoRegistry<T> dtoRegistry;
     private final T serverComponent;
 
-    public RPCServer(String name, int port, long address, BytesStore publicKey, BytesStore secretKey, Class<T> tClass, DtoParserBuilder<T> dtoParserBuilder, Function<MessageRouter<T>, T> serverComponentBuilder) throws IOException {
+    public RPCServer(String name, int port, long address, BytesStore publicKey, BytesStore secretKey, Class<T> tClass, DtoRegistry<T> dtoRegistry, Function<MessageRouter<T>, T> serverComponentBuilder) throws IOException {
         this.port = port;
         this.address = address;
         this.publicKey = publicKey;
         this.secretKey = secretKey;
         this.tClass = tClass;
-        this.dtoParserBuilder = dtoParserBuilder;
-        tcpServer = new VanillaTCPServer(name, port, new XCLConnectionListener(dtoParserBuilder.get()));
+        this.dtoRegistry = dtoRegistry;
+        tcpServer = new VanillaTCPServer(name, port, new XCLConnectionListener(dtoRegistry.get()));
         this.serverComponent = serverComponentBuilder.apply(this);
     }
 

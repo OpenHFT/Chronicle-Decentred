@@ -1,8 +1,8 @@
 package net.openhft.chronicle.decentred.api;
 
 import net.openhft.chronicle.bytes.MethodId;
-import net.openhft.chronicle.decentred.dto.Invalidation;
-import net.openhft.chronicle.decentred.dto.Verification;
+import net.openhft.chronicle.decentred.dto.InvalidationCommand;
+import net.openhft.chronicle.decentred.dto.VerificationEvent;
 
 public interface Verifier {
     /**
@@ -11,14 +11,14 @@ public interface Verifier {
     void onConnection();
 
     /**
-     * Send a verification message which has been signed
+     * Send a verificationEvent message which has been signed
      */
     @MethodId(1)
-    void verification(Verification verification);
+    void verification(VerificationEvent verificationEvent);
 
     /**
      * Notify that a server was invalidated
      */
     @MethodId(2)
-    void invalidation(Invalidation record);
+    void invalidation(InvalidationCommand record);
 }

@@ -7,10 +7,10 @@ public enum DtoAlias {
 
     static {
         ClassAliasPool.CLASS_ALIASES.addAlias(
-                ApplicationError.class,
-                CreateAccount.class,
-                OnAccountCreated.class,
-                Verification.class
+                ApplicationErrorResponse.class,
+                CreateAccountCommand.class,
+                AccountCreatedResponse.class,
+                VerificationEvent.class
         );
     }
 

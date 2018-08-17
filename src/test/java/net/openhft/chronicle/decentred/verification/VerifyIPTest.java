@@ -3,7 +3,7 @@ package net.openhft.chronicle.decentred.verification;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.TimeProvider;
-import net.openhft.chronicle.decentred.dto.Verification;
+import net.openhft.chronicle.decentred.dto.VerificationEvent;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.TextMethodTester;
 import net.openhft.chronicle.wire.TextWire;
@@ -45,13 +45,13 @@ public class VerifyIPTest {
         TextWire wire = new TextWire(Bytes.elasticHeapByteBuffer(128));
         VerifyIPTester tester = wire.methodWriter(VerifyIPTester.class);
         tester.onConnection();
-        Verification verification = new Verification(1, 4)
+        VerificationEvent verificationEvent = new VerificationEvent(1, 4)
                 .keyVerified(publicKey)
                 .address(publicKey.readLong(0))
                 .timestampUS(TimeProvider.get().currentTimeMicros())
                 .publicKey(publicKey)
                 .keyVerified(publicKey2);
-        tester.verification(verification);
+        tester.verification(verificationEvent);
 
         System.out.println(wire);
     }
