@@ -1,0 +1,32 @@
+= Chronicle-Decentred
+Peter Lawrey
+
+Chronicle Decentred is a framework for building Secure Scalable Microservices on Distributed Ledger Technology.
+
+The purpose of this library is to make it easy to create a high throughput microservice which can be run in a decentralised manner.
+
+=== What features will be supported in the open source version
+
+The open source version will
+
+- 10K - 100K transactions per second per sub-chain depending on hardware.
+- latencies down to the tens of milli-seconds (depending on network connectivity)
+- testing tools for creating new transaction types
+- supports digital and fiat currencies including XCL (Accelerate token)
+- simple decentralised consensus strategy (PoIP - Proof Of IP)
+- simple exchange of value
+
+=== What features will the Enterprise version have
+
+The Enterprise version is designed to add features a commercial operator would like
+
+- supports bursts of millions of messages per second.
+- tighter latencies (sub-milli-second for Proof of Receipt)
+- more options for exchange of value including continuous auctions.
+- more pluggable consensus strategies
+- doesn't require a digital currency to run.
+
+=== Getting started
+
+Under `examples/appreciation` there is a module containing tests for transaction.
+

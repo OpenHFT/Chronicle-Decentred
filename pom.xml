@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>net.openhft</groupId>
+        <artifactId>java-parent-pom</artifactId>
+        <version>1.1.13</version>
+        <relativePath/>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>chronicle-decentred</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+    <name>Chronicle-Decentred</name>
+    <description>Chronicle-Decentred</description>
+    <packaging>jar</packaging>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <compiler.argument>-Xlint:deprecation</compiler.argument>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>third-party-bom</artifactId>
+                <type>pom</type>
+                <version>3.6.2</version>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle-bom</artifactId>
+                <version>1.16-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-wire</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.openhft</groupId>
+                    <artifactId>affinity</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-salt</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.koloboke</groupId>
+            <artifactId>koloboke-compile</artifactId>
+            <version>0.5.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.koloboke</groupId>
+            <artifactId>koloboke-impl-common-jdk8</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-publish-plugin</artifactId>
+                <configuration>
+                    <checkoutDirectory>${project.build.directory}/scmpublish/javadoc
+                    </checkoutDirectory>
+                    <checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}
+                    </checkinComment>
+                    <content>${project.reporting.outputDirectory}</content>
+                    <skipDeletedFiles>true</skipDeletedFiles>
+                    <pubScmUrl>scm:git:git@github.com:OpenHFT/Chronicle-Wire</pubScmUrl>
+                    <scmBranch>gh-pages</scmBranch>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <links>
+                        <link>http://openhft.github.io/Chronicle-Decentred/apidocs/</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>cash.xcl.server.mock.ServerJVM</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.3.2</version>
+                <configuration>
+                    <verbose>false</verbose>
+                    <!--<enableAssertions>true</enableAssertions>-->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.2</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:deprecation</arg>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                    <compilerId>javac-with-errorprone</compilerId>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-javac-errorprone</artifactId>
+                        <version>2.8</version>
+                    </dependency>
+                    <!-- override plexus-compiler-javac-errorprone's dependency on
+                       Error Prone with the latest version -->
+                    <dependency>
+                        <groupId>com.google.errorprone</groupId>
+                        <artifactId>error_prone_core</artifactId>
+                        <version>2.2.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>java9</id>
+            <properties>
+                <maven.compiler.source>1.9</maven.compiler.source>
+                <maven.compiler.target>1.9</maven.compiler.target>
+                <maven.compiler.fork>true</maven.compiler.fork>
+                <compiler.argument>--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED
+                    --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-exports=java.unsupported/sun.misc=ALL-UNNAMED
+                </compiler.argument>
+            </properties>
+        </profile>
+    </profiles>
+    <scm>
+        <url>scm:git:git@github.com:OpenHFT/Chronicle-Decentred.git</url>
+        <connection>scm:git:git@github.com:OpenHFT/Chronicle-Decentred.git</connection>
+        <developerConnection>scm:git:git@github.com:OpenHFT/Chronicle-Decentred.git</developerConnection>
+        <tag>master</tag>
+    </scm>
+</project>
