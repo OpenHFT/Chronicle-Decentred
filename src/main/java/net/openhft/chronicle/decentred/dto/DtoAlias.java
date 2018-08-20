@@ -10,6 +10,8 @@ public enum DtoAlias {
                 ApplicationErrorResponse.class,
                 CreateAccountRequest.class,
                 CreateAccountResponse.class,
+                InvalidationEvent.class,
+                TransactionBlockEvent.class,
                 VerificationEvent.class
         );
     }

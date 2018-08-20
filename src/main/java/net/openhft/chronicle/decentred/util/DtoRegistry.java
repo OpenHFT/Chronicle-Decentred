@@ -14,12 +14,18 @@ import java.util.function.Supplier;
 public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
     public static final int MASK_16 = 0xFFFF;
 
+    private final Class<T> superInterface;
     private final Map<Class, Integer> classToProtocolMessageType = new LinkedHashMap<>();
     private final IntObjMap<DtoParselet> parseletMap = IntObjMap.withExpectedSize(DtoParselet.class, 128);
 
-    public DtoRegistry() {
+    private DtoRegistry(Class<T> superInterface) {
+        this.superInterface = superInterface;
         addProtocol(0xFF00, (Class) Verifier.class);
         addProtocol(0xFF01, (Class) Verifier.class);
+    }
+
+    public static <T> DtoRegistry<T> newRegistry(Class<T> superInterface) {
+        return new DtoRegistry<>(superInterface);
     }
 
     public DtoRegistry<T> addProtocol(int protocol, Class<? super T> pClass) {
@@ -58,7 +64,7 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
     public DtoParser<T> get() {
         IntObjMap<DtoParselet> parseletMap2 = IntObjMap.withExpectedSize(DtoParselet.class, parseletMap.size() * 2);
         parseletMap.forEach((i, dp) -> parseletMap2.put(i, new DtoParselet(dp)));
-        return new VanillaDtoParser<>(parseletMap2);
+        return new VanillaDtoParser<>(superInterface, parseletMap2);
     }
 
     public <T extends VanillaSignedMessage<T>> T create(Class<T> tClass) {

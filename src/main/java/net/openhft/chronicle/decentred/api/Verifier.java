@@ -13,12 +13,12 @@ public interface Verifier {
     /**
      * Send a verificationEvent message which has been signed
      */
-    @MethodId(1)
+    @MethodId(0x0300)
     void verificationEvent(VerificationEvent verificationEvent);
 
     /**
      * Notify that a server was invalidated
      */
-    @MethodId(2)
+    @MethodId(0x0301)
     void invalidationEvent(InvalidationEvent record);
 }

@@ -30,7 +30,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     private static final Field BB_ADDRESS = Jvm.getField(ByteBuffer.allocateDirect(0).getClass(), "address");
     private static final Field BB_CAPACITY = Jvm.getField(ByteBuffer.allocateDirect(0).getClass(), "capacity");
     // for writing to a new set of bytes
-    private transient Bytes tempBytes = Bytes.allocateElasticDirect(4L << 10);
+    protected transient Bytes tempBytes = Bytes.allocateElasticDirect(4L << 10);
     // for reading an existing Bytes
     private transient PointerBytesStore readPointer = BytesStore.nativePointer();
     protected transient Bytes<Void> bytes = readPointer.bytesForRead();
@@ -129,7 +129,9 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     }
 
     public T sign(BytesStore secretKey, TimeProvider timeProvider) {
-        assert !signed();
+        assert !signed() : "Already signed";
+        assert protocol != 0 : "protocol must be set";
+        assert messageType != 0 : "messageType must be set";
 
         if (hasPublicKey())
             publicKey(secretKey);

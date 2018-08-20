@@ -1,5 +1,6 @@
 package net.openhft.chronicle.decentred.api;
 
+import net.openhft.chronicle.bytes.MethodId;
 import net.openhft.chronicle.decentred.dto.CreateAccountRequest;
 
 /**
@@ -11,5 +12,6 @@ public interface AccountManagementRequests {
      *
      * @param createAccountRequest to be processed
      */
+    @MethodId(0x0100)
     void createAccountRequest(CreateAccountRequest createAccountRequest);
 }

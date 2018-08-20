@@ -17,7 +17,7 @@ public class RPCTest {
         KeySet zero = new KeySet(0);
         KeySet one = new KeySet(1);
 
-        DtoRegistry<Verifier> protocol = new DtoRegistry<Verifier>()
+        DtoRegistry<Verifier> protocol = DtoRegistry.newRegistry(Verifier.class)
                 .addProtocol(1, Verifier.class);
         RPCServer<Verifier> server = new RPCServer<>("test",
                 9999,

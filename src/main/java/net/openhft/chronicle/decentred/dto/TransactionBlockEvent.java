@@ -1,16 +1,26 @@
 package net.openhft.chronicle.decentred.dto;
 
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
-import net.openhft.chronicle.wire.IntConversion;
-import net.openhft.chronicle.wire.UnsignedIntConverter;
+import net.openhft.chronicle.wire.*;
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> {
     private transient DtoParser<T> dtoParser;
 
+    // for writing to a new set of bytes
+    private transient Bytes writeTransactions = Bytes.allocateElasticDirect(4L << 10);
+
+    // where to read transactions from
     private transient long messagesStart;
+    private transient Bytes transactions;
 
     @IntConversion(UnsignedIntConverter.class)
     private short chainId; // up to 64K chains
@@ -21,6 +31,11 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     @IntConversion(UnsignedIntConverter.class)
     private int blockNumber; // up to 7k/s on average
 
+    public TransactionBlockEvent() {
+        transactions = writeTransactions.clear();
+        messagesStart = 0;
+    }
+
     public TransactionBlockEvent dtoParser(DtoParser<T> dtoParser) {
         this.dtoParser = dtoParser;
         return this;
@@ -30,59 +45,52 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     public void readMarshallable(BytesIn bytes) throws IORuntimeException {
         super.readMarshallable(bytes);
         messagesStart = bytes.readPosition();
+        transactions = this.bytes;
     }
 
     public void replay(DtoRegistry<T> dtoRegistry, T allMessages) {
         if (dtoParser == null)
             dtoParser = dtoRegistry.get();
-        long p0 = bytes.readPosition();
-        bytes.readPosition(messagesStart);
-        long limit = bytes.readLimit();
-        try {
-            while (!bytes.isEmpty()) {
-                long position = bytes.readPosition();
-                long length = bytes.readUnsignedInt(position);
-                bytes.readLimit(position + length);
-                dtoParser.parseOne(bytes, allMessages);
-                bytes.readLimit(limit);
-            }
-        } finally {
-            bytes.readLimit(limit);
-            bytes.readPosition(p0);
-        }
+        replay(allMessages);
     }
 
-    /*
-    @IntConversion(RegionIntConverter.class)
-    private int region;
-    private int weekNumber;
-    private long blockNumber; // unsigned int
-    static public int MAX_16_BIT_NUMBER = 65536 - 1000;
-    static int numberOfObjects = 0;
-    private transient Bytes transactions;
-    private transient int count;
-    private transient DtoParser dtoParser;
-
-
-    static public long _1_MB = 1 << 20;
-    static public long _2_MB = 2 << 20;
-    static public long _4_MB = 4 << 20;
-    static public long _16_MB = 16 << 20;
-    static public long _32_MB = 32 << 20;
-
+    public void replay(T allMessages) {
+        long p0 = transactions.readPosition();
+        transactions.readPosition(messagesStart);
+        long limit = transactions.readLimit();
+        try {
+            while (!transactions.isEmpty()) {
+                long position = transactions.readPosition();
+                long length = transactions.readUnsignedInt(position);
+                transactions.readLimit(position + length);
+                dtoParser.parseOne(transactions, allMessages);
+                transactions.readLimit(limit);
+                transactions.readSkip(length);
+            }
+        } finally {
+            transactions.readLimit(limit);
+            transactions.readPosition(p0);
+        }
+    }
 
     @Override
     public void reset() {
         super.reset();
-        transactions.clear();
-        count = 0;
+        transactions = writeTransactions.clear();
+        messagesStart = 0;
     }
 
-    public TransactionBlockEvent addTransaction(SignedBinaryMessage message) {
-        count++;
-        transactions.writeMarshallableLength16(message);
-        //System.out.println("transactions writePosition " + transactions.writePosition() );
+    public TransactionBlockEvent addTransaction(VanillaSignedMessage message) {
+        if (!message.signed())
+            throw new IllegalArgumentException(message + " must be already signed");
+        message.writeMarshallable(writeTransactions);
         return this;
+    }
+
+    @Override
+    public void writeMarshallable0(BytesOut bytes) {
+        super.writeMarshallable0(bytes);
+        bytes.write(writeTransactions);
     }
 
     @Override
@@ -91,34 +99,21 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
         super.readMarshallable(wire);
         wire.read("transactions").sequence(this, (tbe, in) -> {
             while (in.hasNextSequenceItem()) {
-                tbe.addTransaction(in.object(SignedBinaryMessage.class));
+                tbe.addTransaction(in.object(VanillaSignedMessage.class));
             }
         });
-        //        System.out.println("Read " + this);
     }
-
 
     @Override
     public void writeMarshallable(@NotNull WireOut wire) {
         super.writeMarshallable(wire);
-        wire.write("transactions").sequence(out -> replay(new WritingAllMessages() {
+        Class<T> superInterface = dtoParser.superInterface();
+        wire.write("transactions").sequence(out -> replay((T) Proxy.newProxyInstance(superInterface.getClassLoader(), new Class[]{superInterface}, new AbstractMethodWriterInvocationHandler() {
             @Override
-            public WritingAllMessages to(long addressOrRegion) {
-                throw new UnsupportedOperationException();
+            protected void handleInvoke(Method method, Object[] args) {
+                out.object(args[0]);
             }
-
-            @Override
-            public void write(SignedBinaryMessage message) {
-                out.object(message);
-            }
-
-            @Override
-            public void close() {
-                throw new UnsupportedOperationException();
-            }
-        }));
+        })));
     }
 
-}
-*/
 }
