@@ -13,10 +13,6 @@ public class SelfSignedMessage<M extends SelfSignedMessage<M>> extends VanillaSi
     public SelfSignedMessage() {
     }
 
-    public SelfSignedMessage(int protocol, int messageType) {
-        super(protocol, messageType);
-    }
-
     @Override
     public boolean hasPublicKey() {
         return true;

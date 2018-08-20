@@ -45,7 +45,8 @@ public class VerifyIPTest {
         TextWire wire = new TextWire(Bytes.elasticHeapByteBuffer(128));
         VerifyIPTester tester = wire.methodWriter(VerifyIPTester.class);
         tester.onConnection();
-        VerificationEvent verificationEvent = new VerificationEvent(1, 4)
+        VerificationEvent verificationEvent = new VerificationEvent()
+                .protocol(1).messageType(4)
                 .keyVerified(publicKey)
                 .address(publicKey.readLong(0))
                 .timestampUS(TimeProvider.get().currentTimeMicros())

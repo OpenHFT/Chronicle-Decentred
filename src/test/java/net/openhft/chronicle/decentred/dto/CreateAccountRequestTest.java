@@ -24,7 +24,8 @@ public class CreateAccountRequestTest {
                 "........\n" +
                 "00000020 3b 6a 27 bc ce b6 a4 2d  62 a3 a8 d0 2a 6f 0d 73 ;j'····- b···*o·s\n" +
                 "00000030 65 32 15 77 1d e2 43 a6  3a c0 48 a1 8b 59 da 29 e2·w··C· :·H··Y·)\n", secretKey.toHexString());
-        CreateAccountRequest ca = new CreateAccountRequest(1, 2);
+        CreateAccountRequest ca = new CreateAccountRequest()
+                .protocol(1).messageType(2);
         SetTimeProvider timeProvider = new SetTimeProvider(0x05060708090a0bL * 1000);
         ca.sign(secretKey, timeProvider);
         assertEquals("00000000 3b 6a 27 bc ce b6 a4 2d  62 a3 a8 d0 2a 6f 0d 73 ;j'····- b···*o·s\n" +
@@ -44,15 +45,16 @@ public class CreateAccountRequestTest {
                 "0078    29\n", ca.toHexString());
 
         assertEquals("!CreateAccountRequest {\n" +
-                "  timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
-                "  address: \"41.218.89.139:41288:c03a\",\n" +
+                "  timestampUS: 2014-10-22T18:22:32.901131,\n" +
+                "  address: 41.218.89.139:41288:c03a,\n" +
                 "  publicKey: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +
                 "}\n", ca.toString());
 
         assertTrue(ca.verify(this::selfSigning));
 
-        CreateAccountResponse created = new CreateAccountResponse(1, 3)
-                .createAccount(ca);
+        CreateAccountResponse created = new CreateAccountResponse()
+                .protocol(1).messageType(3)
+                .createAccountRequest(ca);
 
         created.sign(secretKey, timeProvider);
         assertEquals("0000 d1 00 00 00                                     # length\n" +
@@ -74,11 +76,11 @@ public class CreateAccountRequestTest {
                 "00c8    a6 3a c0 48 a1 8b 59 da 29\n", created.toHexString());
 
         assertEquals("!CreateAccountResponse {\n" +
-                "  timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
-                "  address: \"41.218.89.139:41288:c03a\",\n" +
+                "  timestampUS: 2014-10-22T18:22:32.901131,\n" +
+                "  address: 41.218.89.139:41288:c03a,\n" +
                 "  createAccountRequest: {\n" +
-                "    timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
-                "    address: \"41.218.89.139:41288:c03a\",\n" +
+                "    timestampUS: 2014-10-22T18:22:32.901131,\n" +
+                "    address: 41.218.89.139:41288:c03a,\n" +
                 "    publicKey: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +
                 "  }\n" +
                 "}\n", created.toString());

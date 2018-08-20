@@ -39,5 +39,5 @@ public interface SignedMessage {
      *
      * @param secretKey to signed this message with.
      */
-    void sign(BytesStore secretKey);
+    SignedMessage sign(BytesStore secretKey);
 }

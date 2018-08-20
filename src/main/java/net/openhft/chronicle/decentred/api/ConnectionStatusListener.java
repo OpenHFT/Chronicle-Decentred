@@ -1,5 +1,6 @@
 package net.openhft.chronicle.decentred.api;
 
+import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 
 /**
@@ -11,13 +12,17 @@ public interface ConnectionStatusListener {
      *
      * @param connection connected
      */
-    void onConnection(TCPConnection connection);
+    default void onConnection(TCPConnection connection) {
+        Jvm.debug().on(getClass(), "Connected " + connection);
+    }
 
     /**
      * Called by the framework on disconnection
      *
      * @param connection disconnected
      */
-    void onDisconnection(TCPConnection connection);
+    default void onDisconnection(TCPConnection connection) {
+        Jvm.debug().on(getClass(), "Disconnected " + connection);
+    }
 
 }

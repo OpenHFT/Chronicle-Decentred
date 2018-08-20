@@ -1,6 +1,7 @@
 package net.openhft.chronicle.decentred.util;
 
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.core.util.ObjectUtils;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,11 +32,11 @@ class DtoParselet<T> {
     }
 
     @NotNull
-    private static VanillaSignedMessage createVSM(Method method, int protocol, int midValue) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
-        Class<?> type = method.getParameterTypes()[0];
-        return (VanillaSignedMessage)
-                type.getDeclaredConstructor(int.class, int.class)
-                        .newInstance(protocol, midValue);
+    private static VanillaSignedMessage createVSM(Method method, int protocol, int messageType) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
+        @SuppressWarnings("unchecked")
+        Class<VanillaSignedMessage> type = (Class) method.getParameterTypes()[0];
+        VanillaSignedMessage vsm = ObjectUtils.newInstance(type);
+        return vsm.protocol(protocol).messageType(messageType);
     }
 
     public void parse(Bytes bytes, T listener) {

@@ -2,7 +2,9 @@ package net.openhft.chronicle.decentred.util;
 
 import net.openhft.chronicle.bytes.MethodId;
 import net.openhft.chronicle.core.Maths;
+import net.openhft.chronicle.core.util.ObjectUtils;
 import net.openhft.chronicle.decentred.api.Verifier;
+import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
@@ -59,11 +61,13 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
         return new VanillaDtoParser<>(parseletMap2);
     }
 
-    public <T> T create(Class<T> tClass) {
+    public <T extends VanillaSignedMessage<T>> T create(Class<T> tClass) {
         int pmt = protocolMessageTypeFor(tClass);
         try {
-            return tClass.getConstructor(new Class[]{int.class, int.class})
-                    .newInstance(pmt >>> 16, pmt & MASK_16);
+            int protocol = pmt >>> 16;
+            int messageType = pmt & MASK_16;
+            T vsm = ObjectUtils.newInstance(tClass);
+            return vsm.protocol(protocol).messageType(messageType);
         } catch (Exception e) {
             throw new AssertionError(e);
         }

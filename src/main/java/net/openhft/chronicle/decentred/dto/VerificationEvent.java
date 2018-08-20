@@ -11,10 +11,6 @@ import org.jetbrains.annotations.NotNull;
 public class VerificationEvent extends SelfSignedMessage<VerificationEvent> {
     private final Bytes keyVerified = Bytes.allocateElasticDirect(Ed25519.PUBLIC_KEY_LENGTH);
 
-    public VerificationEvent(int protocol, int messageType) {
-        super(protocol, messageType);
-    }
-
     public VerificationEvent keyVerified(BytesStore key) {
         keyVerified.clear().write(key);
         return this;
@@ -27,7 +23,9 @@ public class VerificationEvent extends SelfSignedMessage<VerificationEvent> {
     @NotNull
     @Override
     public <T> T deepCopy() {
-        VerificationEvent v2 = new VerificationEvent(protocol(), messageType());
+        VerificationEvent v2 = new VerificationEvent();
+        v2.protocol(protocol());
+        v2.messageType(messageType());
         v2.address(address());
         v2.timestampUS(timestampUS());
         v2.publicKey(publicKey());

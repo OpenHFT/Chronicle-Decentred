@@ -1,19 +1,20 @@
 package town.lost.examples.appreciation.api;
 
-import im.xcl.platform.api.TransactionListener;
 import net.openhft.chronicle.bytes.MethodId;
+import town.lost.examples.appreciation.dto.Give;
+import town.lost.examples.appreciation.dto.OpeningBalance;
 
 /**
  * Transactions passed through the block chain
  */
-public interface AppreciationTransactionListener extends TransactionListener {
+public interface AppreciationTransactions {
 
     /**
      * Report the current balance for this public key.
      */
-    @MethodId(0x0080)
+    @MethodId(0x0001)
     void openingBalance(OpeningBalance openingBalance);
 
-    @MethodId(0x0100)
+    @MethodId(0x0010)
     void give(Give give);
 }

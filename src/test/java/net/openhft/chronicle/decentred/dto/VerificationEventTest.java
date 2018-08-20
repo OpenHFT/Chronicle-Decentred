@@ -33,10 +33,11 @@ public class VerificationEventTest {
                 "........\n" +
                 "00000020 3b 6a 27 bc ce b6 a4 2d  62 a3 a8 d0 2a 6f 0d 73 ;j'····- b···*o·s\n" +
                 "00000030 65 32 15 77 1d e2 43 a6  3a c0 48 a1 8b 59 da 29 e2·w··C· :·H··Y·)\n", secretKey.toHexString());
-        VerificationEvent v = new VerificationEvent(1, 22);
-        v.keyVerified(publicKey);
         SetTimeProvider timeProvider = new SetTimeProvider(0x05060708090a0bL * 1000);
-        v.sign(secretKey2, timeProvider);
+        VerificationEvent v = new VerificationEvent()
+                .protocol(1).messageType(22)
+                .keyVerified(publicKey)
+                .sign(secretKey2, timeProvider);
 
         assertEquals("0000 9a 00 00 00                                     # length\n" +
                 "0004 62 1b 02 4b a1 9a 76 c6 84 28 68 9d 35 56 dc fb # signature start\n" +
@@ -54,7 +55,7 @@ public class VerificationEventTest {
                 "0098    da 29\n", v.toHexString());
 
         assertEquals("!VerificationEvent {\n" +
-                "  timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
+                "  timestampUS: 2014-10-22T18:22:32.901131,\n" +
                 "  address: ayua2manpmw7f,\n" +
                 "  publicKey: !!binary zswVB9wd3XKVlRwpCIjwla25BE0bc9aW5t8GXWg71Pw=,\n" +
                 "  keyVerified: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +

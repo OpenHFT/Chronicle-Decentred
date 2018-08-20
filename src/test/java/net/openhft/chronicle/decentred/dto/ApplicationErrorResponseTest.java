@@ -21,13 +21,15 @@ public class ApplicationErrorResponseTest {
         Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
         Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
 
-        CreateAccountRequest ca = new CreateAccountRequest(1, 2);
         SetTimeProvider timeProvider = new SetTimeProvider(0x05060708090a0bL * 1000);
-        ca.sign(secretKey, timeProvider);
+        CreateAccountRequest ca = new CreateAccountRequest()
+                .protocol(1).messageType(2)
+                .sign(secretKey, timeProvider);
 
-        ApplicationErrorResponse ae = new ApplicationErrorResponse(1, 10);
-        ae.init(ca, "Not implemented");
-        ae.sign(secretKey, timeProvider);
+        ApplicationErrorResponse ae = new ApplicationErrorResponse()
+                .protocol(1).messageType(10)
+                .init(ca, "Not implemented")
+                .sign(secretKey, timeProvider);
 
         assertEquals(
                 "0000 e1 00 00 00                                     # length\n" +
@@ -51,11 +53,11 @@ public class ApplicationErrorResponseTest {
                 ae.toHexString());
 
         assertEquals("!ApplicationErrorResponse {\n" +
-                "  timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
-                "  address: \"41.218.89.139:41288:c03a\",\n" +
+                "  timestampUS: 2014-10-22T18:22:32.901131,\n" +
+                "  address: 41.218.89.139:41288:c03a,\n" +
                 "  origMessage: !CreateAccountRequest {\n" +
-                "    timestampUS: \"2014-10-22T18:22:32.901131\",\n" +
-                "    address: \"41.218.89.139:41288:c03a\",\n" +
+                "    timestampUS: 2014-10-22T18:22:32.901131,\n" +
+                "    address: 41.218.89.139:41288:c03a,\n" +
                 "    publicKey: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +
                 "  },\n" +
                 "  reason: Not implemented\n" +

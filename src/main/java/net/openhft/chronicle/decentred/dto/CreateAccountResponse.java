@@ -1,17 +1,13 @@
 package net.openhft.chronicle.decentred.dto;
 
-public class CreateAccountResponse extends VanillaSignedMessage {
+public class CreateAccountResponse extends VanillaSignedMessage<CreateAccountResponse> {
     private CreateAccountRequest createAccountRequest;
 
-    public CreateAccountResponse(int protocol, int messageType) {
-        super(protocol, messageType);
-    }
-
-    public CreateAccountRequest createAccount() {
+    public CreateAccountRequest createAccountRequest() {
         return createAccountRequest;
     }
 
-    public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest) {
+    public CreateAccountResponse createAccountRequest(CreateAccountRequest createAccountRequest) {
         assert !signed();
         this.createAccountRequest = createAccountRequest;
         return this;

@@ -12,7 +12,7 @@ public class AddressConverter implements LongConverter {
 
     private static final long MASK_48 = 0x0000_FFFF_FFFF_FFFFL;
     private static final long MASK_32 = 0x0000_0000_FFFF_FFFFL;
-    private static final long ACCOUNT_MASK = 0x1FFF_FFFF_FFFF_FFFFL;
+    public static final long ADDRESS_MASK = 0x1FFF_FFFF_FFFF_FFFFL;
     private static final int MASK_8 = 0xFF;
 
     private static int count(CharSequence cs, char ch) {
@@ -38,7 +38,7 @@ public class AddressConverter implements LongConverter {
     }
 
     private long parseBase32(CharSequence cs) {
-        return LetterBase32.decode(cs) | ~ACCOUNT_MASK;
+        return LetterBase32.decode(cs) | ~ADDRESS_MASK;
     }
 
     private long parseIpPortKey(String text) {
@@ -64,11 +64,11 @@ public class AddressConverter implements LongConverter {
             ipPort(text, value);
         else if ((value >>> 60) < 0xE)
             ipPortKey(text, value);
-        else base32(text, value & ACCOUNT_MASK);
+        else base32(text, value & ADDRESS_MASK);
     }
 
     private void base32(StringBuilder text, long value) {
-        LetterBase32.encode(text, value & ACCOUNT_MASK);
+        LetterBase32.encode(text, value & ADDRESS_MASK);
     }
 
     private void ipPortKey(StringBuilder text, long value) {

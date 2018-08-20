@@ -1,23 +1,31 @@
 package town.lost.examples.appreciation;
 
-import im.xcl.platform.api.MessageRouter;
-import im.xcl.platform.api.StartBatch;
-import net.openhft.chronicle.bytes.BytesStore;
-import town.lost.examples.appreciation.api.*;
+import net.openhft.chronicle.decentred.api.MessageRouter;
+import net.openhft.chronicle.decentred.dto.ApplicationErrorResponse;
+import net.openhft.chronicle.decentred.dto.CreateAccountRequest;
+import town.lost.examples.appreciation.api.AppreciationGateway;
+import town.lost.examples.appreciation.api.AppreciationResponses;
+import town.lost.examples.appreciation.api.AppreciationTransactions;
+import town.lost.examples.appreciation.dto.Give;
+import town.lost.examples.appreciation.dto.OnBalance;
+import town.lost.examples.appreciation.dto.OpeningBalance;
+import town.lost.examples.appreciation.dto.QueryBalance;
 
 
+/**
+ * Run as a gateway before the blockchain.
+ */
 public class VanillaAppreciationGateway implements AppreciationGateway {
-    private final MessageRouter<AppreciationResultsListener> client;
-    private final AppreciationTransactionListener blockchain;
+    private final MessageRouter<AppreciationResponses> client;
+    private final AppreciationTransactions blockchain;
     private final BalanceStore balanceStore;
 
     private final OnBalance onBalance = new OnBalance();
-    private final OnError onError = new OnError();
-    private StartBatch startBatch;
+    private final ApplicationErrorResponse error = new ApplicationErrorResponse();
 
     public VanillaAppreciationGateway(
-            MessageRouter<AppreciationResultsListener> client,
-            AppreciationTransactionListener blockchain,
+            MessageRouter<AppreciationResponses> client,
+            AppreciationTransactions blockchain,
             BalanceStore balanceStore) {
         this.client = client;
         this.blockchain = blockchain;
@@ -25,32 +33,27 @@ public class VanillaAppreciationGateway implements AppreciationGateway {
     }
 
     @Override
-    public void startBatch(StartBatch startBatch) {
-        this.startBatch = startBatch;
-    }
-
-    @Override
     public void openingBalance(OpeningBalance openingBalance) {
-        if (verifyServerNode(startBatch.batchKey()))
+        if (verifyServerNode(openingBalance.address()))
             blockchain.openingBalance(openingBalance);
     }
 
-    private boolean verifyServerNode(BytesStore publicKey) {
+    private boolean verifyServerNode(long address) {
         // allow anyone for now.
         return true;
     }
 
     @Override
-    public void queryBalance() {
-        BytesStore clientKey = startBatch.batchKey();
-        AppreciationResultsListener listener = client.to(clientKey);
-        double amount = balanceStore.getBalance(clientKey);
+    public void queryBalance(QueryBalance queryBalance) {
+        AppreciationResponses listener = client.to(queryBalance.address());
+        double amount = balanceStore.getBalance(queryBalance.address());
         if (Double.isNaN(amount)) {
-            onError.init(clientKey,
-                    startBatch.batchTimeUS(),
+            error.init(queryBalance,
                     "Cannot query balance: Account doesn't exist");
-            listener.onError(onError);
+            error.timestampUS(queryBalance.timestampUS());
+            listener.applicationError(error);
         } else {
+            onBalance.timestampUS(queryBalance.timestampUS());
             listener.onBalance(onBalance);
         }
     }
@@ -58,25 +61,28 @@ public class VanillaAppreciationGateway implements AppreciationGateway {
     @Override
     public void give(Give give) {
         if (give.amount() < 0) {
-            BytesStore clientKey = startBatch.batchKey();
-            AppreciationResultsListener listener = client.to(clientKey);
-            onError.init(clientKey,
-                    startBatch.batchTimeUS(),
+            AppreciationResponses listener = client.to(give.toAddress());
+            error.init(give,
                     "Cannot give a negative amount");
-            listener.onError(onError);
+            error.timestampUS(give.timestampUS());
+            listener.applicationError(error);
             return;
         }
-        double amount = balanceStore.getBalance(startBatch.batchKey());
+        double amount = balanceStore.getBalance(give.address());
         if (Double.isNaN(amount)) {
-            BytesStore clientKey = startBatch.batchKey();
-            AppreciationResultsListener listener = client.to(clientKey);
-            onError.init(startBatch.batchKey(),
-                    startBatch.batchTimeUS(),
+            AppreciationResponses listener = client.to(give.address());
+            error.init(give,
                     "Cannot give balance: Account doesn't exist");
-            listener.onError(onError);
+            error.timestampUS(give.timestampUS());
+            listener.applicationError(error);
             return;
         }
 
         blockchain.give(give);
+    }
+
+    @Override
+    public void createAccountRequest(CreateAccountRequest createAccountRequest) {
+
     }
 }

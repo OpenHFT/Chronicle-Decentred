@@ -4,10 +4,6 @@ public class ApplicationErrorResponse extends VanillaSignedMessage<ApplicationEr
     private VanillaSignedMessage origMessage;
     private String reason;
 
-    public ApplicationErrorResponse(int protocol, int messageType) {
-        super(protocol, messageType);
-    }
-
     public String reason() {
         return reason;
     }

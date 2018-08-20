@@ -4,14 +4,27 @@ import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.wire.IntConversion;
+import net.openhft.chronicle.wire.UnsignedIntConverter;
 
 public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> {
     private transient DtoParser<T> dtoParser;
+
     private transient long messagesStart;
 
+    @IntConversion(UnsignedIntConverter.class)
     private short chainId; // up to 64K chains
+
+    @IntConversion(UnsignedIntConverter.class)
     private short weekNumber; // up to 1256 years
+
+    @IntConversion(UnsignedIntConverter.class)
     private int blockNumber; // up to 7k/s on average
+
+    public TransactionBlockEvent dtoParser(DtoParser<T> dtoParser) {
+        this.dtoParser = dtoParser;
+        return this;
+    }
 
     @Override
     public void readMarshallable(BytesIn bytes) throws IORuntimeException {

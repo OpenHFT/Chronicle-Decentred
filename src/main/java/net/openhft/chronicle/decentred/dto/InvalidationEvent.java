@@ -5,11 +5,4 @@ package net.openhft.chronicle.decentred.dto;
  */
 public class InvalidationEvent extends SelfSignedMessage<InvalidationEvent> {
 
-    public InvalidationEvent() {
-    }
-
-    public InvalidationEvent(int protocol, int messageType) {
-        super(protocol, messageType);
-    }
-
 }

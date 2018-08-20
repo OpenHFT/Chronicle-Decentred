@@ -45,14 +45,6 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     private long address;
 
     protected VanillaSignedMessage() {
-        this(0, 0); // must be set before signing.
-    }
-
-    protected VanillaSignedMessage(int protocol, int messageType) {
-        assert (protocol | MASK_16) == MASK_16;
-        assert (messageType | MASK_16) == MASK_16;
-        this.messageType = (short) messageType;
-        this.protocol = (short) protocol;
     }
 
     @Override
@@ -131,12 +123,12 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     }
 
     @Override
-    public void sign(BytesStore secretKey) {
+    public T sign(BytesStore secretKey) {
         UniqueMicroTimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;
-        sign(secretKey, timeProvider);
+        return sign(secretKey, timeProvider);
     }
 
-    public void sign(BytesStore secretKey, TimeProvider timeProvider) {
+    public T sign(BytesStore secretKey, TimeProvider timeProvider) {
         assert !signed();
 
         if (hasPublicKey())
@@ -160,6 +152,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         readPointer.set(tempBytes.addressForRead(0), length);
         bytes.writeLimit(length)
                 .readPositionRemaining(0, length);
+        return (T) this;
     }
 
     public String toHexString() {

@@ -1,14 +1,14 @@
-to: "0.0.0.0:0"
+to: 0.0.0.0:0
 verificationEvent: {
-  timestampUS: "2018-08-08T08:03:08.231112",
+  timestampUS: 2018-08-08T08:03:08.231112,
   address: ab34booole7la,
   publicKey: !!binary GucBAEizPpfnf7Kkqg+RF97BjjNhSDfnHlsm1HgpRsg=,
   keyVerified: !!binary riUxYqLVMfa4vTGKp64D8nCrhsDLHui/hgeC+vapDpg=
 }
 ---
-to: "0.0.0.0:0"
+to: 0.0.0.0:0
 verificationEvent: {
-  timestampUS: "2018-08-08T08:03:08.231112",
+  timestampUS: 2018-08-08T08:03:08.231112,
   address: ab34booole7la,
   publicKey: !!binary GucBAEizPpfnf7Kkqg+RF97BjjNhSDfnHlsm1HgpRsg=,
   keyVerified: !!binary riUxYqLVMfa4vTGKp64D8nCrhsDLHui/hgeC+vapDpg=

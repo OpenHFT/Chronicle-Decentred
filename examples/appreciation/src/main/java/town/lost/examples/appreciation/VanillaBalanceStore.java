@@ -1,56 +1,47 @@
 package town.lost.examples.appreciation;
 
-import cash.xcl.util.XCLLongDoubleMap;
-import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.decentred.util.LongDoubleMap;
 
 public class VanillaBalanceStore implements BalanceStore {
-    private final XCLLongDoubleMap amountsMap = XCLLongDoubleMap.withExpectedSize(1024);
-
-    private static long getKey(BytesStore bytesStore) {
-        return bytesStore.readLong(bytesStore.readRemaining() - Long.BYTES);
-    }
+    private final LongDoubleMap amountsMap = LongDoubleMap.withExpectedSize(1024);
 
     @Override
-    public double getBalance(BytesStore bytesStore) {
-        long key = getKey(bytesStore);
+    public double getBalance(long address) {
         double amount;
         synchronized (amountsMap) {
-            amount = amountsMap.getOrDefault(key, Long.MIN_VALUE);
+            amount = amountsMap.getOrDefault(address, Long.MIN_VALUE);
         }
         return amount == Long.MIN_VALUE ? Double.NaN : amount;
     }
 
     @Override
-    public boolean subtractBalance(BytesStore bytesStore, double amount) {
+    public boolean subtractBalance(long address, double amount) {
         assert amount >= 0;
-        long key = getKey(bytesStore);
         synchronized (amountsMap) {
-            double amount2 = amountsMap.getOrDefault(key, 0);
+            double amount2 = amountsMap.getOrDefault(address, 0);
             amount2 -= amount;
             if (amount2 < 0)
                 return false;
-            amountsMap.justPut(key, amount2);
+            amountsMap.justPut(address, amount2);
             return true;
         }
     }
 
     @Override
-    public void addBalance(BytesStore bytesStore, double amount) {
+    public void addBalance(long address, double amount) {
         assert amount >= 0;
-        long key = getKey(bytesStore);
         synchronized (amountsMap) {
-            double amount2 = amountsMap.getOrDefault(key, 0);
+            double amount2 = amountsMap.getOrDefault(address, 0);
             amount2 += amount;
-            amountsMap.justPut(key, amount2);
+            amountsMap.justPut(address, amount2);
         }
     }
 
     @Override
-    public void setBalance(BytesStore bytesStore, double amount) {
+    public void setBalance(long address, double amount) {
         assert amount >= 0;
-        long key = getKey(bytesStore);
         synchronized (amountsMap) {
-            amountsMap.justPut(key, amount);
+            amountsMap.justPut(address, amount);
         }
     }
 }

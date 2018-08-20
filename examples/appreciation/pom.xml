@@ -17,17 +17,26 @@
     <dependencies>
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>chronicle-wire</artifactId>
+            <artifactId>chronicle-core</artifactId>
+            <version>1.16.23-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>software.chronicle</groupId>
-            <artifactId>decentred</artifactId>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-decentred</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

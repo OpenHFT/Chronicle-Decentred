@@ -1,15 +1,18 @@
 package net.openhft.chronicle.decentred.api;
 
 
+import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.dto.ApplicationErrorResponse;
 
 public interface SystemMessageListener
-        extends AccountManagementListener, ConnectionStatusListener {
+        extends AccountManagementResponses, ConnectionStatusListener {
 
     /**
      * Notify an application error occurred in response to a message passed.
      *
      * @param applicationErrorResponse occurred
      */
-    void applicationError(ApplicationErrorResponse applicationErrorResponse);
+    default void applicationError(ApplicationErrorResponse applicationErrorResponse) {
+        Jvm.warn().on(getClass(), "Unhandled error " + applicationErrorResponse);
+    }
 }
