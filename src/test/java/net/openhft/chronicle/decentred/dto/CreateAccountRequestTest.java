@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class CreateAccountRequestTest {
     static {
-        DtoAlias.addAliases();
+        DtoAliases.addAliases();
     }
 
     @Test

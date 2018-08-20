@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ApplicationErrorResponseTest {
     static {
-        DtoAlias.addAliases();
+        DtoAliases.addAliases();
     }
 
     @Test

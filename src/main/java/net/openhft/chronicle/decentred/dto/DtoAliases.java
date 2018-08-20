@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.dto;
 
 import net.openhft.chronicle.core.pool.ClassAliasPool;
 
-public enum DtoAlias {
+public enum DtoAliases {
     ;
 
     static {

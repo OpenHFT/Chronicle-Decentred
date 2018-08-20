@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TransactionBlockEventTest {
     static {
-        DtoAlias.addAliases();
+        DtoAliases.addAliases();
     }
 
     @Test

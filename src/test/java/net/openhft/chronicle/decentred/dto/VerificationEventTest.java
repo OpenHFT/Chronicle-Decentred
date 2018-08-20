@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class VerificationEventTest {
     static {
-        DtoAlias.addAliases();
+        DtoAliases.addAliases();
     }
 
     @Test
