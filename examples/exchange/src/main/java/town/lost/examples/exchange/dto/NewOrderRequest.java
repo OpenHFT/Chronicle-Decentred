@@ -7,18 +7,18 @@ public class NewOrderRequest extends VanillaSignedMessage<NewOrderRequest> {
     private double quantity;
     private double maxPrice;
     private CurrencyPair currencyPair;
-    private long timeToLive; // in milliseconds
+    private float timeToLiveSec;
     private boolean buy;
 
     public NewOrderRequest() {
 
     }
 
-    public NewOrderRequest(double quantity, double maxPrice, CurrencyPair currencyPair, long timeToLive, boolean buy) {
+    public NewOrderRequest(double quantity, double maxPrice, CurrencyPair currencyPair, float timeToLiveSec, boolean buy) {
         this.quantity = quantity;
         this.maxPrice = maxPrice;
         this.currencyPair = currencyPair;
-        this.timeToLive = timeToLive;
+        this.timeToLiveSec = timeToLiveSec;
         this.buy = buy;
     }
 
@@ -49,12 +49,12 @@ public class NewOrderRequest extends VanillaSignedMessage<NewOrderRequest> {
         return this;
     }
 
-    public long timeToLive() {
-        return timeToLive;
+    public float timeToLiveSec() {
+        return timeToLiveSec;
     }
 
-    public NewOrderRequest timeToLive(long timeToLive) {
-        this.timeToLive = timeToLive;
+    public NewOrderRequest timeToLiveSec(float timeToLiveSec) {
+        this.timeToLiveSec = timeToLiveSec;
         return this;
     }
 

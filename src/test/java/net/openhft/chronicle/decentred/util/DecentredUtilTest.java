@@ -17,7 +17,7 @@ public class DecentredUtilTest {
             Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
             Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
             long address = DecentredUtil.toAddress(publicKey);
-            if ((address | ~AddressConverter.ADDRESS_MASK) == address) {
+            if ((address | ~DecentredUtil.ADDRESS_MASK) == address) {
                 System.out.print(i + "\t");
             }
         }

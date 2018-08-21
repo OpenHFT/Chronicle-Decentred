@@ -1,18 +1,18 @@
 package town.lost.examples.exchange.api;
 
 import net.openhft.chronicle.core.pool.ClassAliasPool;
-import town.lost.examples.exchange.dto.CancelOrderRequest;
-import town.lost.examples.exchange.dto.NewOrderRequest;
-import town.lost.examples.exchange.dto.OpeningBalanceEvent;
+import town.lost.examples.exchange.dto.*;
 
 public enum DtoAliases {
     ;
 
     static {
         ClassAliasPool.CLASS_ALIASES.addAlias(
+                CancelOrderEvent.class,
                 CancelOrderRequest.class,
                 NewOrderRequest.class,
-                OpeningBalanceEvent.class
+                OpeningBalanceEvent.class,
+                TradeEvent.class
         );
     }
 
