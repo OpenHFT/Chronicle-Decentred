@@ -6,6 +6,7 @@ import town.lost.examples.appreciation.api.AppreciationTransactions;
 import town.lost.examples.appreciation.dto.Give;
 import town.lost.examples.appreciation.dto.OnBalance;
 import town.lost.examples.appreciation.dto.OpeningBalance;
+import town.lost.examples.appreciation.dto.Topup;
 
 /**
  * Run from the blockchain.
@@ -40,5 +41,14 @@ public class VanillaAppreciationTransactions implements AppreciationTransactions
             router.to(toKey)
                     .onBalance(onBalance.init(toKey, balanceStore.getBalance(toKey)));
         }
+    }
+
+    @Override
+    public void topup(Topup topup){
+        // Todo(Nick): test this.
+        long toKey = topup.toAddress();
+        balanceStore.addBalance(toKey, topup.amount());
+        onBalance.timestampUS(topup.timestampUS());
+        router.to(toKey).onBalance(onBalance.init(toKey, balanceStore.getBalance(toKey)));
     }
 }

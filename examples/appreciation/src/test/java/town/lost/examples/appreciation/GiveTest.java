@@ -16,32 +16,10 @@ import town.lost.examples.appreciation.dto.OpeningBalance;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static town.lost.examples.appreciation.TestUtils.test;
 
 
 public class GiveTest {
-    public static void test(String basename) {
-        TextMethodTester<AppreciationTester> tester = new TextMethodTester<>(
-                basename + "/in.yaml",
-                GiveTest::createGateway,
-                AppreciationTester.class,
-                basename + "/out.yaml");
-        tester.setup(basename + "/setup.yaml");
-        try {
-            tester.run();
-        } catch (IOException e) {
-            throw new IORuntimeException(e);
-        }
-        assertEquals(tester.expected(), tester.actual());
-    }
-
-    private static VanillaAppreciationGateway createGateway(AppreciationTester tester) {
-        VanillaBalanceStore balanceStore = new VanillaBalanceStore();
-        VanillaAppreciationTransactions blockchain = new VanillaAppreciationTransactions(tester, balanceStore);
-        return new VanillaAppreciationGateway(tester,
-                blockchain,
-                balanceStore);
-    }
-
     public static void main(String[] args) {
         BytesStore privateKey1 = DecentredUtil.testPrivateKey(7);
         Bytes publicKey1 = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
