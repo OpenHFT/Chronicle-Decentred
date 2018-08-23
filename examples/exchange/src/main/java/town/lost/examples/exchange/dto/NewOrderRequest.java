@@ -2,24 +2,36 @@ package town.lost.examples.exchange.dto;
 
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import town.lost.examples.exchange.api.CurrencyPair;
+import town.lost.examples.exchange.api.Side;
 
 public class NewOrderRequest extends VanillaSignedMessage<NewOrderRequest> {
+
+    private Side action;
     private double quantity;
     private double maxPrice;
     private CurrencyPair currencyPair;
-    private float timeToLiveSec;
-    private boolean buy;
+    private long ttlMillis;
 
     public NewOrderRequest() {
 
     }
 
-    public NewOrderRequest(double quantity, double maxPrice, CurrencyPair currencyPair, float timeToLiveSec, boolean buy) {
+    public NewOrderRequest(long sourceAddress, long eventTime, Side action, double qty, double maxPrice, CurrencyPair currencyPair, long ttlMillis){
+        this.address(sourceAddress);
+        this.timestampUS(eventTime);
+        this.action = action;
+        this.quantity = qty;
+        this.maxPrice = maxPrice;
+        this.currencyPair = currencyPair;
+        this.ttlMillis = ttlMillis;
+    }
+
+    public NewOrderRequest(double quantity, double maxPrice, CurrencyPair currencyPair, long ttlMillis, Side action) {
         this.quantity = quantity;
         this.maxPrice = maxPrice;
         this.currencyPair = currencyPair;
-        this.timeToLiveSec = timeToLiveSec;
-        this.buy = buy;
+        this.ttlMillis = ttlMillis;
+        this.action = action;
     }
 
     public double quantity() {
@@ -49,21 +61,21 @@ public class NewOrderRequest extends VanillaSignedMessage<NewOrderRequest> {
         return this;
     }
 
-    public float timeToLiveSec() {
-        return timeToLiveSec;
+    public long ttlMillis() {
+        return ttlMillis;
     }
 
-    public NewOrderRequest timeToLiveSec(float timeToLiveSec) {
-        this.timeToLiveSec = timeToLiveSec;
+    public NewOrderRequest ttlMillis(long ttlMillis) {
+        this.ttlMillis = ttlMillis;
         return this;
     }
 
-    public boolean buy() {
-        return buy;
+    public Side action() {
+        return action;
     }
 
-    public NewOrderRequest buy(boolean buy) {
-        this.buy = buy;
+    public NewOrderRequest action(Side action) {
+        this.action = action;
         return this;
     }
 }

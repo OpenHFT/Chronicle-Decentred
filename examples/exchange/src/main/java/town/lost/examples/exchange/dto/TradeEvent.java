@@ -5,6 +5,7 @@ import net.openhft.chronicle.decentred.util.AddressConverter;
 import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 import town.lost.examples.exchange.api.CurrencyPair;
+import town.lost.examples.exchange.api.Side;
 
 public class TradeEvent extends VanillaSignedMessage<TradeEvent> {
     @LongConversion(MicroTimestampLongConverter.class)
@@ -14,7 +15,17 @@ public class TradeEvent extends VanillaSignedMessage<TradeEvent> {
     private double quantity;
     private double price;
     private CurrencyPair currencyPair;
-    private boolean buy;
+    private Side action;
+    private long orderId;
+
+    public long orderId(){
+        return orderId;
+    }
+
+    public TradeEvent orderId(long orderId){
+        this.orderId = orderId;
+        return this;
+    }
 
     public long orderTimestampUS() {
         return orderTimestampUS;
@@ -61,12 +72,12 @@ public class TradeEvent extends VanillaSignedMessage<TradeEvent> {
         return this;
     }
 
-    public boolean buy() {
-        return buy;
+    public Side action() {
+        return action;
     }
 
-    public TradeEvent buy(boolean buy) {
-        this.buy = buy;
+    public TradeEvent action(Side action) {
+        this.action = action;
         return this;
     }
 }
