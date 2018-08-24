@@ -16,7 +16,6 @@ public class SmallIntObjMap<V> extends IntObjMap<V> {
     public void justPut(int key, V value) {
         for (int i = 0; i < size; i++) {
             if (keys[i] == key) {
-                V tmp = values[i];
                 values[i] = value;
                 return;
             }
