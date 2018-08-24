@@ -29,6 +29,11 @@ public enum TestUtils {
     public static ExchangeGateway createGateway(ExchangeTester tester) {
         ExchangeTransactionProcessor blockchain = new ExchangeTransactionProcessor(tester);
         return new ExchangeGateway(tester, blockchain) {
+            @Override
+            protected boolean privilegedAddress(long address) {
+                return address != 0;
+            }
+
             @UsedViaReflection
             public void setCurrentTime(long currentTime) {
                 blockchain.setCurrentTime(currentTime);

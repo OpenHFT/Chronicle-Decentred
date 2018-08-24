@@ -13,7 +13,7 @@ public interface SystemMessageListener
      *
      * @param applicationErrorResponse occurred
      */
-    @MethodId(0x0010)
+    @MethodId(0xFF10)
     default void applicationError(ApplicationErrorResponse applicationErrorResponse) {
         Jvm.warn().on(getClass(), "Unhandled error " + applicationErrorResponse);
     }

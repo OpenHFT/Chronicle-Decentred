@@ -1,9 +1,7 @@
 package town.lost.examples.exchange;
 
 
-import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.Mocker;
-import net.openhft.chronicle.wire.TextWire;
 import org.junit.Test;
 import town.lost.examples.exchange.ExchangeMarket.OrderClosedListener;
 import town.lost.examples.exchange.ExchangeMarket.TradeListener;
@@ -91,27 +89,6 @@ public class ExchangeMarketTest {
 
     @Test
     public void simpleOrdersMatch2() {
-        TextWire wire = new TextWire(Bytes.elasticHeapByteBuffer(128));
-        ExchangeTester market = wire.methodWriter(ExchangeTester.class);
-        CurrencyPair currencyPair = CurrencyPair.USDXCL;
-        ExchangeConfig ec = new ExchangeConfig();
-        ec.currencies().put(currencyPair, new ExchangeConfig.CurrencyConfig().tickSize(1));
-        market.exchangeConfig(ec);
-        market.setCurrentTime(101);
-        market.newOrderRequest(new NewOrderRequest(1, 100000, BUY, 100, 200, currencyPair, 100000));
-        market.newOrderRequest(new NewOrderRequest(1, 100000, BUY, 100, 199, currencyPair, 100000));
-        market.newOrderRequest(new NewOrderRequest(1, 101000, BUY, 100, 180, currencyPair, 100000));
-        market.newOrderRequest(new NewOrderRequest(1, 102000, SELL, 100, 210, currencyPair, 100000));
-        market.newOrderRequest(new NewOrderRequest(1, 103000, SELL, 100, 230, currencyPair, 100000));
-
-        market.setCurrentTime(115);
-        market.newOrderRequest(new NewOrderRequest(1, 120000, BUY, 100, 210, currencyPair, 100000));
-
-        market.setCurrentTime(215);
-        market.newOrderRequest(new NewOrderRequest(1, 300000, SELL, 300, 190, currencyPair, 100000));
-
-        System.out.println(wire.bytes());
-
         TestUtils.test("orders/simpleMatch");
     }
 
@@ -308,6 +285,6 @@ public class ExchangeMarketTest {
         assertEquals(0, market.getOrdersCount(BUY));
         assertEquals(0, market.getOrdersCount(SELL));
         market.removeExpired();
-        assertTrue(resultsQueue.isEmpty());
+        assertEquals(5, resultsQueue.size());
     }
 }

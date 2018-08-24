@@ -163,6 +163,12 @@ public class ExchangeMarket implements Closeable {
 
     @Override
     public void close() {
+        for (Order toCancel : buyOrders) {
+            closedListener.onClosed(toCancel, OrderCloseReason.EXCHANGE_CLOSED);
+        }
+        for (Order toCancel : sellOrders) {
+            closedListener.onClosed(toCancel, OrderCloseReason.EXCHANGE_CLOSED);
+        }
         buyOrders.clear();
         sellOrders.clear();
         expirationOrder.clear();

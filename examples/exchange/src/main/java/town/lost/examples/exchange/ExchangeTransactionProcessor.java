@@ -80,6 +80,14 @@ public class ExchangeTransactionProcessor implements ExchangeRequests {
         this.currentTime = currentTime;
         for (ExchangeMarket market : marketMap.values()) {
             market.setCurrentTime(currentTime);
+            market.removeExpired();
+        }
+    }
+
+    @Override
+    public void exchangeCloseRequest(ExchangeCloseRequest exchangeCloseRequest) {
+        for (ExchangeMarket market : marketMap.values()) {
+            market.close();
         }
     }
 }
