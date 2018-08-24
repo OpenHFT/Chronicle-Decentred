@@ -1,4 +1,4 @@
-package town.lost.examples.exchange.api;
+package town.lost.examples.exchange.dto;
 
 import net.openhft.chronicle.wire.AbstractMarshallable;
 
@@ -26,34 +26,32 @@ public class Order extends AbstractMarshallable {
     }
 
     public static Comparator<Order> getBuyComparator() {
-        return new PriceComparator().reversed().thenComparingDouble(o -> o.orderId);
+        return Comparator.<Order>comparingDouble(o -> -o.price)
+                .thenComparingDouble(o -> o.orderId);
     }
 
     public static Comparator<Order> getSellComparator() {
-        return new PriceComparator().thenComparingDouble(o -> o.orderId);
+        return Comparator.<Order>comparingDouble(o -> +o.price)
+                .thenComparingDouble(o -> o.orderId);
     }
 
-    public double getQuantityLeft() {
+    public double quantityLeft() {
         return quantity - filled;
     }
 
-    public long getExpirationTime() {
+    public long expirationTime() {
         return expires;
     }
 
-    public double getPrice() {
+    public double price() {
         return price;
     }
 
-    public long getOrderId() {
-        return orderId;
-    }
-
-    public long getOwnerAddress() {
+    public long ownerAddress() {
         return ownerAddress;
     }
 
-    public long getOwnerOrderTime() {
+    public long ownerOrderTime() {
         return ownerOrderTime;
     }
 
@@ -61,7 +59,7 @@ public class Order extends AbstractMarshallable {
         return (ownerAddress == address) && (ownerOrderTime == orderTime);
     }
 
-    public Side getSide() {
+    public Side side() {
         return side;
     }
 
@@ -70,9 +68,9 @@ public class Order extends AbstractMarshallable {
     }
 
     public double fill(double fillQty) {
-        assert fillQty <= getQuantityLeft();
+        assert fillQty <= quantityLeft();
         filled += fillQty;
-        return getQuantityLeft();
+        return quantityLeft();
     }
 
     @Override
@@ -86,11 +84,4 @@ public class Order extends AbstractMarshallable {
         return (this == obj) || (orderId == ((Order) obj).orderId);
     }
 
-    private static class PriceComparator implements Comparator<Order> {
-        @Override
-        public int compare(Order o1, Order o2) {
-            assert (o1 != null) && (o2 != null);
-            return Double.compare(o1.price, o2.price);
-        }
-    }
 }

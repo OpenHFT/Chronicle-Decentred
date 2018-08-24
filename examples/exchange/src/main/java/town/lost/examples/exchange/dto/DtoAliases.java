@@ -1,7 +1,6 @@
-package town.lost.examples.exchange.api;
+package town.lost.examples.exchange.dto;
 
 import net.openhft.chronicle.core.pool.ClassAliasPool;
-import town.lost.examples.exchange.dto.*;
 
 public enum DtoAliases {
     ;

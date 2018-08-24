@@ -5,18 +5,14 @@ import net.openhft.chronicle.core.Mocker;
 import org.junit.Test;
 import town.lost.examples.exchange.ExchangeMarket.OrderClosedListener;
 import town.lost.examples.exchange.ExchangeMarket.TradeListener;
-import town.lost.examples.exchange.api.CurrencyPair;
-import town.lost.examples.exchange.api.Order;
-import town.lost.examples.exchange.api.OrderCloseReason;
-import town.lost.examples.exchange.api.Side;
-import town.lost.examples.exchange.dto.NewOrderRequest;
+import town.lost.examples.exchange.dto.*;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
 import static org.junit.Assert.*;
-import static town.lost.examples.exchange.api.Side.BUY;
-import static town.lost.examples.exchange.api.Side.SELL;
+import static town.lost.examples.exchange.dto.Side.BUY;
+import static town.lost.examples.exchange.dto.Side.SELL;
 
 public class ExchangeMarketTest {
 
@@ -46,16 +42,16 @@ public class ExchangeMarketTest {
             assertFalse(resultsQueue.isEmpty());
             MethodCall call = resultsQueue.poll();
             Order aggressor = call.getParams(0);
-            assertEquals(BUY, aggressor.getSide());
-            assertEquals(0L, aggressor.getQuantityLeft(), 0);
-            assertEquals(aggressor.getQuantity(), aggressor.getQuantityLeft() + (Double) call.getParams(2), 0);
-            assertEquals(BUY, aggressor.getSide());
+            assertEquals(BUY, aggressor.side());
+            assertEquals(0L, aggressor.quantityLeft(), 0);
+            assertEquals(aggressor.getQuantity(), aggressor.quantityLeft() + (Double) call.getParams(2), 0);
+            assertEquals(BUY, aggressor.side());
             Order initiator = call.getParams(1);
-            assertEquals(SELL, initiator.getSide());
-            assertEquals(210D, initiator.getPrice(), precision);
-            assertEquals(0L, initiator.getQuantityLeft(), 0);
+            assertEquals(SELL, initiator.side());
+            assertEquals(210D, initiator.price(), precision);
+            assertEquals(0L, initiator.quantityLeft(), 0);
             assertEquals(100L, call.<Double>getParams(2).longValue());
-            assertEquals(initiator.getQuantity(), initiator.getQuantityLeft() + (Double) call.getParams(2), 0);
+            assertEquals(initiator.getQuantity(), initiator.quantityLeft() + (Double) call.getParams(2), 0);
 
             assertNotEquals(aggressor, initiator);
 
@@ -71,21 +67,21 @@ public class ExchangeMarketTest {
             call = resultsQueue.poll();
             assert call != null;
             aggressor = call.getParams(0);
-            assertEquals(SELL, aggressor.getSide());
-            assertEquals(200L, aggressor.getQuantityLeft(), 0);
+            assertEquals(SELL, aggressor.side());
+            assertEquals(200L, aggressor.quantityLeft(), 0);
             initiator = call.getParams(1);
-            assertEquals(BUY, initiator.getSide());
-            assertEquals(200D, initiator.getPrice(), precision);
+            assertEquals(BUY, initiator.side());
+            assertEquals(200D, initiator.price(), precision);
             assertEquals(100.0, call.getParams()[2]);
             assertNotEquals(aggressor, initiator);
 
             call = resultsQueue.poll();
             aggressor = call.getParams(0);
-            assertEquals(SELL, aggressor.getSide());
-            assertEquals(100L, aggressor.getQuantityLeft(), 0);
+            assertEquals(SELL, aggressor.side());
+            assertEquals(100L, aggressor.quantityLeft(), 0);
             initiator = call.getParams(1);
-            assertEquals(BUY, initiator.getSide());
-            assertEquals(199D, initiator.getPrice(), precision);
+            assertEquals(BUY, initiator.side());
+            assertEquals(199D, initiator.price(), precision);
             assertEquals(100.0, call.getParams()[2]);
             assertNotEquals(aggressor, initiator);
         }
@@ -123,12 +119,12 @@ public class ExchangeMarketTest {
             assertFalse(resultsQueue.isEmpty());
             MethodCall call = resultsQueue.poll();
             Order aggressor = call.getParams(0);
-            assertEquals(SELL, aggressor.getSide());
-            assertEquals(100L, aggressor.getQuantityLeft(), 0);
+            assertEquals(SELL, aggressor.side());
+            assertEquals(100L, aggressor.quantityLeft(), 0);
             Order initiator = call.getParams(1);
-            assertEquals(BUY, initiator.getSide());
-            assertEquals(200D, initiator.getPrice(), precision);
-            assertEquals(0L, initiator.getQuantityLeft(), 0);
+            assertEquals(BUY, initiator.side());
+            assertEquals(200D, initiator.price(), precision);
+            assertEquals(0L, initiator.quantityLeft(), 0);
             assertEquals(100.0, call.getParams()[2]);
 
             assertEquals(2, market.getOrdersCount(BUY));
@@ -156,8 +152,8 @@ public class ExchangeMarketTest {
             assertTrue(!resultsQueue.isEmpty());
             MethodCall call = resultsQueue.poll();
             Order order = call.getParams(0);
-            assertEquals(1, order.getOwnerAddress());
-            assertEquals(100, order.getOwnerOrderTime());
+            assertEquals(1, order.ownerAddress());
+            assertEquals(100, order.ownerOrderTime());
             assertEquals(OrderCloseReason.USER_REQUEST, call.getParams(1));
             assertEquals(0, market.getOrdersCount(BUY));
 
@@ -170,8 +166,8 @@ public class ExchangeMarketTest {
             assertTrue(!resultsQueue.isEmpty());
             call = resultsQueue.poll();
             order = call.getParams(0);
-            assertEquals(1, order.getOwnerAddress());
-            assertEquals(200, order.getOwnerOrderTime());
+            assertEquals(1, order.ownerAddress());
+            assertEquals(200, order.ownerOrderTime());
             assertEquals(OrderCloseReason.USER_REQUEST, call.getParams(1));
             assertEquals(0, market.getOrdersCount(BUY));
 
@@ -226,7 +222,7 @@ public class ExchangeMarketTest {
             while (!resultsQueue.isEmpty()) {
                 MethodCall call = resultsQueue.poll();
                 Order order = call.getParams(0);
-                assertEquals(1, order.getOwnerAddress());
+                assertEquals(1, order.ownerAddress());
                 assertEquals(OrderCloseReason.TIME_OUT, call.getParams(1));
             }
             assertEquals(1, market.getOrdersCount(BUY));
@@ -254,7 +250,7 @@ public class ExchangeMarketTest {
             assertEquals(1, resultsQueue.size());
             MethodCall call = resultsQueue.poll();
             Order order = call.getParams(0);
-            assertEquals(1, order.getOwnerAddress());
+            assertEquals(1, order.ownerAddress());
             assertEquals(OrderCloseReason.TIME_OUT, call.getParams(1));
             assertEquals(2, market.getOrdersCount(BUY));
             assertEquals(1, market.getOrdersCount(SELL));

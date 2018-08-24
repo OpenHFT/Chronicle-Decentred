@@ -1,10 +1,10 @@
 package town.lost.examples.exchange;
 
 import net.openhft.chronicle.core.annotation.SingleThreaded;
-import town.lost.examples.exchange.api.Order;
-import town.lost.examples.exchange.api.OrderCloseReason;
-import town.lost.examples.exchange.api.Side;
 import town.lost.examples.exchange.dto.NewOrderRequest;
+import town.lost.examples.exchange.dto.Order;
+import town.lost.examples.exchange.dto.OrderCloseReason;
+import town.lost.examples.exchange.dto.Side;
 
 import java.io.Closeable;
 import java.util.Comparator;
@@ -13,8 +13,8 @@ import java.util.PriorityQueue;
 import java.util.TreeSet;
 
 import static java.lang.Math.min;
-import static town.lost.examples.exchange.api.Side.BUY;
-import static town.lost.examples.exchange.api.Side.SELL;
+import static town.lost.examples.exchange.dto.Side.BUY;
+import static town.lost.examples.exchange.dto.Side.SELL;
 import static town.lost.examples.exchange.util.Validators.positive;
 import static town.lost.examples.exchange.util.Validators.validNumber;
 
@@ -28,7 +28,7 @@ public class ExchangeMarket implements Closeable {
     private final TreeSet<Order> buyOrders = new TreeSet<>(Order.getBuyComparator());
     private final TreeSet<Order> sellOrders = new TreeSet<>(Order.getSellComparator());
     private final PriorityQueue<Order> expirationOrder = new PriorityQueue<>(
-            Comparator.comparingLong(Order::getExpirationTime));
+            Comparator.comparingLong(Order::expirationTime));
 
     private final double tickSize;
     private final double precision;
@@ -60,7 +60,7 @@ public class ExchangeMarket implements Closeable {
 
     void executeOrder(NewOrderRequest request) {
         long orderId = idGen++;
-        Side orderSide = request.action();
+        Side orderSide = request.side();
         double orderPrice = orderSide.roundWorse(request.maxPrice(), tickSize);
         Order newOrder = new Order(orderId,
                 orderSide,
@@ -74,22 +74,22 @@ public class ExchangeMarket implements Closeable {
         Iterator<Order> it = sideToMatch.iterator();
         while (it.hasNext()) {
             Order topOrder = it.next();
-            if (topOrder.getExpirationTime() <= currentReferenceTimeinMillis) {
+            if (topOrder.expirationTime() <= currentReferenceTimeinMillis) {
                 it.remove();
                 expirationOrder.remove(topOrder);
                 closedListener.onClosed(topOrder, OrderCloseReason.TIME_OUT);
                 // send order expired event
             } else {
-                if (orderSide.isBetterOrSame(orderPrice, topOrder.getPrice(), precision)) {
-                    double fillQty = min(newOrder.getQuantityLeft(), topOrder.getQuantityLeft());
+                if (orderSide.isBetterOrSame(orderPrice, topOrder.price(), precision)) {
+                    double fillQty = min(newOrder.quantityLeft(), topOrder.quantityLeft());
                     newOrder.fill(fillQty);
                     topOrder.fill(fillQty);
                     tradeListener.onTrade(newOrder, topOrder, fillQty);
-                    if (topOrder.getQuantityLeft() == 0) {
+                    if (topOrder.quantityLeft() == 0) {
                         it.remove();
                         expirationOrder.remove(topOrder);
                     }
-                    if (newOrder.getQuantityLeft() == 0) {
+                    if (newOrder.quantityLeft() == 0) {
                         break;
                     }
                 } else {
@@ -97,9 +97,9 @@ public class ExchangeMarket implements Closeable {
                 }
             }
         }
-        if ((newOrder.getQuantityLeft() > 0)) {
-            assert newOrder.getExpirationTime() >= currentReferenceTimeinMillis;
-            if ((newOrder.getExpirationTime() > currentReferenceTimeinMillis)) {
+        if ((newOrder.quantityLeft() > 0)) {
+            assert newOrder.expirationTime() >= currentReferenceTimeinMillis;
+            if ((newOrder.expirationTime() > currentReferenceTimeinMillis)) {
                 getMarket(orderSide).add(newOrder);
                 expirationOrder.add(newOrder);
             }
@@ -113,7 +113,7 @@ public class ExchangeMarket implements Closeable {
         assert expirationOrder.size() == (buyOrders.size() + sellOrders.size());
         while (!expirationOrder.isEmpty()) {
             Order order = expirationOrder.peek();
-            if (order.getExpirationTime() <= currentReferenceTimeinMillis) {
+            if (order.expirationTime() <= currentReferenceTimeinMillis) {
                 expirationOrder.poll();
                 // we don't know if is a buy or sell order, but we could figure out later
                 // either by having separate priority queues or, buy assigning odd order ids to buy and even to sell

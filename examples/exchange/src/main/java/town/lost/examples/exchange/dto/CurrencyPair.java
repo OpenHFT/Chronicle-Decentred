@@ -1,4 +1,4 @@
-package town.lost.examples.exchange.api;
+package town.lost.examples.exchange.dto;
 
 public enum CurrencyPair {
     USDXCL(Currency.USD, Currency.XCL),

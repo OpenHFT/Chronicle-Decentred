@@ -7,8 +7,6 @@ import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.Marshallable;
 import org.junit.Test;
-import town.lost.examples.exchange.api.Currency;
-import town.lost.examples.exchange.api.DtoAliases;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,7 +23,8 @@ public class OpeningBalanceEventTest {
         Ed25519.privateToPublicAndSecret(publicKey1, secretKey1, privateKey1);
 
         OpeningBalanceEvent obe = new OpeningBalanceEvent()
-                .protocol(1).messageType(1);
+                .protocol(1).messageType(1)
+                .balanceAddress(DecentredUtil.toAddress(publicKey1));
         obe.balances().put(Currency.XCL, 128.0);
         obe.balances().put(Currency.USD, 10000.0);
         obe.balances().put(Currency.KRW, 11_000_000.0);
@@ -34,6 +33,7 @@ public class OpeningBalanceEventTest {
         assertEquals("!OpeningBalanceEvent {\n" +
                 "  timestampUS: 2018-08-20T11:31:15.37901,\n" +
                 "  address: phccofmpy6ci,\n" +
+                "  balanceAddress: phccofmpy6ci,\n" +
                 "  balances: {\n" +
                 "    ? XCL: 128.0,\n" +
                 "    ? USD: 10E3,\n" +

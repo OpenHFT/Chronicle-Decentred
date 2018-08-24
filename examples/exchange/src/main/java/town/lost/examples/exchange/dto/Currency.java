@@ -1,4 +1,4 @@
-package town.lost.examples.exchange.api;
+package town.lost.examples.exchange.dto;
 
 public enum Currency {
     XCL,

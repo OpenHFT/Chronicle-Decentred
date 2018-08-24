@@ -7,7 +7,6 @@ import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.Marshallable;
 import org.junit.Test;
-import town.lost.examples.exchange.api.DtoAliases;
 
 import static org.junit.Assert.assertEquals;
 

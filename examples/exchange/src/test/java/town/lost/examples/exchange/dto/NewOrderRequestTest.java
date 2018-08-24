@@ -7,9 +7,6 @@ import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.Marshallable;
 import org.junit.Test;
-import town.lost.examples.exchange.api.CurrencyPair;
-import town.lost.examples.exchange.api.DtoAliases;
-import town.lost.examples.exchange.api.Side;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,7 +23,7 @@ public class NewOrderRequestTest {
         Ed25519.privateToPublicAndSecret(publicKey1, secretKey1, privateKey1);
 
         NewOrderRequest nor = new NewOrderRequest()
-                .action(Side.BUY)
+                .side(Side.BUY)
                 .currencyPair(CurrencyPair.EURXCL)
                 .maxPrice(1000.0)
                 .quantity(1000.0)
@@ -37,7 +34,7 @@ public class NewOrderRequestTest {
         assertEquals("!NewOrderRequest {\n" +
                 "  timestampUS: 2018-03-04T18:03:05.364453,\n" +
                 "  address: phccofmpy6ci,\n" +
-                "  action: BUY,\n" +
+                "  side: BUY,\n" +
                 "  quantity: 1E3,\n" +
                 "  maxPrice: 1E3,\n" +
                 "  currencyPair: EURXCL,\n" +

@@ -1,4 +1,4 @@
-package town.lost.examples.exchange.api;
+package town.lost.examples.exchange.dto;
 
 import net.openhft.chronicle.core.annotation.NotNull;
 import town.lost.examples.exchange.util.CouldBeNaN;

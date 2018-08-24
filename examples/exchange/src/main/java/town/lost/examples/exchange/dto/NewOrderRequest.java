@@ -1,12 +1,10 @@
 package town.lost.examples.exchange.dto;
 
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
-import town.lost.examples.exchange.api.CurrencyPair;
-import town.lost.examples.exchange.api.Side;
 
-public class NewOrderRequest extends VanillaSignedMessage<NewOrderRequest> {
+public class NewOrderRequest extends VanillaSignedMessage<NewOrderRequest> implements Validable {
 
-    private Side action;
+    private Side side;
     private double quantity;
     private double maxPrice;
     private CurrencyPair currencyPair;
@@ -16,22 +14,22 @@ public class NewOrderRequest extends VanillaSignedMessage<NewOrderRequest> {
 
     }
 
-    public NewOrderRequest(long sourceAddress, long eventTime, Side action, double qty, double maxPrice, CurrencyPair currencyPair, long ttlMillis) {
+    public NewOrderRequest(long sourceAddress, long eventTime, Side side, double qty, double maxPrice, CurrencyPair currencyPair, long ttlMillis) {
         this.address(sourceAddress);
         this.timestampUS(eventTime);
-        this.action = action;
+        this.side = side;
         this.quantity = qty;
         this.maxPrice = maxPrice;
         this.currencyPair = currencyPair;
         this.ttlMillis = ttlMillis;
     }
 
-    public NewOrderRequest(double quantity, double maxPrice, CurrencyPair currencyPair, long ttlMillis, Side action) {
+    public NewOrderRequest(double quantity, double maxPrice, CurrencyPair currencyPair, long ttlMillis, Side side) {
         this.quantity = quantity;
         this.maxPrice = maxPrice;
         this.currencyPair = currencyPair;
         this.ttlMillis = ttlMillis;
-        this.action = action;
+        this.side = side;
     }
 
     public double quantity() {
@@ -70,12 +68,17 @@ public class NewOrderRequest extends VanillaSignedMessage<NewOrderRequest> {
         return this;
     }
 
-    public Side action() {
-        return action;
+    public Side side() {
+        return side;
     }
 
-    public NewOrderRequest action(Side action) {
-        this.action = action;
+    public NewOrderRequest side(Side action) {
+        this.side = action;
         return this;
+    }
+
+    @Override
+    public void validate() throws IllegalStateException {
+        if (side == null || currencyPair == null) throw new IllegalStateException();
     }
 }
