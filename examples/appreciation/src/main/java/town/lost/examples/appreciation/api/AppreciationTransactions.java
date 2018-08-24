@@ -3,6 +3,7 @@ package town.lost.examples.appreciation.api;
 import net.openhft.chronicle.bytes.MethodId;
 import town.lost.examples.appreciation.dto.Give;
 import town.lost.examples.appreciation.dto.OpeningBalance;
+import town.lost.examples.appreciation.dto.Topup;
 
 /**
  * Transactions passed through the block chain
@@ -17,4 +18,7 @@ public interface AppreciationTransactions {
 
     @MethodId(0x0010)
     void give(Give give);
+
+    @MethodId(0x0020)
+    void topup(Topup topup);
 }

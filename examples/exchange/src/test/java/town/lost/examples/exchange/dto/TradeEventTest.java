@@ -9,6 +9,7 @@ import net.openhft.chronicle.wire.Marshallable;
 import org.junit.Test;
 import town.lost.examples.exchange.api.CurrencyPair;
 import town.lost.examples.exchange.api.DtoAliases;
+import town.lost.examples.exchange.api.Side;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,7 +26,7 @@ public class TradeEventTest {
         Ed25519.privateToPublicAndSecret(publicKey1, secretKey1, privateKey1);
 
         TradeEvent te = new TradeEvent()
-                .buy(true)
+                .action(Side.BUY)
                 .currencyPair(CurrencyPair.EURXCL)
                 .price(1000.0)
                 .quantity(1000.0)
@@ -42,7 +43,7 @@ public class TradeEventTest {
                 "  quantity: 1E3,\n" +
                 "  price: 1E3,\n" +
                 "  currencyPair: EURXCL,\n" +
-                "  buy: true\n" +
+                "  action: BUY\n" +
                 "}\n", te.toString());
         TradeEvent te2 = Marshallable.fromString(te.toString());
         assertEquals(te2, te);

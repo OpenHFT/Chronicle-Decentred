@@ -3,13 +3,11 @@ package town.lost.examples.appreciation;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.dto.ApplicationErrorResponse;
 import net.openhft.chronicle.decentred.dto.CreateAccountRequest;
+import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import town.lost.examples.appreciation.api.AppreciationGateway;
 import town.lost.examples.appreciation.api.AppreciationResponses;
 import town.lost.examples.appreciation.api.AppreciationTransactions;
-import town.lost.examples.appreciation.dto.Give;
-import town.lost.examples.appreciation.dto.OnBalance;
-import town.lost.examples.appreciation.dto.OpeningBalance;
-import town.lost.examples.appreciation.dto.QueryBalance;
+import town.lost.examples.appreciation.dto.*;
 
 
 /**
@@ -68,17 +66,51 @@ public class VanillaAppreciationGateway implements AppreciationGateway {
             listener.applicationError(error);
             return;
         }
-        double amount = balanceStore.getBalance(give.address());
-        if (Double.isNaN(amount)) {
-            AppreciationResponses listener = client.to(give.address());
-            error.init(give,
-                    "Cannot give balance: Account doesn't exist");
-            error.timestampUS(give.timestampUS());
-            listener.applicationError(error);
+        if(!validAccount(give, balanceStore.getBalance(give.address()))){
             return;
         }
 
         blockchain.give(give);
+    }
+
+    @Override
+    public void topup(Topup topup){
+        if(topup.amount() < 0){
+            AppreciationResponses listener = client.to(topup.toAddress());
+            error.init(topup, "Cannot topup a negative amount");// Shouldn't be required given this is supposed to be automated.
+            error.timestampUS(topup.timestampUS());
+            listener.applicationError(error);
+        }
+
+        if(!verifyPrivilegedServerNode(topup.address())){
+            AppreciationResponses listener = client.to(topup.toAddress());
+            error.init(topup, "Only privileged accounts can generate an auto topup");
+            error.timestampUS(topup.timestampUS());
+            listener.applicationError(error);
+        }
+
+        if(!validAccount(topup, balanceStore.getBalance(topup.address()))){
+            return;
+        }
+
+        blockchain.topup(topup);
+    }
+
+    private boolean verifyPrivilegedServerNode(long address){
+        return true;
+    }
+
+    private <T extends VanillaSignedMessage<T>> boolean validAccount(T msg, double balance){
+        if (Double.isNaN(balance)) {
+            AppreciationResponses listener = client.to(msg.address());
+            error.init(msg,
+                    "Cannot give balance: Account doesn't exist)");
+            error.timestampUS(msg.timestampUS());
+            listener.applicationError(error);
+            return false;
+        }
+
+        return true;
     }
 
     @Override
