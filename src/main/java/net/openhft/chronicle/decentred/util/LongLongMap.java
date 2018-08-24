@@ -22,7 +22,7 @@ public abstract class LongLongMap extends AbstractMarshallable {
         return new KolobokeLongLongMap(expectedSize);
     }
 
-    public abstract long put(long key, long value);
+    public abstract void justPut(long key, long value);
 
     public abstract long get(long key);
 
@@ -37,7 +37,7 @@ public abstract class LongLongMap extends AbstractMarshallable {
     public abstract void forEach(@Nonnull LongLongConsumer var1);
 
     public void putAll(LongLongMap map) {
-        if (put == null) put = this::put;
+        if (put == null) put = this::justPut;
         map.forEach(put);
     }
 
@@ -47,7 +47,7 @@ public abstract class LongLongMap extends AbstractMarshallable {
         while (wire.isNotEmptyAfterPadding()) {
             long k = wire.readEventNumber();
             long v = wire.getValueIn().int64();
-            put(k, v);
+            justPut(k, v);
         }
     }
 

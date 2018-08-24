@@ -35,7 +35,7 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
                 assert (mid.value() | MASK_16) == MASK_16;
                 int key = (int) ((protocol << 16) + mid.value());
                 try {
-                    parseletMap.put(key,
+                    parseletMap.justPut(key,
                             new DtoParselet(method, protocol, Maths.toUInt16(mid.value())));
                     classToProtocolMessageType.put(method.getParameterTypes()[0], key);
                 } catch (Exception e) {
@@ -63,16 +63,16 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
     @Override
     public DtoParser<T> get() {
         IntObjMap<DtoParselet> parseletMap2 = IntObjMap.withExpectedSize(DtoParselet.class, parseletMap.size() * 2);
-        parseletMap.forEach((i, dp) -> parseletMap2.put(i, new DtoParselet(dp)));
+        parseletMap.forEach((i, dp) -> parseletMap2.justPut(i, new DtoParselet(dp)));
         return new VanillaDtoParser<>(superInterface, parseletMap2);
     }
 
-    public <T extends VanillaSignedMessage<T>> T create(Class<T> tClass) {
+    public <M extends VanillaSignedMessage<M>> M create(Class<M> tClass) {
         int pmt = protocolMessageTypeFor(tClass);
         try {
             int protocol = pmt >>> 16;
             int messageType = pmt & MASK_16;
-            T vsm = ObjectUtils.newInstance(tClass);
+            M vsm = ObjectUtils.newInstance(tClass);
             return vsm.protocol(protocol).messageType(messageType);
         } catch (Exception e) {
             throw new AssertionError(e);

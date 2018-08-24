@@ -14,7 +14,7 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 
 public class VerifyIPTest {
-    public static void test(String basename) {
+    static void test(String basename) {
         TextMethodTester<VerifyIPTester> tester = new TextMethodTester<>(
                 basename + "/in.yaml",
                 VerifyIPTest::createGateway,

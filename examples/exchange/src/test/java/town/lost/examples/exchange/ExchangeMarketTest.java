@@ -69,6 +69,7 @@ public class ExchangeMarketTest {
             assertEquals(2, market.getOrdersCount(SELL));
 
             call = resultsQueue.poll();
+            assert call != null;
             aggressor = call.getParams(0);
             assertEquals(SELL, aggressor.getSide());
             assertEquals(200L, aggressor.getQuantityLeft(), 0);

@@ -20,14 +20,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static net.openhft.chronicle.decentred.util.DtoRegistry.MASK_16;
 
 public class RPCClient<UP, DOWN> implements Closeable, TCPConnection {
     private final VanillaTCPClient tcpClient;
-    private final UP proxy;
     private final DOWN listener;
     private final BytesStore secretKey;
     private final DtoRegistry<DOWN> registry;
@@ -43,7 +42,7 @@ public class RPCClient<UP, DOWN> implements Closeable, TCPConnection {
                      Class<UP> upClass,
                      DtoRegistry<DOWN> registry,
                      DOWN listener) {
-        this(name, Arrays.asList(new InetSocketAddress(socketHost, socketPort)), secretKey, upClass, registry, listener);
+        this(name, Collections.singletonList(new InetSocketAddress(socketHost, socketPort)), secretKey, upClass, registry, listener);
     }
 
     public RPCClient(String name,
@@ -64,7 +63,7 @@ public class RPCClient<UP, DOWN> implements Closeable, TCPConnection {
             }
         };
         //noinspection unchecked
-        this.proxy = (UP) Proxy.newProxyInstance(upClass.getClassLoader(),
+        UP proxy = (UP) Proxy.newProxyInstance(upClass.getClassLoader(),
                 new Class[]{upClass, SystemMessageListener.class},
                 handler);
         this.listener = listener;

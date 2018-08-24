@@ -16,21 +16,20 @@ import java.nio.ByteBuffer;
 import java.util.function.LongFunction;
 
 public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends AbstractBytesMarshallable implements SignedMessage {
-    public static final int LENGTH = 0;
-    public static final int LENGTH_END = LENGTH + Integer.BYTES;
-    public static final int SIGNATURE = LENGTH_END;
-    public static final int SIGNATURE_END = SIGNATURE + Ed25519.SIGNATURE_LENGTH;
+    private static final int LENGTH = 0;
+    private static final int LENGTH_END = LENGTH + Integer.BYTES;
+    private static final int SIGNATURE = LENGTH_END;
+    private static final int SIGNATURE_END = SIGNATURE + Ed25519.SIGNATURE_LENGTH;
     public static final int MESSAGE_TYPE = SIGNATURE_END;
-    public static final int MESSAGE_TYPE_END = MESSAGE_TYPE + Short.BYTES;
-    public static final int PROTOCOL = MESSAGE_TYPE_END;
-    public static final int PROTOCOL_END = PROTOCOL + Short.BYTES;
-    public static final int MESSAGE_START = PROTOCOL_END;
-    public static final int MASK_16 = 0xFFFF;
+    private static final int MESSAGE_TYPE_END = MESSAGE_TYPE + Short.BYTES;
+    private static final int PROTOCOL = MESSAGE_TYPE_END;
+    private static final int PROTOCOL_END = PROTOCOL + Short.BYTES;
+    private static final int MESSAGE_START = PROTOCOL_END;
 
     private static final Field BB_ADDRESS = Jvm.getField(ByteBuffer.allocateDirect(0).getClass(), "address");
     private static final Field BB_CAPACITY = Jvm.getField(ByteBuffer.allocateDirect(0).getClass(), "capacity");
     // for writing to a new set of bytes
-    protected transient Bytes tempBytes = Bytes.allocateElasticDirect(4L << 10);
+    private transient Bytes tempBytes = Bytes.allocateElasticDirect(4L << 10);
     // for reading an existing Bytes
     private transient PointerBytesStore readPointer = BytesStore.nativePointer();
     protected transient Bytes<Void> bytes = readPointer.bytesForRead();

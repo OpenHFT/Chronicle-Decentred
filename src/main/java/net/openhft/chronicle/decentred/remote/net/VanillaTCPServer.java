@@ -18,7 +18,7 @@ public class VanillaTCPServer implements TCPServer {
     private final ExecutorService pool;
     private final List<TCPConnection> connections = Collections.synchronizedList(new ArrayList<>());
     private final TCPServerConnectionListener connectionListener;
-    volatile boolean running = true;
+    private volatile boolean running = true;
 
     public VanillaTCPServer(String name, int port, TCPServerConnectionListener connectionListener) throws IOException {
         this.connectionListener = connectionListener;
@@ -34,7 +34,7 @@ public class VanillaTCPServer implements TCPServer {
                 SocketChannel accept = serverChannel.accept();
                 TCPConnection connection = connectionListener.createConnection(this, accept);
                 connections.add(connection);
-                pool.submit(((Runnable) connection)::run);
+                pool.submit(((Runnable) connection));
             }
         } catch (Throwable t) {
             if (running)

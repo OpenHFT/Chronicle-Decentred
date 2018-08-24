@@ -7,7 +7,7 @@ import town.lost.examples.appreciation.api.AppreciationResponses;
 /**
  * Combining interface for all messages
  */
-public interface AppreciationTester extends
+interface AppreciationTester extends
         MessageRouter<AppreciationResponses>,
 
         AppreciationResponses,

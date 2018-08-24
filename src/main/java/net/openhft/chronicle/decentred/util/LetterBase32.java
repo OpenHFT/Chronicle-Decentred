@@ -5,8 +5,8 @@ import java.util.Arrays;
 public enum LetterBase32 {
     ;
 
-    public static final int MASK_5 = 0x1F;
-    static final ThreadLocal<StringBuilder> SB_TL = ThreadLocal.withInitial(StringBuilder::new);
+    private static final int MASK_5 = 0x1F;
+    private static final ThreadLocal<StringBuilder> SB_TL = ThreadLocal.withInitial(StringBuilder::new);
     private static final byte[] VALUES = new byte[128];
     private static final char[] ENCODE = ".abcdefghijklmnopqrstuvwxyz23467".toCharArray();
 

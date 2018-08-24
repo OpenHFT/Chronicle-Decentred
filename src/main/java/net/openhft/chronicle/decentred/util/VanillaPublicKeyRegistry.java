@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class VanillaPublicKeyRegistry implements PublicKeyRegistry {
-    final Map<Long, BytesStore> publicKeyMap = new ConcurrentHashMap<>();
+    private final Map<Long, BytesStore> publicKeyMap = new ConcurrentHashMap<>();
     private boolean internal;
 
     @Override

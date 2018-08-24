@@ -5,7 +5,8 @@ import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.salt.Ed25519;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class VerificationEventTest {
     static {
@@ -63,10 +64,5 @@ public class VerificationEventTest {
 
         assertTrue(v.verify(i -> privateKey2));
 
-    }
-
-    private <T> T selfSigning(long i) {
-        fail("Self signing");
-        return null;
     }
 }

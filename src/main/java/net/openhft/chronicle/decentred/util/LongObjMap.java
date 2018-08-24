@@ -23,7 +23,7 @@ public abstract class LongObjMap<V> extends AbstractMarshallable {
         return kolobokeXCLLongObjMap;
     }
 
-    public abstract V put(long key, V value);
+    public abstract void justPut(long key, V value);
 
     public abstract V get(long key);
 
@@ -41,7 +41,7 @@ public abstract class LongObjMap<V> extends AbstractMarshallable {
         while (wire.isNotEmptyAfterPadding()) {
             long k = wire.readEventNumber();
             V v = wire.getValueIn().object(vClass);
-            put(k, v);
+            justPut(k, v);
         }
     }
 
@@ -52,5 +52,5 @@ public abstract class LongObjMap<V> extends AbstractMarshallable {
 
     public abstract V computeIfAbsent(long key, LongFunction<? extends V> supplier);
 
-    public abstract V remove(long key);
+    public abstract boolean justRemove(long key);
 }

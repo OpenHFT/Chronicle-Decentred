@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VanillaTCPClient extends AbstractTCPConnection {
-    final List<InetSocketAddress> socketAddresses = new ArrayList<>();
-    final Thread thread;
-    final TCPClientListener clientListener;
-    int nextChannel = -1;
+    private final List<InetSocketAddress> socketAddresses = new ArrayList<>();
+    private final Thread thread;
+    private final TCPClientListener clientListener;
+    private int nextChannel = -1;
 
     public VanillaTCPClient(String name, List<InetSocketAddress> socketAddresses, TCPClientListener clientListener) {
         this.clientListener = clientListener;
@@ -47,7 +47,7 @@ public class VanillaTCPClient extends AbstractTCPConnection {
         clientListener.onMessage(this, bytes);
     }
 
-    public void run() {
+    void run() {
         Bytes<ByteBuffer> readBytes = Bytes.elasticByteBuffer(MAX_MESSAGE_SIZE);
         try {
             while (running) {

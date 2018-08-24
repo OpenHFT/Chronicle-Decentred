@@ -26,11 +26,11 @@ public class Order extends AbstractMarshallable {
     }
 
     public static Comparator<Order> getBuyComparator() {
-        return new PriceComparator().reversed().thenComparing(Comparator.comparingDouble(o -> o.orderId));
+        return new PriceComparator().reversed().thenComparingDouble(o -> o.orderId);
     }
 
     public static Comparator<Order> getSellComparator() {
-        return new PriceComparator().thenComparing(Comparator.comparingDouble(o -> o.orderId));
+        return new PriceComparator().thenComparingDouble(o -> o.orderId);
     }
 
     public double getQuantityLeft() {
@@ -82,7 +82,7 @@ public class Order extends AbstractMarshallable {
 
     @Override
     public boolean equals(Object obj) {
-        assert (obj != null) && (obj instanceof Order);
+        assert obj instanceof Order;
         return (this == obj) || (orderId == ((Order) obj).orderId);
     }
 

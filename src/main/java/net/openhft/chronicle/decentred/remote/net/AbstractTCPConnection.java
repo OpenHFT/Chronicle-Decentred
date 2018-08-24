@@ -13,7 +13,7 @@ import java.nio.ByteOrder;
 import java.nio.channels.SocketChannel;
 
 public abstract class AbstractTCPConnection implements TCPConnection {
-    final ThreadLocal<ByteBuffer[]> headerBytesTL = ThreadLocal.withInitial(AbstractTCPConnection::createHeaderArray);
+    private final ThreadLocal<ByteBuffer[]> headerBytesTL = ThreadLocal.withInitial(AbstractTCPConnection::createHeaderArray);
 
     protected volatile SocketChannel channel;
     protected ISocketChannel iSocketChannel;
@@ -33,14 +33,8 @@ public abstract class AbstractTCPConnection implements TCPConnection {
     }
 
     public AbstractTCPConnection channel(SocketChannel channel) {
-        if (channel == null) {
-            this.channel = channel;
-            iSocketChannel = null;
-        } else {
-            assert channel != null;
-            iSocketChannel = ISocketChannel.wrap(channel);
-            this.channel = channel;
-        }
+        iSocketChannel = channel == null ? null : ISocketChannel.wrap(channel);
+        this.channel = channel;
         return this;
     }
 
@@ -112,6 +106,7 @@ public abstract class AbstractTCPConnection implements TCPConnection {
         else if (bytes.readPosition() > 32 << 10)
             bytes.compact(); // shift the data down.
         ByteBuffer buffer = bytes.underlyingObject();
+        assert buffer != null;
         buffer.position(Math.toIntExact(bytes.writePosition()));
         buffer.limit(Math.toIntExact(bytes.realCapacity()));
         if (iSocketChannel.read(buffer) < 0)

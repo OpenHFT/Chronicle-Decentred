@@ -5,12 +5,12 @@ import net.openhft.chronicle.core.io.Closeable;
 
 import java.io.IOException;
 
-public class EchoServerMain implements Closeable, TCPServerConnectionListener {
+class EchoServerMain implements Closeable, TCPServerConnectionListener {
     static final int PORT = Integer.getInteger("port", 9090);
 
     private final VanillaTCPServer server;
 
-    public EchoServerMain(String name, int port) throws IOException {
+    EchoServerMain(String name, int port) throws IOException {
         server = new VanillaTCPServer(name, port, this);
     }
 

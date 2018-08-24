@@ -1,6 +1,7 @@
 package town.lost.examples.appreciation.dto;
 
 
+import net.openhft.chronicle.core.annotation.UsedViaReflection;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.util.AddressConverter;
 import net.openhft.chronicle.wire.LongConversion;
@@ -10,22 +11,11 @@ import net.openhft.chronicle.wire.LongConversion;
  */
 public class Topup extends VanillaSignedMessage<Topup> {
     @LongConversion(AddressConverter.class)
-    long toAddress;
+    private long toAddress;
+    private double amount;
 
-    double amount;
-
-
+    @UsedViaReflection
     public Topup() {
-    }
-
-    public Topup(long toAddress, double amount) {
-        init(toAddress, amount);
-    }
-
-    public Topup init(long toAddress, double amount) {
-        this.toAddress = toAddress;
-        this.amount = amount;
-        return this;
     }
 
     public long toAddress() {

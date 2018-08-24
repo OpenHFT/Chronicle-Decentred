@@ -23,7 +23,7 @@ public abstract class IntObjMap<V> extends AbstractMarshallable {
         return map;
     }
 
-    public abstract V put(int key, V value);
+    public abstract void justPut(int key, V value);
 
     public abstract V get(int key);
 
@@ -41,7 +41,7 @@ public abstract class IntObjMap<V> extends AbstractMarshallable {
         while (wire.isNotEmptyAfterPadding()) {
             int k = (int) wire.readEventNumber();
             V v = wire.getValueIn().object(vClass);
-            put(k, v);
+            justPut(k, v);
         }
     }
 

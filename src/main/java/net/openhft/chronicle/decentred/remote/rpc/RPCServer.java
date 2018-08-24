@@ -24,13 +24,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closeable {
-    static final ThreadLocal<TCPConnection> DEFAULT_CONNECTION_TL = new ThreadLocal<>();
+    private static final ThreadLocal<TCPConnection> DEFAULT_CONNECTION_TL = new ThreadLocal<>();
     private final LongObjMap<TCPConnection> connections = LongObjMap.withExpectedSize(TCPConnection.class, 128);
     private final LongObjMap<TCPConnection> remoteMap = LongObjMap.withExpectedSize(TCPConnection.class, 128);
     private final Map<Long, T> allMessagesMap = new ConcurrentHashMap<>();
     private final PublicKeyRegistry publicKeyRegistry = new VanillaPublicKeyRegistry();
     private final TCPServer tcpServer;
-    private final int port;
     private final long address;
     private final BytesStore publicKey;
     private final BytesStore secretKey;
@@ -39,7 +38,6 @@ public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closea
     private final T serverComponent;
 
     public RPCServer(String name, int port, long address, BytesStore publicKey, BytesStore secretKey, Class<T> tClass, DtoRegistry<T> dtoRegistry, Function<MessageRouter<T>, T> serverComponentBuilder) throws IOException {
-        this.port = port;
         this.address = address;
         this.publicKey = publicKey;
         this.secretKey = secretKey;
@@ -66,7 +64,7 @@ public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closea
      */
     public void addTCPConnection(long addressOrRegion, TCPConnection tcpConnection) {
         synchronized (remoteMap) {
-            remoteMap.put(addressOrRegion, tcpConnection);
+            remoteMap.justPut(addressOrRegion, tcpConnection);
         }
     }
 
@@ -109,7 +107,7 @@ public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closea
         return publicKeyRegistry.verify(address, sigAndMsg);
     }
 
-    public void write(long toAddress, VanillaSignedMessage message) {
+    void write(long toAddress, VanillaSignedMessage message) {
         TCPConnection tcpConnection;
         if (toAddress == 0) {
             tcpConnection = DEFAULT_CONNECTION_TL.get();
@@ -147,7 +145,7 @@ public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closea
             // assume it's dead.
             Closeable.closeQuietly(tcpConnection);
             synchronized (connections) {
-                connections.remove(toAddress);
+                connections.justRemove(toAddress);
             }
             Jvm.warn().on(getClass(), "Exception while sending message to: " + toAddress + ", message: " + message, e);
         }
@@ -176,10 +174,10 @@ public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closea
         }
     }
 
-    private class ServerInvocationHandler extends AbstractMethodWriterInvocationHandler {
-        long addressOrRegion;
+    class ServerInvocationHandler extends AbstractMethodWriterInvocationHandler {
+        final long addressOrRegion;
 
-        public ServerInvocationHandler(long addressOrRegion) {
+        ServerInvocationHandler(long addressOrRegion) {
             this.addressOrRegion = addressOrRegion;
         }
 

@@ -6,10 +6,10 @@ import net.openhft.chronicle.core.Jvm;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class EchoClientMain {
+class EchoClientMain {
     public static void main(String[] args) throws IOException {
         AtomicInteger counter = new AtomicInteger();
         TCPClientListener clientListener = (client, bytes) -> {
@@ -17,7 +17,7 @@ public class EchoClientMain {
             counter.decrementAndGet();
         };
         VanillaTCPClient client = new VanillaTCPClient("echo",
-                Arrays.asList(new InetSocketAddress("localhost", EchoServerMain.PORT)),
+                Collections.singletonList(new InetSocketAddress("localhost", EchoServerMain.PORT)),
                 clientListener);
 
         Bytes<ByteBuffer> bytes = Bytes.elasticByteBuffer();

@@ -7,7 +7,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class OpeningBalanceEvent extends VanillaSignedMessage<OpeningBalanceEvent> {
-    private Map<Currency, Double> balances = new EnumMap<>(Currency.class);
+    private final Map<Currency, Double> balances = new EnumMap<>(Currency.class);
 
     public Map<Currency, Double> balances() {
         return balances;

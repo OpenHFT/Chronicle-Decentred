@@ -3,9 +3,9 @@ package net.openhft.chronicle.decentred.util;
 import com.koloboke.function.IntObjConsumer;
 
 public class SmallIntObjMap<V> extends IntObjMap<V> {
-    final int[] keys;
-    final V[] values;
-    int size = 0;
+    private final int[] keys;
+    private final V[] values;
+    private int size = 0;
 
     public SmallIntObjMap(int capacity) {
         keys = new int[capacity];
@@ -13,18 +13,17 @@ public class SmallIntObjMap<V> extends IntObjMap<V> {
     }
 
     @Override
-    public V put(int key, V value) {
+    public void justPut(int key, V value) {
         for (int i = 0; i < size; i++) {
             if (keys[i] == key) {
                 V tmp = values[i];
                 values[i] = value;
-                return tmp;
+                return;
             }
         }
         keys[size] = key;
         values[size] = value;
         size++;
-        return null;
     }
 
     @Override

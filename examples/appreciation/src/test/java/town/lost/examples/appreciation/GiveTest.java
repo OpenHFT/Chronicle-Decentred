@@ -2,20 +2,15 @@ package town.lost.examples.appreciation;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
-import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.dto.CreateAccountRequest;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.UniqueMicroTimeProvider;
 import net.openhft.chronicle.salt.Ed25519;
-import net.openhft.chronicle.wire.TextMethodTester;
 import net.openhft.chronicle.wire.TextWire;
 import org.junit.Test;
 import town.lost.examples.appreciation.dto.Give;
 import town.lost.examples.appreciation.dto.OpeningBalance;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 import static town.lost.examples.appreciation.TestUtils.test;
 
 

@@ -23,7 +23,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
         if (addressToBlockNumberMap == null)
             addressToBlockNumberMap = LongLongMap.withExpectedSize(entries);
         for (int i = 0; i < entries; i++)
-            addressToBlockNumberMap.put(bytes.readLong(), bytes.readUnsignedInt());
+            addressToBlockNumberMap.justPut(bytes.readLong(), bytes.readUnsignedInt());
         assert !addressToBlockNumberMap.containsKey(0L);
     }
 

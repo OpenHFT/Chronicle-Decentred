@@ -150,7 +150,7 @@ public enum Side {
     }
 
     @NotNull
-    public abstract PriceCompareResult compare(double newPrice, double referencePrice, double precision);
+    protected abstract PriceCompareResult compare(double newPrice, double referencePrice, double precision);
 
     public boolean isBetterOrSame(double price, double referencePrice, double precision) {
         return compare(price, referencePrice, precision) != PriceCompareResult.WORSE;
@@ -186,8 +186,8 @@ public enum Side {
 
     public abstract Side other();
 
-    public static enum PriceCompareResult {
-        WORSE, SAME, BETTER;
+    public enum PriceCompareResult {
+        WORSE, SAME, BETTER
     }
 
 

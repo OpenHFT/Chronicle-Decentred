@@ -7,8 +7,8 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public final class TestUtils {
-    private TestUtils(){}
+public enum TestUtils {
+    ;
 
     public static void test(String basename) {
         TextMethodTester<AppreciationTester> tester = new TextMethodTester<>(

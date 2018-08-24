@@ -6,9 +6,9 @@ import net.openhft.chronicle.wire.LongConversion;
 
 public class Give extends VanillaSignedMessage<Give> {
     @LongConversion(AddressConverter.class)
-    long toAddress;
+    private long toAddress;
 
-    double amount;
+    private double amount;
 
     public Give() {
     }
