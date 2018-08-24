@@ -1,0 +1,76 @@
+setCurrentTime: 101
+---
+newOrderRequest: {
+  timestampUS: 1970-01-01T00:00:00.1,
+  address: buyer,
+  side: BUY,
+  quantity: 100.0,
+  maxPrice: 200.0,
+  currencyPair: USDXCL,
+  ttlMillis: 100000
+}
+---
+newOrderRequest: {
+  timestampUS: 1970-01-01T00:00:00.1,
+  address: buyer,
+  side: BUY,
+  quantity: 100.0,
+  maxPrice: 199.0,
+  currencyPair: USDXCL,
+  ttlMillis: 100000
+}
+---
+newOrderRequest: {
+  timestampUS: 1970-01-01T00:00:00.101,
+  address: buyer,
+  side: BUY,
+  quantity: 100.0,
+  maxPrice: 180.0,
+  currencyPair: USDXCL,
+  ttlMillis: 100000
+}
+---
+newOrderRequest: {
+  timestampUS: 1970-01-01T00:00:00.102,
+  address: seller,
+  side: SELL,
+  quantity: 100.0,
+  maxPrice: 210.0,
+  currencyPair: USDXCL,
+  ttlMillis: 100000
+}
+---
+newOrderRequest: {
+  timestampUS: 1970-01-01T00:00:00.103,
+  address: seller,
+  side: SELL,
+  quantity: 100.0,
+  maxPrice: 230.0,
+  currencyPair: USDXCL,
+  ttlMillis: 100000
+}
+---
+setCurrentTime: 115
+---
+newOrderRequest: {
+  timestampUS: 1970-01-01T00:00:00.12,
+  address: buyer,
+  side: BUY,
+  quantity: 100.0,
+  maxPrice: 210.0,
+  currencyPair: USDXCL,
+  ttlMillis: 100000
+}
+---
+setCurrentTime: 215
+---
+newOrderRequest: {
+  timestampUS: 1970-01-01T00:00:00.3,
+  address: seller,
+  side: SELL,
+  quantity: 300.0,
+  maxPrice: 190.0,
+  currencyPair: USDXCL,
+  ttlMillis: 100000
+}
+---

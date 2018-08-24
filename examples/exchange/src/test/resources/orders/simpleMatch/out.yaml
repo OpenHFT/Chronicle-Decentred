@@ -1,0 +1,76 @@
+---
+---
+---
+---
+---
+---
+---
+to: buyer
+tradeEvent: {
+  timestampUS: 1970-01-01T00:00:00.115,
+  address: 0.0.0.0:0,
+  orderTimestampUS: 1970-01-01T00:00:00.12,
+  orderAddress: buyer,
+  quantity: 100.0,
+  price: 210.0,
+  currencyPair: USDXCL,
+  side: BUY
+}
+to: seller
+tradeEvent: {
+  timestampUS: 1970-01-01T00:00:00.115,
+  address: 0.0.0.0:0,
+  orderTimestampUS: 1970-01-01T00:00:00.102,
+  orderAddress: seller,
+  quantity: 100.0,
+  price: 210.0,
+  currencyPair: USDXCL,
+  side: SELL
+}
+---
+---
+to: seller
+tradeEvent: {
+  timestampUS: 1970-01-01T00:00:00.215,
+  address: 0.0.0.0:0,
+  orderTimestampUS: 1970-01-01T00:00:00.3,
+  orderAddress: seller,
+  quantity: 100.0,
+  price: 190.0,
+  currencyPair: USDXCL,
+  side: SELL
+}
+to: buyer
+tradeEvent: {
+  timestampUS: 1970-01-01T00:00:00.215,
+  address: 0.0.0.0:0,
+  orderTimestampUS: 1970-01-01T00:00:00.1,
+  orderAddress: buyer,
+  quantity: 100.0,
+  price: 200.0,
+  currencyPair: USDXCL,
+  side: BUY
+}
+to: seller
+tradeEvent: {
+  timestampUS: 1970-01-01T00:00:00.215,
+  address: 0.0.0.0:0,
+  orderTimestampUS: 1970-01-01T00:00:00.3,
+  orderAddress: seller,
+  quantity: 100.0,
+  price: 190.0,
+  currencyPair: USDXCL,
+  side: SELL
+}
+to: buyer
+tradeEvent: {
+  timestampUS: 1970-01-01T00:00:00.215,
+  address: 0.0.0.0:0,
+  orderTimestampUS: 1970-01-01T00:00:00.1,
+  orderAddress: buyer,
+  quantity: 100.0,
+  price: 199.0,
+  currencyPair: USDXCL,
+  side: BUY
+}
+---

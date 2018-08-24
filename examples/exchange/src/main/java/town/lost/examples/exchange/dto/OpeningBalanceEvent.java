@@ -7,7 +7,7 @@ import net.openhft.chronicle.wire.LongConversion;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class OpeningBalanceEvent extends VanillaSignedMessage<OpeningBalanceEvent> {
+public class OpeningBalanceEvent extends VanillaSignedMessage<OpeningBalanceEvent> implements Validable {
     @LongConversion(AddressConverter.class)
     private long balanceAddress;
     private final Map<Currency, Double> balances = new EnumMap<>(Currency.class);
@@ -23,5 +23,13 @@ public class OpeningBalanceEvent extends VanillaSignedMessage<OpeningBalanceEven
     public OpeningBalanceEvent balanceAddress(long balanceAccount) {
         this.balanceAddress = balanceAccount;
         return this;
+    }
+
+    @Override
+    public void validate() throws IllegalStateException {
+        for (Double value : balances.values()) {
+            if (value == null || !(value >= 0))
+                throw new IllegalStateException();
+        }
     }
 }

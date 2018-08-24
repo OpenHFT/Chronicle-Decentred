@@ -13,6 +13,7 @@ public class ExchangeTransactionProcessor implements ExchangeRequests {
     private final LongObjMap<AccountBalance> accountBalanceMap = LongObjMap.withExpectedSize(AccountBalance.class, 1024);
     private final Map<CurrencyPair, ExchangeMarket> marketMap = new EnumMap<>(CurrencyPair.class);
     private final ExchangeOut out;
+    private long currentTime;
 
     public ExchangeTransactionProcessor(ExchangeOut out) {
         this.out = out;
@@ -32,10 +33,12 @@ public class ExchangeTransactionProcessor implements ExchangeRequests {
     private void onTrade(CurrencyPair currencyPair, Order aggressive, Order initiator, double qty) {
         out.to(aggressive.ownerAddress())
                 .tradeEvent(new TradeEvent(aggressive)
+                        .timestampUS(currentTime * 1000)
                         .currencyPair(currencyPair)
                         .quantity(qty));
         out.to(initiator.ownerAddress())
                 .tradeEvent(new TradeEvent(initiator)
+                        .timestampUS(currentTime * 1000)
                         .currencyPair(currencyPair)
                         .quantity(qty));
     }
@@ -43,6 +46,7 @@ public class ExchangeTransactionProcessor implements ExchangeRequests {
     private void onClose(CurrencyPair currencyPair, Order order, OrderCloseReason orderCloseReason) {
         out.to(order.ownerAddress())
                 .tradeClosedEvent(new TradeClosedEvent(order)
+                        .timestampUS(currentTime * 1000)
                         .currencyPair(currencyPair)
                         .orderCloseReason(orderCloseReason));
     }
@@ -51,7 +55,10 @@ public class ExchangeTransactionProcessor implements ExchangeRequests {
     public void openningBalanceEvent(OpeningBalanceEvent openingBalanceEvent) {
         long account = openingBalanceEvent.balanceAddress();
         if (accountBalanceMap.containsKey(account)) {
-            out.applicationError(new ApplicationErrorResponse().init(openingBalanceEvent, "Account already set"));
+            out.applicationError(new ApplicationErrorResponse()
+                    .init(openingBalanceEvent, "Account already set")
+                    .timestampUS(currentTime * 1000)
+            );
             return;
         }
         accountBalanceMap.justPut(account, new AccountBalance(openingBalanceEvent));
@@ -67,5 +74,12 @@ public class ExchangeTransactionProcessor implements ExchangeRequests {
     public void cancelOrderCommand(CancelOrderRequest cancelOrderRequest) {
         ExchangeMarket exchangeMarket = marketMap.get(cancelOrderRequest.currencyPair());
         exchangeMarket.cancelOrder(cancelOrderRequest.address(), cancelOrderRequest.orderTimestampUS());
+    }
+
+    public void setCurrentTime(long currentTime) {
+        this.currentTime = currentTime;
+        for (ExchangeMarket market : marketMap.values()) {
+            market.setCurrentTime(currentTime);
+        }
     }
 }
