@@ -8,6 +8,8 @@ import town.lost.examples.appreciation.api.AppreciationGateway;
 import town.lost.examples.appreciation.api.AppreciationResponses;
 import town.lost.examples.appreciation.api.AppreciationTransactions;
 import town.lost.examples.appreciation.dto.*;
+import town.lost.examples.appreciation.util.BalanceStore;
+import town.lost.examples.appreciation.util.Balances;
 
 
 /**
@@ -43,14 +45,17 @@ public class VanillaAppreciationGateway implements AppreciationGateway {
 
     @Override
     public void queryBalance(QueryBalance queryBalance) {
-        AppreciationResponses listener = client.to(queryBalance.address());
-        double amount = balanceStore.getBalance(queryBalance.address());
-        if (Double.isNaN(amount)) {
+        long address = queryBalance.address();
+        AppreciationResponses listener = client.to(address);
+        Balances balance = balanceStore.getBalances(address);
+        if (balance == null) {
             error.init(queryBalance,
                     "Cannot query balance: Account doesn't exist");
             error.timestampUS(queryBalance.timestampUS());
             listener.applicationError(error);
         } else {
+            onBalance.init(address, balance);
+            // added for testing and overridden by the framework
             onBalance.timestampUS(queryBalance.timestampUS());
             listener.onBalance(onBalance);
         }
@@ -66,7 +71,7 @@ public class VanillaAppreciationGateway implements AppreciationGateway {
             listener.applicationError(error);
             return;
         }
-        if(!validAccount(give, balanceStore.getBalance(give.address()))){
+        if (!validAccount(give, give.address()) || !validAccount(give, give.toAddress())) {
             return;
         }
 
@@ -74,37 +79,28 @@ public class VanillaAppreciationGateway implements AppreciationGateway {
     }
 
     @Override
-    public void topup(Topup topup){
-        if(topup.amount() < 0){
-            AppreciationResponses listener = client.to(topup.toAddress());
-            error.init(topup, "Cannot topup a negative amount");// Shouldn't be required given this is supposed to be automated.
-            error.timestampUS(topup.timestampUS());
-            listener.applicationError(error);
-        }
-
-        if(!verifyPrivilegedServerNode(topup.address())){
-            AppreciationResponses listener = client.to(topup.toAddress());
+    public void topup(Topup topup) {
+        if (!verifyPrivilegedServerNode(topup.address())) {
+            AppreciationResponses listener = client.to(topup.address());
             error.init(topup, "Only privileged accounts can generate an auto topup");
             error.timestampUS(topup.timestampUS());
             listener.applicationError(error);
         }
 
-        if(!validAccount(topup, balanceStore.getBalance(topup.address()))){
-            return;
-        }
-
         blockchain.topup(topup);
     }
 
-    private boolean verifyPrivilegedServerNode(long address){
+    private boolean verifyPrivilegedServerNode(long address) {
         return true;
     }
 
-    private <T extends VanillaSignedMessage<T>> boolean validAccount(T msg, double balance){
-        if (Double.isNaN(balance)) {
-            AppreciationResponses listener = client.to(msg.address());
+    private <T extends VanillaSignedMessage<T>> boolean validAccount(T msg, long address) {
+        Balances balances = balanceStore.getBalances(address);
+        if (balances == null) {
+            AppreciationResponses listener = client.to(address);
             error.init(msg,
                     "Cannot give balance: Account doesn't exist)");
+            // to set a timestamp when testing, overridden by the framework.
             error.timestampUS(msg.timestampUS());
             listener.applicationError(error);
             return false;

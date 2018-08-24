@@ -2,6 +2,7 @@ package town.lost.examples.appreciation;
 
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.wire.TextMethodTester;
+import town.lost.examples.appreciation.util.VanillaBalanceStore;
 
 import java.io.IOException;
 

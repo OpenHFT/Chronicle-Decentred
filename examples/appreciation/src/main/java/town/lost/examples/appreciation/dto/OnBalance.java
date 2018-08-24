@@ -3,22 +3,21 @@ package town.lost.examples.appreciation.dto;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.util.AddressConverter;
 import net.openhft.chronicle.wire.LongConversion;
+import town.lost.examples.appreciation.util.Balances;
 
 public class OnBalance extends VanillaSignedMessage<OnBalance> {
     @LongConversion(AddressConverter.class)
     private long balanceAddress;
     private double amount;
+    private double freeAmount;
 
     public OnBalance() {
     }
 
-    public OnBalance(long balanceAddress, double amount) {
-        init(balanceAddress, amount);
-    }
-
-    public OnBalance init(long balanceAddress, double amount) {
+    public OnBalance init(long balanceAddress, Balances balances) {
         this.balanceAddress = balanceAddress;
-        this.amount = amount;
+        this.amount = balances.balance();
+        this.freeAmount = balances.freeBalance();
         return this;
     }
 
@@ -37,6 +36,15 @@ public class OnBalance extends VanillaSignedMessage<OnBalance> {
 
     public OnBalance amount(double amount) {
         this.amount = amount;
+        return this;
+    }
+
+    public double freeAmount() {
+        return freeAmount;
+    }
+
+    public OnBalance freeAmount(double freeAmount) {
+        this.freeAmount = freeAmount;
         return this;
     }
 }

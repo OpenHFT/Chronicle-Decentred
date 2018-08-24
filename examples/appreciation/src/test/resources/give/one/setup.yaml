@@ -24,3 +24,9 @@ openingBalance: {
   amount: 20.0
 }
 ---
+topup: {
+  timestampUS: 2018-08-20T11:31:15.379010,
+  address: phccofmpy6ci,
+  amount: 10.0,
+}
+---
