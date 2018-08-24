@@ -75,14 +75,6 @@ public class Order extends AbstractMarshallable {
         return getQuantityLeft();
     }
 
-    private static class PriceComparator implements Comparator<Order> {
-        @Override
-        public int compare(Order o1, Order o2) {
-            assert (o1 != null) && (o2 != null);
-            return Double.compare(o1.price, o2.price);
-        }
-    }
-
     @Override
     public int hashCode() {
         return Long.hashCode(orderId);
@@ -92,5 +84,13 @@ public class Order extends AbstractMarshallable {
     public boolean equals(Object obj) {
         assert (obj != null) && (obj instanceof Order);
         return (this == obj) || (orderId == ((Order) obj).orderId);
+    }
+
+    private static class PriceComparator implements Comparator<Order> {
+        @Override
+        public int compare(Order o1, Order o2) {
+            assert (o1 != null) && (o2 != null);
+            return Double.compare(o1.price, o2.price);
+        }
     }
 }

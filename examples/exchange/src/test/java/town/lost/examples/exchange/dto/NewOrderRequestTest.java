@@ -37,11 +37,11 @@ public class NewOrderRequestTest {
         assertEquals("!NewOrderRequest {\n" +
                 "  timestampUS: 2018-03-04T18:03:05.364453,\n" +
                 "  address: phccofmpy6ci,\n" +
+                "  action: BUY,\n" +
                 "  quantity: 1E3,\n" +
                 "  maxPrice: 1E3,\n" +
                 "  currencyPair: EURXCL,\n" +
-                "  ttlMillis: 300.0,\n" +
-                "  action: BUY\n" +
+                "  ttlMillis: 300\n" +
                 "}\n", nor.toString());
         NewOrderRequest nor2 = Marshallable.fromString(nor.toString());
         assertEquals(nor2, nor);

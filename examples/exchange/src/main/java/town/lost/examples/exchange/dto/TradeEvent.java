@@ -16,16 +16,6 @@ public class TradeEvent extends VanillaSignedMessage<TradeEvent> {
     private double price;
     private CurrencyPair currencyPair;
     private Side action;
-    private long orderId;
-
-    public long orderId(){
-        return orderId;
-    }
-
-    public TradeEvent orderId(long orderId){
-        this.orderId = orderId;
-        return this;
-    }
 
     public long orderTimestampUS() {
         return orderTimestampUS;

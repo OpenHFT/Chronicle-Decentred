@@ -16,7 +16,7 @@ public class NewOrderRequest extends VanillaSignedMessage<NewOrderRequest> {
 
     }
 
-    public NewOrderRequest(long sourceAddress, long eventTime, Side action, double qty, double maxPrice, CurrencyPair currencyPair, long ttlMillis){
+    public NewOrderRequest(long sourceAddress, long eventTime, Side action, double qty, double maxPrice, CurrencyPair currencyPair, long ttlMillis) {
         this.address(sourceAddress);
         this.timestampUS(eventTime);
         this.action = action;

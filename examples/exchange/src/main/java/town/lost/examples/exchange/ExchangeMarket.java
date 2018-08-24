@@ -63,12 +63,12 @@ public class ExchangeMarket implements Closeable {
         Side orderSide = request.action();
         double orderPrice = orderSide.roundWorse(request.maxPrice(), tickSize);
         Order newOrder = new Order(orderId,
-                                    orderSide,
-                                    request.quantity(),
-                                    orderPrice,
-                                       request.ttlMillis() + currentReferenceTimeinMillis,
-                                    request.address(),
-                                    request.timestampUS());
+                orderSide,
+                request.quantity(),
+                orderPrice,
+                request.ttlMillis() + currentReferenceTimeinMillis,
+                request.address(),
+                request.timestampUS());
 
         TreeSet<Order> sideToMatch = getMarket(orderSide.other());
         Iterator<Order> it = sideToMatch.iterator();

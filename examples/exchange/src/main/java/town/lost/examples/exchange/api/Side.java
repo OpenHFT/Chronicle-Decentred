@@ -126,6 +126,28 @@ public enum Side {
     };
 
     static final double DEFAULT_PRECISION_FACTOR = 1E-7;
+    private static final Side SIDES[] = {BUY, SELL};
+
+    static {
+        assert (BUY.ordinal() == 0) && (SELL.ordinal() == 1);
+    }
+
+    public static Side fromId(int ordinal) {
+        return SIDES[ordinal];
+    }
+
+    public static void forEach(Consumer<Side> consumer) {
+        consumer.accept(BUY);
+        consumer.accept(SELL);
+    }
+
+    public static int ticksBetween(double bestPrice, double worstPrice, double tickSize) {
+        return (int) round(abs(bestPrice - worstPrice) / tickSize);
+    }
+
+    public static double getDefaultPrecision(double tickSize) {
+        return nextUp(tickSize * DEFAULT_PRECISION_FACTOR);
+    }
 
     @NotNull
     public abstract PriceCompareResult compare(double newPrice, double referencePrice, double precision);
@@ -163,29 +185,6 @@ public enum Side {
     public abstract double roundBetter(double value, double precision);
 
     public abstract Side other();
-
-    private static final Side SIDES[] = {BUY, SELL};
-
-    static {
-        assert (BUY.ordinal() == 0) && (SELL.ordinal() == 1);
-    }
-
-    public static Side fromId(int ordinal) {
-        return SIDES[ordinal];
-    }
-
-    public static void forEach(Consumer<Side> consumer) {
-        consumer.accept(BUY);
-        consumer.accept(SELL);
-    }
-
-    public static int ticksBetween(double bestPrice, double worstPrice, double tickSize) {
-        return (int) round(abs(bestPrice - worstPrice) / tickSize);
-    }
-
-    public static double getDefaultPrecision(double tickSize) {
-        return nextUp(tickSize * DEFAULT_PRECISION_FACTOR);
-    }
 
     public static enum PriceCompareResult {
         WORSE, SAME, BETTER;
