@@ -1,8 +1,9 @@
 package net.openhft.chronicle.decentred.dto;
 
+import net.openhft.chronicle.bytes.BytesMarshallable;
 import net.openhft.chronicle.bytes.BytesStore;
 
-public interface SignedMessage {
+public interface SignedMessage extends BytesMarshallable {
     /**
      * Once a message is signed it can't be modified, only read.
      * <p>

@@ -1,6 +1,5 @@
 package net.openhft.chronicle.decentred.util;
 
-import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.salt.Ed25519;
 
@@ -12,12 +11,12 @@ public class VanillaPublicKeyRegistry implements PublicKeyRegistry {
     private boolean internal;
 
     @Override
-    public void register(long address, Bytes<?> publicKey) {
+    public void register(long address, BytesStore publicKey) {
         publicKeyMap.put(address, publicKey.copy());
     }
 
     @Override
-    public Boolean verify(long address, Bytes<?> sigAndMsg) {
+    public Boolean verify(long address, BytesStore sigAndMsg) {
         if (internal)
             return true;
         BytesStore publicKey = publicKeyMap.get(address);

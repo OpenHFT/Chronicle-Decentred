@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class CreateAccountRequestTest {
+public class CreateAddressRequestTest {
     static {
         DtoAliases.addAliases();
     }
@@ -24,7 +24,7 @@ public class CreateAccountRequestTest {
                 "........\n" +
                 "00000020 3b 6a 27 bc ce b6 a4 2d  62 a3 a8 d0 2a 6f 0d 73 ;j'····- b···*o·s\n" +
                 "00000030 65 32 15 77 1d e2 43 a6  3a c0 48 a1 8b 59 da 29 e2·w··C· :·H··Y·)\n", secretKey.toHexString());
-        CreateAccountRequest ca = new CreateAccountRequest()
+        CreateAddressRequest ca = new CreateAddressRequest()
                 .protocol(1).messageType(2);
         SetTimeProvider timeProvider = new SetTimeProvider(0x05060708090a0bL * 1000);
         ca.sign(secretKey, timeProvider);
@@ -44,7 +44,7 @@ public class CreateAccountRequestTest {
                 "0068    73 65 32 15 77 1d e2 43 a6 3a c0 48 a1 8b 59 da\n" +
                 "0078    29\n", ca.toHexString());
 
-        assertEquals("!CreateAccountRequest {\n" +
+        assertEquals("!CreateAddressRequest {\n" +
                 "  timestampUS: 2014-10-22T18:22:32.901131,\n" +
                 "  address: 41.218.89.139:41288:c03a,\n" +
                 "  publicKey: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +
@@ -52,7 +52,7 @@ public class CreateAccountRequestTest {
 
         assertTrue(ca.verify(this::selfSigning));
 
-        CreateAccountResponse created = new CreateAccountResponse()
+        CreateAddressEvent created = new CreateAddressEvent()
                 .protocol(1).messageType(3)
                 .createAccountRequest(ca);
 
@@ -66,7 +66,7 @@ public class CreateAccountRequestTest {
                 "0046 01 00                                           # protocol\n" +
                 "0048    0b 0a 09 08 07 06 05 00                         # timestampUS\n" +
                 "0050    3a c0 48 a1 8b 59 da 29                         # address\n" +
-                "0058    79 00 00 00 96 de da 9f 15 2c 01 e1 93 0e 3f 49 # createAccountRequest\n" +
+                "0058    79 00 00 00 96 de da 9f 15 2c 01 e1 93 0e 3f 49 # createAddressRequest\n" +
                 "0068    14 4f d5 88 90 03 38 f7 6a 37 e8 32 8d 59 88 39\n" +
                 "0078    7c 9c 30 0c 1c 6f 8f fd b5 66 fd d1 a6 56 41 ee\n" +
                 "0088    37 dc ef df 33 a1 95 3c 0e 6b 1d 7b 2f bd bd 44\n" +
@@ -75,10 +75,10 @@ public class CreateAccountRequestTest {
                 "00b8    2d 62 a3 a8 d0 2a 6f 0d 73 65 32 15 77 1d e2 43\n" +
                 "00c8    a6 3a c0 48 a1 8b 59 da 29\n", created.toHexString());
 
-        assertEquals("!CreateAccountResponse {\n" +
+        assertEquals("!CreateAddressEvent {\n" +
                 "  timestampUS: 2014-10-22T18:22:32.901131,\n" +
                 "  address: 41.218.89.139:41288:c03a,\n" +
-                "  createAccountRequest: {\n" +
+                "  createAddressRequest: {\n" +
                 "    timestampUS: 2014-10-22T18:22:32.901131,\n" +
                 "    address: 41.218.89.139:41288:c03a,\n" +
                 "    publicKey: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +

@@ -44,7 +44,7 @@ public class VerifyIPTest {
 
         TextWire wire = new TextWire(Bytes.elasticHeapByteBuffer(128));
         VerifyIPTester tester = wire.methodWriter(VerifyIPTester.class);
-        tester.onConnection();
+        tester.onConnection(null);
         VerificationEvent verificationEvent = new VerificationEvent()
                 .protocol(1).messageType(4)
                 .keyVerified(publicKey)

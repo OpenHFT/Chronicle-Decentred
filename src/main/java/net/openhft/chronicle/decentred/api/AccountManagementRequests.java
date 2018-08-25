@@ -1,7 +1,7 @@
 package net.openhft.chronicle.decentred.api;
 
 import net.openhft.chronicle.bytes.MethodId;
-import net.openhft.chronicle.decentred.dto.CreateAccountRequest;
+import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
 
 /**
  * Allows messages to be passed without needing to be self signing i.e. using just an account.
@@ -10,8 +10,8 @@ public interface AccountManagementRequests {
     /**
      * Attempt to create an account.
      *
-     * @param createAccountRequest to be processed
+     * @param createAddressRequest to be processed
      */
-    @MethodId(0x0100)
-    void createAccountRequest(CreateAccountRequest createAccountRequest);
+    @MethodId(0xF000)
+    void createAccountRequest(CreateAddressRequest createAddressRequest);
 }

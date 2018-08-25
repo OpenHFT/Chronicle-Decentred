@@ -2,7 +2,7 @@ package town.lost.examples.appreciation;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
-import net.openhft.chronicle.decentred.dto.CreateAccountRequest;
+import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.UniqueMicroTimeProvider;
 import net.openhft.chronicle.salt.Ed25519;
@@ -28,11 +28,11 @@ public class GiveTest {
 
         TextWire wire = new TextWire(Bytes.elasticHeapByteBuffer(128));
         AppreciationTester tester = wire.methodWriter(AppreciationTester.class);
-        tester.createAccountRequest(new CreateAccountRequest()
+        tester.createAccountRequest(new CreateAddressRequest()
                 .address(0)
                 .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
                 .publicKey(publicKey1));
-        tester.createAccountRequest(new CreateAccountRequest()
+        tester.createAccountRequest(new CreateAddressRequest()
                 .address(0)
                 .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
                 .publicKey(publicKey2));

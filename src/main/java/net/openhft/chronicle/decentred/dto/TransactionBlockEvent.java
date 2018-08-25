@@ -4,6 +4,8 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.io.IORuntimeException;
+import net.openhft.chronicle.decentred.util.AddressConverter;
+import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.wire.*;
@@ -22,8 +24,8 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     private transient long messagesStart;
     private transient Bytes transactions;
 
-    @IntConversion(UnsignedIntConverter.class)
-    private short chainId; // up to 64K chains
+    @LongConversion(AddressConverter.class)
+    private long chainAddress;
 
     @IntConversion(UnsignedIntConverter.class)
     private short weekNumber; // up to 1256 years
@@ -80,11 +82,19 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
         messagesStart = 0;
     }
 
-    public TransactionBlockEvent addTransaction(VanillaSignedMessage message) {
+    public TransactionBlockEvent addTransaction(SignedMessage message) {
         if (!message.signed())
             throw new IllegalArgumentException(message + " must be already signed");
         message.writeMarshallable(writeTransactions);
         return this;
+    }
+
+    public boolean isEmpty() {
+        return transactions.readRemaining() == 0;
+    }
+
+    public boolean isBufferFull() {
+        return transactions.writePosition() > 1 << 20;
     }
 
     @Override
@@ -108,12 +118,37 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     public void writeMarshallable(@NotNull WireOut wire) {
         super.writeMarshallable(wire);
         Class<T> superInterface = dtoParser.superInterface();
-        wire.write("transactions").sequence(out -> replay((T) Proxy.newProxyInstance(superInterface.getClassLoader(), new Class[]{superInterface}, new AbstractMethodWriterInvocationHandler() {
-            @Override
-            protected void handleInvoke(Method method, Object[] args) {
-                out.object(args[0]);
-            }
-        })));
+        //noinspection unchecked
+        wire.write("transactions").sequence(out -> replay(
+                (T) Proxy.newProxyInstance(superInterface.getClassLoader(),
+                        new Class[]{superInterface},
+                        new AbstractMethodWriterInvocationHandler() {
+                            @Override
+                            protected void handleInvoke(Method method, Object[] args) {
+                                out.object(args[0]);
+                            }
+                        })));
     }
 
+    public long chainAddress() {
+        return chainAddress;
+    }
+
+    public TransactionBlockEvent chainAddress(long chainAddress) {
+        this.chainAddress = chainAddress;
+        return this;
+    }
+
+    public int weekNumber() {
+        return weekNumber & DecentredUtil.MASK_16;
+    }
+
+    public long blockNumber() {
+        return blockNumber & DecentredUtil.MASK_32;
+    }
+
+    public TransactionBlockEvent blockNumber(long blockNumber) {
+        this.blockNumber = (int) blockNumber;
+        return this;
+    }
 }

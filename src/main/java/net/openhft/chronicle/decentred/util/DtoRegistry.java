@@ -3,7 +3,7 @@ package net.openhft.chronicle.decentred.util;
 import net.openhft.chronicle.bytes.MethodId;
 import net.openhft.chronicle.core.Maths;
 import net.openhft.chronicle.core.util.ObjectUtils;
-import net.openhft.chronicle.decentred.api.Verifier;
+import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 
 import java.lang.reflect.Method;
@@ -11,8 +11,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static net.openhft.chronicle.decentred.util.DecentredUtil.MASK_16;
+
 public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
-    public static final int MASK_16 = 0xFFFF;
 
     private final Class<T> superInterface;
     private final Map<Class, Integer> classToProtocolMessageType = new LinkedHashMap<>();
@@ -20,16 +21,19 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
 
     private DtoRegistry(Class<T> superInterface) {
         this.superInterface = superInterface;
-        addProtocol(0xFF00, (Class) Verifier.class);
-        addProtocol(0xFF01, (Class) Verifier.class);
+        addProtocol(0xFFFF, (Class) SystemMessages.class);
     }
 
     public static <T> DtoRegistry<T> newRegistry(Class<T> superInterface) {
         return new DtoRegistry<>(superInterface);
     }
 
+    public static <T> DtoRegistry<T> newRegistry(int protocol, Class<T> superInterface) {
+        return new DtoRegistry<>(superInterface).addProtocol(protocol, superInterface);
+    }
+
     public DtoRegistry<T> addProtocol(int protocol, Class<? super T> pClass) {
-        for (Method method : pClass.getDeclaredMethods()) {
+        for (Method method : pClass.getMethods()) {
             MethodId mid = method.getAnnotation(MethodId.class);
             if (mid != null) {
                 assert (mid.value() | MASK_16) == MASK_16;
@@ -77,5 +81,9 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
         } catch (Exception e) {
             throw new AssertionError(e);
         }
+    }
+
+    public Class<T> superInterface() {
+        return superInterface;
     }
 }

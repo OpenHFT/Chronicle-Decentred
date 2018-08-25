@@ -14,8 +14,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class RPCTest {
     @Test
     public void testVerify() throws IOException, InterruptedException {
-        KeySet zero = new KeySet(0);
-        KeySet one = new KeySet(1);
+        KeyPair zero = new KeyPair(0);
+        KeyPair one = new KeyPair(1);
 
         DtoRegistry<Verifier> protocol = DtoRegistry.newRegistry(Verifier.class)
                 .addProtocol(1, Verifier.class);
@@ -30,12 +30,11 @@ public class RPCTest {
 
         BlockingQueue<String> queue = new LinkedBlockingQueue<>();
         Verifier verifier = Mocker.queuing(Verifier.class, "", queue);
-        RPCClient<Verifier, Verifier> client = new RPCClient<>(
+        RPCClient<Verifier> client = new RPCClient<>(
                 "test",
                 "localhost",
                 9999,
                 zero.secretKey,
-                Verifier.class,
                 protocol,
                 verifier);
 

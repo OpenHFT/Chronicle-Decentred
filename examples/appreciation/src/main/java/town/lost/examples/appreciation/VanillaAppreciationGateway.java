@@ -2,7 +2,7 @@ package town.lost.examples.appreciation;
 
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.dto.ApplicationErrorResponse;
-import net.openhft.chronicle.decentred.dto.CreateAccountRequest;
+import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import town.lost.examples.appreciation.api.AppreciationGateway;
 import town.lost.examples.appreciation.api.AppreciationResponses;
@@ -110,7 +110,7 @@ public class VanillaAppreciationGateway implements AppreciationGateway {
     }
 
     @Override
-    public void createAccountRequest(CreateAccountRequest createAccountRequest) {
+    public void createAccountRequest(CreateAddressRequest createAddressRequest) {
 
     }
 }

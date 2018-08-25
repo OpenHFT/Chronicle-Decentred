@@ -1,10 +1,12 @@
 package net.openhft.chronicle.decentred.verification;
 
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.decentred.api.ConnectionStatusListener;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.Verifier;
 import net.openhft.chronicle.decentred.dto.InvalidationEvent;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
+import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +15,7 @@ import java.util.Map;
 
 import static net.openhft.chronicle.decentred.api.MessageRouter.DEFAULT_CONNECTION;
 
-public class VanillaVerifyIP implements Verifier {
+public class VanillaVerifyIP implements Verifier, ConnectionStatusListener {
     private final MessageRouter<Verifier> client;
     private final Map<BytesStore, List<VerificationEvent>> verifyMap = new HashMap<>();
 
@@ -22,6 +24,10 @@ public class VanillaVerifyIP implements Verifier {
     }
 
     @Override
+    public void onConnection(TCPConnection connection) {
+        onConnection();
+    }
+
     public void onConnection() {
         Verifier to = client.to(DEFAULT_CONNECTION);
         for (List<VerificationEvent> verificationEventList : verifyMap.values()) {

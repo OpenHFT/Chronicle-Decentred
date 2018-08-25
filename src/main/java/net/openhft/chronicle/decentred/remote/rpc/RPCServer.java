@@ -5,13 +5,13 @@ import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.io.IORuntimeException;
-import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.SystemMessageListener;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.remote.net.TCPServer;
 import net.openhft.chronicle.decentred.remote.net.TCPServerConnectionListener;
 import net.openhft.chronicle.decentred.remote.net.VanillaTCPServer;
+import net.openhft.chronicle.decentred.server.DecentredServer;
 import net.openhft.chronicle.decentred.util.*;
 import net.openhft.chronicle.wire.AbstractMethodWriterInvocationHandler;
 
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closeable {
+public class RPCServer<T> implements DecentredServer<T>, Closeable {
     private static final ThreadLocal<TCPConnection> DEFAULT_CONNECTION_TL = new ThreadLocal<>();
     private final LongObjMap<TCPConnection> connections = LongObjMap.withExpectedSize(TCPConnection.class, 128);
     private final LongObjMap<TCPConnection> remoteMap = LongObjMap.withExpectedSize(TCPConnection.class, 128);
@@ -37,7 +37,14 @@ public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closea
     private final DtoRegistry<T> dtoRegistry;
     private final T serverComponent;
 
-    public RPCServer(String name, int port, long address, BytesStore publicKey, BytesStore secretKey, Class<T> tClass, DtoRegistry<T> dtoRegistry, Function<MessageRouter<T>, T> serverComponentBuilder) throws IOException {
+    public RPCServer(String name,
+                     int port,
+                     long address,
+                     BytesStore publicKey,
+                     BytesStore secretKey,
+                     Class<T> tClass,
+                     DtoRegistry<T> dtoRegistry,
+                     Function<DecentredServer<T>, T> serverComponentBuilder) throws IOException {
         this.address = address;
         this.publicKey = publicKey;
         this.secretKey = secretKey;
@@ -45,6 +52,16 @@ public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closea
         this.dtoRegistry = dtoRegistry;
         tcpServer = new VanillaTCPServer(name, port, new XCLConnectionListener(dtoRegistry.get()));
         this.serverComponent = serverComponentBuilder.apply(this);
+    }
+
+    @Override
+    public void register(long address, BytesStore publicKey) {
+        publicKeyRegistry.register(address, publicKey);
+    }
+
+    @Override
+    public Boolean verify(long address, BytesStore sigAndMsg) {
+        return publicKeyRegistry.verify(address, sigAndMsg);
     }
 
     public boolean internal() {
@@ -95,16 +112,6 @@ public class RPCServer<T> implements MessageRouter<T>, PublicKeyRegistry, Closea
             remoteMap.clear();
         }
         tcpServer.close();
-    }
-
-    @Override
-    public void register(long address, Bytes<?> publicKey) {
-        publicKeyRegistry.register(address, publicKey);
-    }
-
-    @Override
-    public Boolean verify(long address, Bytes<?> sigAndMsg) {
-        return publicKeyRegistry.verify(address, sigAndMsg);
     }
 
     void write(long toAddress, VanillaSignedMessage message) {

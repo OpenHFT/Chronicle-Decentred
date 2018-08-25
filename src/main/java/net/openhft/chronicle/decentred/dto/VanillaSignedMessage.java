@@ -43,7 +43,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     @LongConversion(AddressConverter.class)
     private long address;
 
-    protected VanillaSignedMessage() {
+    public VanillaSignedMessage() {
     }
 
     @Override

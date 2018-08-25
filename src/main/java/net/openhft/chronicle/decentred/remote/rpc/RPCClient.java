@@ -4,14 +4,14 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.io.IORuntimeException;
+import net.openhft.chronicle.core.time.TimeProvider;
+import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.SystemMessageListener;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.remote.net.TCPClientListener;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.remote.net.VanillaTCPClient;
-import net.openhft.chronicle.decentred.util.DtoParser;
-import net.openhft.chronicle.decentred.util.DtoRegistry;
-import net.openhft.chronicle.decentred.util.LongObjMap;
+import net.openhft.chronicle.decentred.util.*;
 import net.openhft.chronicle.wire.AbstractMethodWriterInvocationHandler;
 
 import java.io.IOException;
@@ -23,34 +23,32 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
 
-import static net.openhft.chronicle.decentred.util.DtoRegistry.MASK_16;
-
-public class RPCClient<UP, DOWN> implements Closeable, TCPConnection {
+public class RPCClient<T> implements Closeable, TCPConnection, MessageRouter<T> {
     private final VanillaTCPClient tcpClient;
-    private final DOWN listener;
+    private final T listener;
     private final BytesStore secretKey;
-    private final DtoRegistry<DOWN> registry;
-    private final DtoParser<DOWN> parser;
+    private final DtoRegistry<T> registry;
+    private final DtoParser<T> parser;
     private final LongObjMap<BytesStore> addressToPublicKey =
             LongObjMap.withExpectedSize(BytesStore.class, 16);
     private boolean internal = false;
+    private final T proxy;
+    private TimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;
 
     public RPCClient(String name,
                      String socketHost,
                      int socketPort,
                      BytesStore secretKey,
-                     Class<UP> upClass,
-                     DtoRegistry<DOWN> registry,
-                     DOWN listener) {
-        this(name, Collections.singletonList(new InetSocketAddress(socketHost, socketPort)), secretKey, upClass, registry, listener);
+                     DtoRegistry<T> registry,
+                     T listener) {
+        this(name, Collections.singletonList(new InetSocketAddress(socketHost, socketPort)), secretKey, registry, listener);
     }
 
     public RPCClient(String name,
                      List<InetSocketAddress> socketAddresses,
                      BytesStore secretKey,
-                     Class<UP> upClass,
-                     DtoRegistry<DOWN> registry,
-                     DOWN listener) {
+                     DtoRegistry<T> registry,
+                     T listener) {
         this.secretKey = secretKey;
         this.parser = registry.get();
         this.registry = registry;
@@ -63,11 +61,17 @@ public class RPCClient<UP, DOWN> implements Closeable, TCPConnection {
             }
         };
         //noinspection unchecked
-        UP proxy = (UP) Proxy.newProxyInstance(upClass.getClassLoader(),
-                new Class[]{upClass, SystemMessageListener.class},
+        Class<T> tClass = registry.superInterface();
+        proxy = (T) Proxy.newProxyInstance(tClass.getClassLoader(),
+                new Class[]{tClass, SystemMessageListener.class},
                 handler);
         this.listener = listener;
         this.tcpClient = new VanillaTCPClient(name, socketAddresses, new ClientListener());
+    }
+
+    @Override
+    public T to(long address) {
+        return proxy;
     }
 
     public void write(VanillaSignedMessage message) {
@@ -75,10 +79,10 @@ public class RPCClient<UP, DOWN> implements Closeable, TCPConnection {
             if (message.protocol() == 0) {
                 int pmt = registry.protocolMessageTypeFor(message.getClass());
                 message.protocol(pmt >>> 16);
-                message.messageType(pmt & MASK_16);
+                message.messageType(pmt & DecentredUtil.MASK_16);
             }
             if (!message.signed()) {
-                message.sign(secretKey);
+                message.sign(secretKey, timeProvider);
             }
             tcpClient.write(message.byteBuffer());
 
@@ -125,5 +129,14 @@ public class RPCClient<UP, DOWN> implements Closeable, TCPConnection {
                 throw iore;
             }
         }
+    }
+
+    public TimeProvider timeProvider() {
+        return timeProvider;
+    }
+
+    public RPCClient<T> timeProvider(TimeProvider timeProvider) {
+        this.timeProvider = timeProvider;
+        return this;
     }
 }

@@ -5,8 +5,10 @@ import net.openhft.chronicle.bytes.MethodId;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.dto.ApplicationErrorResponse;
 
-public interface SystemMessageListener
-        extends AccountManagementResponses, ConnectionStatusListener {
+public interface SystemMessageListener extends
+        AccountManagementResponses,
+        Verifier,
+        ConnectionStatusListener {
 
     /**
      * Notify an application error occurred in response to a message passed.

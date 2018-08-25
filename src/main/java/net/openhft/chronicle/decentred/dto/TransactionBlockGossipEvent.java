@@ -8,15 +8,19 @@ import net.openhft.chronicle.decentred.util.LongU32Writer;
 
 public class TransactionBlockGossipEvent extends VanillaSignedMessage<TransactionBlockGossipEvent> {
     private transient LongU32Writer longU32Writer;
-    private short chainId; // up to 64K chains
+    private long chainAddress;
     private short weekNumber; // up to 1256 years
     private int blockNumber; // up to 7k/s on average
-
     private LongLongMap addressToBlockNumberMap;
+
+    public TransactionBlockGossipEvent blockNumber(long blockNumber) {
+        this.blockNumber = (int) blockNumber;
+        return this;
+    }
 
     @Override
     public void readMarshallable(BytesIn bytes) throws IORuntimeException {
-        chainId = bytes.readShort();
+        chainAddress = bytes.readLong();
         weekNumber = bytes.readShort();
         blockNumber = bytes.readInt();
         int entries = (int) bytes.readStopBit();
@@ -30,12 +34,25 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
     @Override
     public void writeMarshallable(BytesOut bytes) {
         assert !addressToBlockNumberMap.containsKey(0L);
-        bytes.writeShort(chainId);
+        bytes.writeLong(chainAddress);
         bytes.writeShort(weekNumber);
         bytes.writeInt(blockNumber);
         bytes.writeStopBit(addressToBlockNumberMap.size());
         if (longU32Writer == null) longU32Writer = new LongU32Writer();
         longU32Writer.bytes = bytes;
         addressToBlockNumberMap.forEach(longU32Writer);
+    }
+
+    public long chainAddress() {
+        return chainAddress;
+    }
+
+    public TransactionBlockGossipEvent chainAddress(long chainAddress) {
+        this.chainAddress = chainAddress;
+        return this;
+    }
+
+    public LongLongMap addressToBlockNumberMap() {
+        return addressToBlockNumberMap;
     }
 }

@@ -13,8 +13,8 @@ public enum DecentredUtil {
     ;
     static final long ADDRESS_MASK = 0x1FFF_FFFF_FFFF_FFFFL;
     private static final long MASK_48 = 0x0000_FFFF_FFFF_FFFFL;
-    private static final long MASK_32 = 0x0000_0000_FFFF_FFFFL;
-    private static final int MASK_16 = 0xFFFF;
+    public static final long MASK_32 = 0x0000_0000_FFFF_FFFFL;
+    public static final int MASK_16 = 0xFFFF;
     private static final int MASK_8 = 0xFF;
 
 
@@ -73,6 +73,12 @@ public enum DecentredUtil {
         return privateKey;
     }
 
+    public static String toAddressString(long address) {
+        StringBuilder sb = new StringBuilder(13);
+        appendAddress(sb, address);
+        return sb.toString();
+    }
+
     public static void appendAddress(StringBuilder text, long value) {
         // plain address
         if ((value | MASK_48) == MASK_48)
@@ -104,4 +110,7 @@ public enum DecentredUtil {
         AppendableUtil.append(text, value & MASK_16);
     }
 
+    public static int parseRegion(String region) {
+        return (int) (LetterBase32.decode(region) & MASK_16);
+    }
 }
