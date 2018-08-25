@@ -3,11 +3,8 @@ package net.openhft.chronicle.decentred.server;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.decentred.api.MessageListener;
-import net.openhft.chronicle.decentred.api.WeeklyEvents;
-import net.openhft.chronicle.decentred.dto.EndOfRoundBlockEvent;
-import net.openhft.chronicle.decentred.dto.TransactionBlockEvent;
-import net.openhft.chronicle.decentred.dto.TransactionBlockGossipEvent;
-import net.openhft.chronicle.decentred.dto.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.api.SystemMessages;
+import net.openhft.chronicle.decentred.dto.*;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.threads.NamedThreadFactory;
@@ -15,7 +12,7 @@ import net.openhft.chronicle.threads.NamedThreadFactory;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class BlockEngine<T> implements MessageListener, WeeklyEvents, Closeable {
+public class BlockEngine<T> implements SystemMessages, Closeable {
     private final MessageListener messageListener;
     private final long address;
     private final long chainAddress;
@@ -122,6 +119,20 @@ public class BlockEngine<T> implements MessageListener, WeeklyEvents, Closeable 
     }
 */
 
+    @Override
+    public void createAccountRequest(CreateAddressRequest createAddressRequest) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void verificationEvent(VerificationEvent verificationEvent) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void invalidationEvent(InvalidationEvent record) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public void transactionBlockEvent(TransactionBlockEvent transactionBlockEvent) {
@@ -161,7 +172,7 @@ public class BlockEngine<T> implements MessageListener, WeeklyEvents, Closeable 
                     tbe.address(address);
                     tbe.blockNumber(blockNumber++);
                     for (long clusterAddress : clusterAddresses) {
-                        messageListener.onMessage(clusterAddress, tbe);
+                        messageListener.onMessageTo(clusterAddress, tbe);
                     }
                 }
 

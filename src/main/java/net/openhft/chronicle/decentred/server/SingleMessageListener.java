@@ -31,11 +31,11 @@ public class SingleMessageListener implements RunningMessageListener, Runnable {
 
     @Override
     public void onMessage(SignedMessage message) {
-        onMessage(0L, message);
+        onMessageTo(0L, message);
     }
 
     @Override
-    public void onMessage(long address, SignedMessage message) {
+    public void onMessageTo(long address, SignedMessage message) {
         Bytes bytes = lock();
         try {
             long position = bytes.writePosition();
@@ -77,7 +77,7 @@ public class SingleMessageListener implements RunningMessageListener, Runnable {
             try {
                 long address = bytes.readLong();
                 signedMessage.readMarshallable(bytes);
-                xclServer.onMessage(address, signedMessage);
+                xclServer.onMessageTo(address, signedMessage);
             } finally {
                 bytes.readPosition(end);
                 bytes.readLimit(limit);

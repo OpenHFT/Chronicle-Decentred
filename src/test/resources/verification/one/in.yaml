@@ -5,5 +5,5 @@ verificationEvent: {
   keyVerified: !!binary riUxYqLVMfa4vTGKp64D8nCrhsDLHui/hgeC+vapDpg=
 }
 ---
-onConnection: ""
+onConnection: !!null ""
 ---

@@ -1,21 +1,23 @@
 package net.openhft.chronicle.decentred.server;
 
+import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.*;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.PublicKeyRegistry;
+import net.openhft.chronicle.decentred.util.VanillaPublicKeyRegistry;
 
 /**
  * This accepts message from the XCLServer and passes them to the appropriate downstream component
  */
 public class VanillaGateway implements Gateway {
-    private final long address;
+    //    private final long address;
     private final long chainAddress;
-    private final BlockEngine main;
-    private final BlockEngine local;
-    private PublicKeyRegistry publicKeyRegistery;
+    private final SystemMessages main;
+    private final SystemMessages local;
+    private PublicKeyRegistry publicKeyRegistry = new VanillaPublicKeyRegistry();
 
-    public VanillaGateway(long address, long chainAddress, BlockEngine main, BlockEngine local) {
-        this.address = address;
+    public VanillaGateway(long address, long chainAddress, SystemMessages main, SystemMessages local) {
+//        this.address = address;
         this.chainAddress = chainAddress;
         this.main = main;
         this.local = local;
@@ -33,7 +35,7 @@ public class VanillaGateway implements Gateway {
 
     @Override
     public void createAccountRequest(CreateAddressRequest createAddressRequest) {
-        main.chainer().onMessage(createAddressRequest);
+        main.onMessage(createAddressRequest);
     }
 
     @Override
@@ -97,7 +99,7 @@ public class VanillaGateway implements Gateway {
     public void createAccountEvent(CreateAddressEvent createAddressEvent) {
         // received as a weekly event
         checkTrusted(createAddressEvent);
-        publicKeyRegistery.register(createAddressEvent.address(),
+        publicKeyRegistry.register(createAddressEvent.address(),
                 createAddressEvent.publicKey());
     }
 
@@ -107,13 +109,13 @@ public class VanillaGateway implements Gateway {
 
     @Override
     public void start() {
-        main.start();
-        local.start();
+//        main.start();
+//        local.start();
     }
 
     @Override
     public void close() {
-        main.close();
-        local.close();
+//        main.close();
+//        local.close();
     }
 }

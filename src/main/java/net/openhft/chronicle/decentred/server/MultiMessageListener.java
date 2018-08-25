@@ -17,8 +17,8 @@ public class MultiMessageListener implements RunningMessageListener {
     }
 
     @Override
-    public void onMessage(long address, SignedMessage message) {
-        messageWriters[(int) (Maths.agitate(address) & mask)].onMessage(address, message);
+    public void onMessageTo(long address, SignedMessage message) {
+        messageWriters[(int) (Maths.agitate(address) & mask)].onMessageTo(address, message);
 
     }
 

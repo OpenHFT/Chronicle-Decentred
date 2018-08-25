@@ -25,10 +25,6 @@ public class VanillaVerifyIP implements Verifier, ConnectionStatusListener {
 
     @Override
     public void onConnection(TCPConnection connection) {
-        onConnection();
-    }
-
-    public void onConnection() {
         Verifier to = client.to(DEFAULT_CONNECTION);
         for (List<VerificationEvent> verificationEventList : verifyMap.values()) {
             for (VerificationEvent verificationEvent : verificationEventList) {

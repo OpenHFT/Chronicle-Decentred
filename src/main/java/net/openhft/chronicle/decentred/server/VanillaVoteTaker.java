@@ -51,7 +51,7 @@ public class VanillaVoteTaker implements VoteTaker {
         }
         endOfRoundBlockEvent.blockNumber(blockNumber);
         for (long clusterAddress : clusterAddresses) {
-            lookup.onMessage(clusterAddress, endOfRoundBlockEvent);
+            lookup.onMessageTo(clusterAddress, endOfRoundBlockEvent);
         }
     }
 }

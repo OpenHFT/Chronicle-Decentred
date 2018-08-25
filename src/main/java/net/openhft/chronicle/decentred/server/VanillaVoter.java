@@ -27,7 +27,7 @@ public class VanillaVoter implements Voter {
             gossip.copyTo(vote.gossipEvent());
         }
         for (long clusterAddress : clusterAddresses) {
-            router.onMessage(clusterAddress, vote);
+            router.onMessageTo(clusterAddress, vote);
         }
     }
 }
