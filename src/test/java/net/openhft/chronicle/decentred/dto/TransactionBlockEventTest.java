@@ -6,7 +6,9 @@ import net.openhft.chronicle.decentred.api.ConnectionStatusListener;
 import net.openhft.chronicle.decentred.api.SystemMessageListener;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.remote.rpc.KeyPair;
+import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.util.LongLongMap;
 import net.openhft.chronicle.wire.Marshallable;
 import org.junit.Test;
 
@@ -80,5 +82,21 @@ public class TransactionBlockEventTest {
                         "0136 ea 20 4e c5 c4 0f cc 7c 56 8c 6d 2e 04 6e ee 23\n" +
                         "0146 da cf 86 80 85 f4 14 b6 6b de 7b d2 91 ca 10 ca\n" +
                         "0156 93 ea\n", tbe.toHexString());
+
+        TransactionBlockGossipEvent gossip = registry.create(TransactionBlockGossipEvent.class)
+                .blockNumber(1)
+                .chainAddress(DecentredUtil.parseAddress("local"));
+        LongLongMap map = gossip.addressToBlockNumberMap();
+        map.justPut(DecentredUtil.parseAddress("xxx"), 123);
+        map.justPut(DecentredUtil.parseAddress("yyy"), 109);
+        map.justPut(DecentredUtil.parseAddress("zzz"), 195);
+        gossip.sign(kp.secretKey, new SetTimeProvider("2018-08-20T12:53:04.076123"));
+        System.out.println(gossip);
+
+        TransactionBlockVoteEvent vote = registry.create(TransactionBlockVoteEvent.class)
+                .gossipEvent(gossip);
+        vote.sign(kp.secretKey, new SetTimeProvider("2018-08-20T12:53:04.761234"));
+        System.out.println(vote);
+
     }
 }

@@ -63,10 +63,10 @@ public class VanillaGateway implements Gateway {
         long chainAddress = transactionBlockEvent.chainAddress();
         if (isMainChain(chainAddress))
             main.transactionBlockEvent(transactionBlockEvent);
-        else if (this.chainAddress == this.chainAddress)
+        else if (this.chainAddress == chainAddress)
             local.transactionBlockEvent(transactionBlockEvent);
         else
-            System.err.println("Unknown chainAddress " + this.chainAddress);
+            System.err.println("Unknown chainAddress " + DecentredUtil.toAddressString(chainAddress));
     }
 
     private boolean isMainChain(long chainAddress) {
@@ -81,7 +81,7 @@ public class VanillaGateway implements Gateway {
         else if (this.chainAddress == chainAddress)
             local.transactionBlockGossipEvent(transactionBlockGossipEvent);
         else
-            System.err.println("Unknown chainAddress " + chainAddress);
+            System.err.println("Unknown chainAddress " + DecentredUtil.toAddressString(chainAddress));
     }
 
     @Override
@@ -89,10 +89,10 @@ public class VanillaGateway implements Gateway {
         long chainAddress = transactionBlockVoteEvent.chainAddress();
         if (isMainChain(chainAddress))
             main.transactionBlockVoteEvent(transactionBlockVoteEvent);
-        else if (this.chainAddress == this.chainAddress)
+        else if (this.chainAddress == chainAddress)
             local.transactionBlockVoteEvent(transactionBlockVoteEvent);
         else
-            System.err.println("Unknown chainAddress " + this.chainAddress);
+            System.err.println("Unknown chainAddress " + DecentredUtil.toAddressString(chainAddress));
     }
 
     @Override

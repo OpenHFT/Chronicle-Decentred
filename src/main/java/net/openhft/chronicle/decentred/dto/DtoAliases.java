@@ -12,6 +12,8 @@ public enum DtoAliases {
                 CreateAddressEvent.class,
                 InvalidationEvent.class,
                 TransactionBlockEvent.class,
+                TransactionBlockGossipEvent.class,
+                TransactionBlockVoteEvent.class,
                 VerificationEvent.class
         );
     }

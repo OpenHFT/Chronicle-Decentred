@@ -2,6 +2,7 @@ package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.dto.DtoAliases;
+import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.wire.TextMethodTester;
 import org.junit.Test;
 
@@ -41,7 +42,7 @@ public class VanillaGatewayTest {
     }
 
     static VanillaGateway createGateway(GatewayTester tester) {
-        return new VanillaGateway(0, 0, tester, tester).router(tester);
+        return new VanillaGateway(0, DecentredUtil.parseAddress("local"), tester, tester).router(tester);
     }
 
     @Test
