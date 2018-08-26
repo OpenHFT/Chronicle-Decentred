@@ -1,8 +1,7 @@
 package net.openhft.chronicle.decentred.server;
 
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.annotation.UsedViaReflection;
-import net.openhft.chronicle.decentred.api.MessageRouter;
-import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.api.Verifier;
 import net.openhft.chronicle.decentred.dto.*;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
@@ -21,7 +20,7 @@ public class VanillaGateway implements Gateway {
     private final BlockEngine main;
     private final BlockEngine local;
     private final VanillaVerifyIP verifyIP;
-    private MessageRouter router;
+    private DecentredServer decentredServer;
     private PublicKeyRegistry publicKeyRegistry = new VanillaPublicKeyRegistry();
 
     public VanillaGateway(long address, long chainAddress, BlockEngine main, BlockEngine local) {
@@ -29,7 +28,7 @@ public class VanillaGateway implements Gateway {
         this.chainAddress = chainAddress;
         this.main = main;
         this.local = local;
-        verifyIP = new VanillaVerifyIP(addr -> (Verifier) router.to(addr));
+        verifyIP = new VanillaVerifyIP(addr -> (Verifier) decentredServer.to(addr));
     }
 
     public static <T> VanillaGateway newGateway(DtoRegistry<T> dtoRegistry,
@@ -48,14 +47,16 @@ public class VanillaGateway implements Gateway {
         );
     }
 
-    public void start(MessageToListener messageToListener) {
-        main.start(messageToListener);
-        local.start(messageToListener);
+    public void start(DecentredServer decentredServer) {
+        this.decentredServer = decentredServer;
+        main.start(decentredServer);
+        local.start(decentredServer);
     }
 
-    public void tcpMessageListener(MessageToListener messageToListener) {
-        main.tcpMessageListener(messageToListener);
-        local.tcpMessageListener(messageToListener);
+    public void tcpMessageListener(DecentredServer decentredServer) {
+        this.decentredServer = decentredServer;
+        main.tcpMessageListener(decentredServer);
+        local.tcpMessageListener(decentredServer);
     }
 
     @UsedViaReflection
@@ -64,13 +65,12 @@ public class VanillaGateway implements Gateway {
         local.processOneBlock();
     }
 
-    public VanillaGateway router(MessageRouter router) {
-        this.router = router;
-        return this;
-    }
-
     @Override
     public void createAddressRequest(CreateAddressRequest createAddressRequest) {
+        BytesStore publicKey = createAddressRequest.publicKey();
+        long address = DecentredUtil.toAddress(publicKey);
+        decentredServer.register(address, publicKey);
+        decentredServer.subscribe(address);
         main.onMessage(createAddressRequest);
     }
 
@@ -132,7 +132,7 @@ public class VanillaGateway implements Gateway {
             System.err.println("Unknown chainAddress " + this.chainAddress);
     }
 
-    public void createAccountEvent(CreateAddressEvent createAddressEvent) {
+    public void createAddressEvent(CreateAddressEvent createAddressEvent) {
         // received as a weekly event
         checkTrusted(createAddressEvent);
         publicKeyRegistry.register(createAddressEvent.address(),

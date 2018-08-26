@@ -28,7 +28,7 @@ public class QueuingChainer implements MessageListener {
     public TransactionBlockEvent nextTransactionBlockEvent() {
         TransactionBlockEvent tbeToSend;
         synchronized (transactionLock) {
-            System.out.println("tbe.isEmpty() " + tbe.isEmpty());
+//            System.out.println("tbe.isEmpty() " + tbe.isEmpty());
             if (tbe.isEmpty())
                 return null;
             tbeToSend = tbe;

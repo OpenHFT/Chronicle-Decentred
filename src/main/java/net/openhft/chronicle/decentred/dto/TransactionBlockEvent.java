@@ -3,6 +3,7 @@ package net.openhft.chronicle.decentred.dto;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.util.AddressConverter;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
@@ -73,7 +74,11 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
                 long position = transactions.readPosition();
                 long length = transactions.readUnsignedInt(position);
                 transactions.readLimit(position + length);
-                dtoParser.parseOne(transactions, allMessages);
+                try {
+                    dtoParser.parseOne(transactions, allMessages);
+                } catch (Exception e) {
+                    Jvm.warn().on(getClass(), "Error processing transaction event ", e);
+                }
                 transactions.readLimit(limit);
                 transactions.readSkip(length);
             }
@@ -140,6 +145,18 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
                                 }
                             })));
         }
+    }
+
+    @NotNull
+    @Override
+    public <T> T deepCopy() {
+        TransactionBlockEvent tbe = new TransactionBlockEvent();
+        tbe.dtoParser = dtoParser;
+        tbe.transactions = (transactions.readRemaining() == 0
+                ? Bytes.elasticHeapByteBuffer(1)
+                : transactions.copy().bytesForRead());
+        tbe.transactionsList = transactionsList;
+        return (T) tbe;
     }
 
     public long chainAddress() {

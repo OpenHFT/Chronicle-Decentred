@@ -7,7 +7,7 @@ import net.openhft.chronicle.decentred.dto.TransactionBlockEvent;
 public interface BlockReplayer {
     void transactionBlockEvent(TransactionBlockEvent transactionBlockEvent);
 
-    void treeBlockEvent(EndOfRoundBlockEvent endOfRoundBlockEvent);
+    void endOfRoundBlockEvent(EndOfRoundBlockEvent endOfRoundBlockEvent);
 
     void replayBlocks();
 }

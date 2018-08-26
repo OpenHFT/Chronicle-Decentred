@@ -54,7 +54,7 @@ public class CreateAddressRequestTest {
 
         CreateAddressEvent created = new CreateAddressEvent()
                 .protocol(1).messageType(3)
-                .createAccountRequest(ca);
+                .createAddressRequest(ca);
 
         created.sign(secretKey, timeProvider);
         assertEquals("0000 d1 00 00 00                                     # length\n" +

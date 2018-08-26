@@ -7,5 +7,5 @@ public interface VoteTaker {
 
     boolean hasMajority();
 
-    void sendEndOfRoundBlock(long blockNumber);
+    boolean sendEndOfRoundBlock(long blockNumber);
 }

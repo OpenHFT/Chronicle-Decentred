@@ -1,11 +1,12 @@
 package net.openhft.chronicle.decentred.util;
 
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.wire.LongConversion;
 
 public interface PublicKeyRegistry {
-    void register(long address, BytesStore publicKey);
+    void register(@LongConversion(AddressConverter.class) long address, BytesStore publicKey);
 
-    Boolean verify(long address, BytesStore sigAndMsg);
+    Boolean verify(@LongConversion(AddressConverter.class) long address, BytesStore sigAndMsg);
 
     boolean internal();
 

@@ -14,7 +14,7 @@ public interface AccountManagementResponses {
      * @param createAddressEvent record
      */
     @MethodId(0xF080)
-    default void createAccountEvent(CreateAddressEvent createAddressEvent) {
+    default void createAddressEvent(CreateAddressEvent createAddressEvent) {
         Jvm.debug().on(getClass(), "Account created " + createAddressEvent);
     }
 }

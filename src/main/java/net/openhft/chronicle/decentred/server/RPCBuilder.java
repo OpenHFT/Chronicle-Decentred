@@ -5,6 +5,7 @@ import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
+import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.salt.Ed25519;
 
@@ -20,7 +21,6 @@ public class RPCBuilder<T> {
     private Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
     private Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
     private Set<Long> clusterAddresses = new LinkedHashSet<>();
-    private long serverAddress = 0;
     private int mainBlockPeriodMS = 1000;
     private int localBlockPeriodMS = 100;
     private String region = "test";
@@ -42,9 +42,6 @@ public class RPCBuilder<T> {
     public RPCServer<T> createServer(String name, int port, T mainTransactionProcessor, T localTransactionProcessor) throws IOException {
         assert mainTransactionProcessor instanceof TransactionProcessor;
         assert localTransactionProcessor instanceof TransactionProcessor;
-        long serverAddress = this.serverAddress;
-        if (serverAddress == 0)
-            serverAddress = port;
 
         if (publicKey.isEmpty() || secretKey.isEmpty()) {
             if (privateKey.isEmpty())
@@ -52,6 +49,8 @@ public class RPCBuilder<T> {
             else
                 Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
         }
+        long serverAddress = DecentredUtil.toAddress(publicKey);
+        addClusterAddress(serverAddress);
 
         boolean addressAdded = clusterAddresses.add(serverAddress);
         long[] clusterAddressArray =
@@ -78,11 +77,13 @@ public class RPCBuilder<T> {
                 dtoRegistry,
                 t -> (T) gateway)
                 .internal(internal);
+        ((TransactionProcessor) mainTransactionProcessor).messageRouter(server);
+        ((TransactionProcessor) localTransactionProcessor).messageRouter(server);
         gateway.start(server);
         // register the address - otherwise, verify will fail
-        gateway.createAccountEvent(
+        gateway.createAddressEvent(
                 new CreateAddressEvent()
-                        .createAccountRequest(new CreateAddressRequest()
+                        .createAddressRequest(new CreateAddressRequest()
                                 .publicKey(publicKey)));
 
         if (addressAdded)
@@ -95,11 +96,6 @@ public class RPCBuilder<T> {
                 .internal(internal);
     }*/
 
-    public RPCBuilder serverAddress(long serverAddress) {
-        this.serverAddress = serverAddress;
-        clusterAddresses.add(serverAddress);
-        return this;
-    }
 
     public RPCBuilder addClusterAddress(long serverAddress) {
         clusterAddresses.add(serverAddress);
@@ -131,10 +127,6 @@ public class RPCBuilder<T> {
     public RPCBuilder clusterAddresses(Set<Long> clusterAddresses) {
         this.clusterAddresses = clusterAddresses;
         return this;
-    }
-
-    public long serverAddress() {
-        return serverAddress;
     }
 
     public int mainBlockPeriodMS() {

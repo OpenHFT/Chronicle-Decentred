@@ -92,5 +92,14 @@ public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEv
             addressToBlockNumberMap.forEach((k, v) -> out.write(DecentredUtil.toAddressString(k)).int64(v));
         });
     }
+
+    @NotNull
+    @Override
+    public <T> T deepCopy() {
+        EndOfRoundBlockEvent eorbe = new EndOfRoundBlockEvent();
+        eorbe.addressToBlockNumberMap = LongLongMap.withExpectedSize(addressToBlockNumberMap.size());
+        eorbe.addressToBlockNumberMap.putAll(addressToBlockNumberMap);
+        return (T) eorbe;
+    }
 }
 

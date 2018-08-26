@@ -5,7 +5,7 @@ import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 
-public interface GatewayTester extends SystemMessages, MessageRouter, MessageToListener {
+public interface GatewayTester extends DecentredServer, SystemMessages, MessageRouter, MessageToListener {
     @UsedViaReflection
     void processOneBlock();
 }

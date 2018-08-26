@@ -60,8 +60,7 @@ public class VanillaGatewayTest {
                 50,
                 50,
                 tester,
-                tester)
-                .router(tester);
+                tester);
         KeyPair kp = new KeyPair(17);
         SetTimeProvider stp = new SetTimeProvider("2018-08-20T12:53:05.000001")
                 .autoIncrement(1, TimeUnit.MICROSECONDS);
@@ -158,7 +157,7 @@ public class VanillaGatewayTest {
     }
 
     @Test
-    public void createAccountEvent() {
+    public void createAddressEvent() {
         test("gateway/createAddressRequest");
     }
 }

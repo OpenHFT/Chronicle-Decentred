@@ -1,6 +1,5 @@
 package net.openhft.chronicle.decentred.server;
 
-import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.TransactionBlockVoteEvent;
@@ -28,7 +27,7 @@ public class VanillaVoter implements Voter {
     @Override
     public void sendVote(long blockNumber) {
         if (gossip.addressToBlockNumberMap().size() == 0) {
-            Jvm.warn().on(getClass(), "Nothing to vote on");
+//            Jvm.warn().on(getClass(), "Nothing to vote on");
             return;
         }
         vote.reset();

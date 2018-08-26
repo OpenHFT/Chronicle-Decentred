@@ -5,6 +5,7 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.Maths;
 import net.openhft.chronicle.core.util.ObjectUtils;
 import net.openhft.chronicle.decentred.api.SystemMessages;
+import net.openhft.chronicle.decentred.dto.DtoAliases;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 
 import java.lang.reflect.Method;
@@ -15,6 +16,9 @@ import java.util.function.Supplier;
 import static net.openhft.chronicle.decentred.util.DecentredUtil.MASK_16;
 
 public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
+    static {
+        DtoAliases.addAliases();
+    }
 
     private final Class<T> superInterface;
     private final Map<Class, Integer> classToProtocolMessageType = new LinkedHashMap<>();

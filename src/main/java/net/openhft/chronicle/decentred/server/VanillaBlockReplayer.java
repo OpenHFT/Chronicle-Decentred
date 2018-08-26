@@ -36,7 +36,7 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
     }
 
     @Override
-    public synchronized void treeBlockEvent(EndOfRoundBlockEvent endOfRoundBlockEvent) {
+    public synchronized void endOfRoundBlockEvent(EndOfRoundBlockEvent endOfRoundBlockEvent) {
         transactionLogMap.computeIfAbsent(endOfRoundBlockEvent.address(), k -> new TransactionLog())
                 .add(endOfRoundBlockEvent);
         lastEndOfRoundBlockEvent = endOfRoundBlockEvent;
@@ -49,7 +49,7 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
         List<Runnable> replayActions = new ArrayList<>();
         synchronized (this) {
             if (lastEndOfRoundBlockEvent == null) {
-                Jvm.warn().on(getClass(), "No EndOfRoundBlockEvent to process");
+//                Jvm.warn().on(getClass(), "No EndOfRoundBlockEvent to process");
                 return;
             }
             try {
@@ -118,8 +118,12 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
                 System.out.println("Duplicate message id: " + blockNumber + " size: " + messages.size() + " was " + msg.getClass());
             } else if (blockNumber > messages.size()) {
                 System.out.println("Missing message id: " + blockNumber);
+            } else if (msg instanceof TransactionBlockEvent) {
+                messages.add(((TransactionBlockEvent<?>) msg).deepCopy());
+            } else if (msg instanceof EndOfRoundBlockEvent) {
+                messages.add(((EndOfRoundBlockEvent) msg).deepCopy());
             } else {
-//                messages.add(msg.deepCopy());
+                Jvm.warn().on(getClass(), "Unknown " + msg.getClass());
             }
         }
 

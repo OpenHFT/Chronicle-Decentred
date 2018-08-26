@@ -4,6 +4,9 @@ import net.openhft.chronicle.bytes.BytesMarshallable;
 import net.openhft.chronicle.bytes.BytesStore;
 
 public interface SignedMessage extends BytesMarshallable {
+    int protocol();
+
+    int messageType();
     /**
      * Once a message is signed it can't be modified, only read.
      * <p>
@@ -41,4 +44,5 @@ public interface SignedMessage extends BytesMarshallable {
      * @param secretKey to signed this message with.
      */
     SignedMessage sign(BytesStore secretKey);
+
 }

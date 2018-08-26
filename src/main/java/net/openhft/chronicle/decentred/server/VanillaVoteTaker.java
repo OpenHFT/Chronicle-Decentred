@@ -1,6 +1,5 @@
 package net.openhft.chronicle.decentred.server;
 
-import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.EndOfRoundBlockEvent;
 import net.openhft.chronicle.decentred.dto.TransactionBlockVoteEvent;
@@ -15,16 +14,18 @@ public class VanillaVoteTaker implements VoteTaker {
     private final long address;
     private final long[] clusterAddresses;
     private final long chainAddress;
+    private final BlockReplayer replayer;
     private LongLongMap addressToBlockNumberMap = LongLongMap.withExpectedSize(16);
     private EndOfRoundBlockEvent endOfRoundBlockEvent = new EndOfRoundBlockEvent();
     private MessageToListener tcpMessageListener;
 
-    public VanillaVoteTaker(long address, long chainAddress, long[] clusterAddresses) {
+    public VanillaVoteTaker(long address, long chainAddress, long[] clusterAddresses, BlockReplayer replayer) {
         assert LongStream.of(clusterAddresses).distinct().count() == clusterAddresses.length;
 
         this.address = address;
         this.clusterAddresses = clusterAddresses;
         this.chainAddress = chainAddress;
+        this.replayer = replayer;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class VanillaVoteTaker implements VoteTaker {
     }
 
     @Override
-    public void sendEndOfRoundBlock(long blockNumber) {
+    public boolean sendEndOfRoundBlock(long blockNumber) {
         // TODO only do this when a majority of nodes vote the same.
         // TODO see previous method on determining the majority.
         endOfRoundBlockEvent.reset();
@@ -48,15 +49,19 @@ public class VanillaVoteTaker implements VoteTaker {
                 .chainAddress(chainAddress);
         synchronized (this) {
             if (addressToBlockNumberMap.size() == 0) {
-                Jvm.warn().on(getClass(), "No blocks to complete");
-                return;
+//                Jvm.warn().on(getClass(), "No blocks to complete");
+                return false;
             }
             endOfRoundBlockEvent.addressToBlockNumberMap().putAll(addressToBlockNumberMap);
         }
         endOfRoundBlockEvent.blockNumber(blockNumber);
         for (long clusterAddress : clusterAddresses) {
-            tcpMessageListener.onMessageTo(clusterAddress, endOfRoundBlockEvent);
+            if (clusterAddress == address)
+                replayer.endOfRoundBlockEvent(endOfRoundBlockEvent);
+            else
+                tcpMessageListener.onMessageTo(clusterAddress, endOfRoundBlockEvent);
         }
+        return true;
     }
 
     public VanillaVoteTaker tcpMessageListener(MessageToListener tcpMessageListener) {

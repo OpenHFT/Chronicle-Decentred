@@ -46,10 +46,10 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         this.clusterAddresses = clusterAddresses;
         assert LongStream.of(clusterAddresses).anyMatch(a -> a == address);
         chainer = new QueuingChainer(chainAddress, dtoRegistry);
-        voteTaker = new VanillaVoteTaker(address, chainAddress, clusterAddresses);
+        blockReplayer = new VanillaBlockReplayer<>(address, dtoRegistry, postBlockChainProcessor);
+        voteTaker = new VanillaVoteTaker(address, chainAddress, clusterAddresses, blockReplayer);
         voter = new VanillaVoter(address, clusterAddresses, voteTaker);
         gossiper = new VanillaGossiper(address, chainAddress, clusterAddresses, voter);
-        blockReplayer = new VanillaBlockReplayer<>(address, dtoRegistry, postBlockChainProcessor);
         String regionStr = DecentredUtil.toAddressString(chainAddress);
         votingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-voter", true, Thread.MAX_PRIORITY));
         processingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-processor", true, Thread.MAX_PRIORITY));
@@ -109,7 +109,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     public void endOfRoundBlockEvent(EndOfRoundBlockEvent endOfRoundBlockEvent) {
-        blockReplayer.treeBlockEvent(endOfRoundBlockEvent);
+        blockReplayer.endOfRoundBlockEvent(endOfRoundBlockEvent);
     }
 
     @Override
@@ -183,11 +183,13 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
             tbe.address(address);
             tbe.blockNumber(blockNumber);
             for (long clusterAddress : clusterAddresses) {
-                if (clusterAddress == address)
-                    gossiper.transactionBlockEvent(tbe);
-                else
+                if (clusterAddress == address) {
+                    transactionBlockEvent(tbe);
+                } else {
                     tcpMessageListener.onMessageTo(clusterAddress, tbe);
+                }
             }
+            blockNumber++;
         }
 
 //                int subRound = Math.max(100_000, periodUS * 100);
@@ -207,7 +209,8 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
 //                start = System.nanoTime();
         //System.out.println(address + " " + blockNumber);
         if (voteTaker.hasMajority()) {
-            voteTaker.sendEndOfRoundBlock(blockNumber++);
+            if (voteTaker.sendEndOfRoundBlock(blockNumber))
+                blockNumber++;
         }
     }
 

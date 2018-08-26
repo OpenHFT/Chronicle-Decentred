@@ -81,9 +81,15 @@ public class RPCServer<T> implements DecentredServer<T>, Closeable {
      * @param tcpConnection   to connect to.
      */
     public void addTCPConnection(long addressOrRegion, TCPConnection tcpConnection) {
+        System.out.println("Registered " + DecentredUtil.toAddressString(addressOrRegion) + " as " + tcpConnection);
         synchronized (remoteMap) {
             remoteMap.justPut(addressOrRegion, tcpConnection);
         }
+    }
+
+    @Override
+    public void subscribe(long address) {
+        addTCPConnection(address, DEFAULT_CONNECTION_TL.get());
     }
 
     @Override
@@ -137,13 +143,19 @@ public class RPCServer<T> implements DecentredServer<T>, Closeable {
         }
 
         if (tcpConnection == null) {
-            System.out.println(address + " - No connection to address " + toAddress + " to send " + message);
+            String addressString = DecentredUtil.toAddressString(toAddress);
+            System.out.println(address + " - No connection to address " + addressString + " to send " + message);
             return;
         }
 
         try {
 
             if (!message.signed()) {
+                if (message.protocol() == 0) {
+                    int protocol = dtoRegistry.protocolFor(message.getClass());
+                    int messageType = dtoRegistry.messageTypeFor(message.getClass());
+                    ((VanillaSignedMessage) message).protocol(protocol).messageType(messageType);
+                }
                 message.sign(secretKey);
             }
             tcpConnection.write(((VanillaSignedMessage) message).byteBuffer());

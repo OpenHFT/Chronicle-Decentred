@@ -1,18 +1,22 @@
 package net.openhft.chronicle.decentred.server;
 
+import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.SystemMessages;
+import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.*;
 
-public class VanillaTransactionProcessor implements SystemMessages {
-    private final SystemMessages messages;
+public class VanillaTransactionProcessor implements SystemMessages, TransactionProcessor {
+    private MessageRouter<SystemMessages> router;
 
-    public VanillaTransactionProcessor(SystemMessages messages) {
-        this.messages = messages;
+    @Override
+    public void messageRouter(MessageRouter messageRouter) {
+        this.router = messageRouter;
     }
 
     @Override
     public void createAddressRequest(CreateAddressRequest createAddressRequest) {
-        throw new UnsupportedOperationException();
+        router.to(createAddressRequest.address())
+                .createAddressEvent(new CreateAddressEvent().createAddressRequest(createAddressRequest));
     }
 
     @Override
@@ -46,7 +50,7 @@ public class VanillaTransactionProcessor implements SystemMessages {
     }
 
     @Override
-    public void createAccountEvent(CreateAddressEvent createAddressEvent) {
+    public void createAddressEvent(CreateAddressEvent createAddressEvent) {
         throw new UnsupportedOperationException();
     }
 }

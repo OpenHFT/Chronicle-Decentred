@@ -1,6 +1,5 @@
 package net.openhft.chronicle.decentred.server;
 
-import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.dto.TransactionBlockGossipEvent;
@@ -43,7 +42,7 @@ public class VanillaGossiper implements Gossiper {
     @Override
     public void sendGossip(long blockNumber) {
         if (lastBlockMap.size() == 0) {
-            Jvm.warn().on(getClass(), "nothing to gossip about");
+//            Jvm.warn().on(getClass(), "nothing to gossip about");
             return;
         }
 
