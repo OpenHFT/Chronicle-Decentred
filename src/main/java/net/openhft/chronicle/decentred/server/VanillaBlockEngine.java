@@ -46,9 +46,9 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         this.clusterAddresses = clusterAddresses;
         assert LongStream.of(clusterAddresses).anyMatch(a -> a == address);
         chainer = new QueuingChainer(chainAddress, dtoRegistry);
-        gossiper = new VanillaGossiper(address, chainAddress, clusterAddresses);
-        voter = new VanillaVoter(clusterAddresses);
         voteTaker = new VanillaVoteTaker(address, chainAddress, clusterAddresses);
+        voter = new VanillaVoter(address, clusterAddresses, voteTaker);
+        gossiper = new VanillaGossiper(address, chainAddress, clusterAddresses, voter);
         blockReplayer = new VanillaBlockReplayer<>(address, dtoRegistry, postBlockChainProcessor);
         String regionStr = DecentredUtil.toAddressString(chainAddress);
         votingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-voter", true, Thread.MAX_PRIORITY));
@@ -181,7 +181,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         // tg System.out.println("TBE "+tbe);
         if (tbe != null) {
             tbe.address(address);
-            tbe.blockNumber(blockNumber++);
+            tbe.blockNumber(blockNumber);
             for (long clusterAddress : clusterAddresses) {
                 if (clusterAddress == address)
                     gossiper.transactionBlockEvent(tbe);

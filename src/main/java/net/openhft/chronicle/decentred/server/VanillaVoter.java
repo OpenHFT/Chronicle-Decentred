@@ -6,13 +6,17 @@ import net.openhft.chronicle.decentred.dto.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.TransactionBlockVoteEvent;
 
 public class VanillaVoter implements Voter {
+    private final long address;
     private final long[] clusterAddresses;
+    private final VanillaVoteTaker voteTaker;
     private MessageToListener tcpMessageListener;
     private TransactionBlockGossipEvent gossip = new TransactionBlockGossipEvent();
     private TransactionBlockVoteEvent vote = new TransactionBlockVoteEvent();
 
-    public VanillaVoter(long[] clusterAddresses) {
+    public VanillaVoter(long address, long[] clusterAddresses, VanillaVoteTaker voteTaker) {
+        this.address = address;
         this.clusterAddresses = clusterAddresses;
+        this.voteTaker = voteTaker;
     }
 
     @Override
@@ -32,7 +36,10 @@ public class VanillaVoter implements Voter {
             gossip.copyTo(vote.gossipEvent());
         }
         for (long clusterAddress : clusterAddresses) {
-            tcpMessageListener.onMessageTo(clusterAddress, vote);
+            if (address == clusterAddress)
+                voteTaker.transactionBlockVoteEvent(vote);
+            else
+                tcpMessageListener.onMessageTo(clusterAddress, vote);
         }
     }
 

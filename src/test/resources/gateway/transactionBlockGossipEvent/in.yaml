@@ -11,5 +11,5 @@ transactionBlockGossipEvent: {
   }
 }
 ---
-processOneBlock: !!null ""
+processOneBlock: ""
 ---

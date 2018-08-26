@@ -13,12 +13,14 @@ public class VanillaGossiper implements Gossiper {
     private final long address;
     private final LongLongMap lastBlockMap = LongLongMap.withExpectedSize(16);
     private final long[] clusterAddresses;
+    private final Voter voter;
     private final TransactionBlockGossipEvent gossip;
     private MessageToListener tcpMessageToListener;
 
-    public VanillaGossiper(long address, long chainAddress, long[] clusterAddresses) {
+    public VanillaGossiper(long address, long chainAddress, long[] clusterAddresses, Voter voter) {
         this.address = address;
         this.clusterAddresses = clusterAddresses;
+        this.voter = voter;
         assert LongStream.of(clusterAddresses).anyMatch(a -> a == address);
         gossip = new TransactionBlockGossipEvent()
                 .chainAddress(chainAddress);
@@ -52,7 +54,10 @@ public class VanillaGossiper implements Gossiper {
             gossip.addressToBlockNumberMap().putAll(lastBlockMap);
         }
         for (long clusterAddress : clusterAddresses) {
-            tcpMessageToListener.onMessageTo(clusterAddress, gossip);
+            if (clusterAddress == address)
+                voter.transactionBlockGossipEvent(gossip);
+            else
+                tcpMessageToListener.onMessageTo(clusterAddress, gossip);
         }
     }
 
