@@ -156,8 +156,4 @@ public class VanillaGatewayTest {
         test("gateway/endOfRoundBlockEvent");
     }
 
-    @Test
-    public void createAddressEvent() {
-        test("gateway/createAddressRequest");
-    }
 }
