@@ -1,19 +1,19 @@
 package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.core.Maths;
-import net.openhft.chronicle.decentred.api.MessageListener;
+import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.SignedMessage;
 
-public class MultiMessageListener implements RunningMessageListener {
-    final SingleMessageListener[] messageWriters;
+public class MultiMessageToListener implements RunningMessageToListener {
+    final SingleMessageToListener[] messageWriters;
     private final int mask;
 
-    public MultiMessageListener(int count, MessageListener xclServer) {
+    public MultiMessageToListener(int count, MessageToListener xclServer) {
         count = Maths.nextPower2(count, 2);
         this.mask = count - 1;
-        this.messageWriters = new SingleMessageListener[count];
+        this.messageWriters = new SingleMessageToListener[count];
         for (int i = 0; i < count; i++)
-            messageWriters[i] = new SingleMessageListener(xclServer);
+            messageWriters[i] = new SingleMessageToListener(xclServer);
     }
 
     @Override

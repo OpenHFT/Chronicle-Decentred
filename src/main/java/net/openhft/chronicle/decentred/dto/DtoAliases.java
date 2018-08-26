@@ -14,6 +14,7 @@ public enum DtoAliases {
                 TransactionBlockEvent.class,
                 TransactionBlockGossipEvent.class,
                 TransactionBlockVoteEvent.class,
+                EndOfRoundBlockEvent.class,
                 VerificationEvent.class
         );
     }

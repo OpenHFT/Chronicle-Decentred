@@ -62,7 +62,6 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
 
     @Override
     public void writeMarshallable(BytesOut bytes) {
-        assert !addressToBlockNumberMap.containsKey(0L);
         bytes.writeLong(chainAddress);
         bytes.writeShort(weekNumber);
         bytes.writeInt(blockNumber);

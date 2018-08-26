@@ -98,11 +98,8 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     }
 
     public boolean isEmpty() {
-        return transactions.readRemaining() == 0;
-    }
-
-    public boolean isBufferFull() {
-        return transactions.writePosition() > 1 << 20;
+        return transactions.readRemaining() == 0 ||
+                (transactionsList != null && !transactionsList.isEmpty());
     }
 
     @Override
@@ -127,7 +124,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     @Override
     public void writeMarshallable(@NotNull WireOut wire) {
         super.writeMarshallable(wire);
-        if (dtoParser == null) {
+        if (dtoParser == null && transactionsList != null) {
             wire.write("transactions").sequence(transactionsList);
 
         } else {

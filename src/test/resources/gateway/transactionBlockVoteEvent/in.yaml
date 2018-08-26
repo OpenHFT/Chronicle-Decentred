@@ -6,7 +6,7 @@ transactionBlockVoteEvent: {
     address: phccofmpy6ci,
     chainAddress: local,
     weekNumber: 0,
-    blockNumber: 1,
+    blockNumber: 0,
     addressToBlockNumberMap: {
       yyy: 109,
       zzz: 195,
@@ -14,3 +14,6 @@ transactionBlockVoteEvent: {
     }
   }
 }
+---
+processOneBlock: !!null ""
+---

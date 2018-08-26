@@ -1,6 +1,7 @@
 package net.openhft.chronicle.decentred.server;
 
-import net.openhft.chronicle.decentred.api.MessageListener;
+import net.openhft.chronicle.core.Jvm;
+import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.EndOfRoundBlockEvent;
 import net.openhft.chronicle.decentred.dto.TransactionBlockVoteEvent;
 import net.openhft.chronicle.decentred.util.LongLongMap;
@@ -14,11 +15,11 @@ public class VanillaVoteTaker implements VoteTaker {
     private final long address;
     private final long[] clusterAddresses;
     private final long chainAddress;
-    private MessageListener lookup;
     private LongLongMap addressToBlockNumberMap = LongLongMap.withExpectedSize(16);
     private EndOfRoundBlockEvent endOfRoundBlockEvent = new EndOfRoundBlockEvent();
+    private MessageToListener tcpMessageListener;
 
-    public VanillaVoteTaker(MessageListener lookup, long address, long chainAddress, long[] clusterAddresses) {
+    public VanillaVoteTaker(long address, long chainAddress, long[] clusterAddresses) {
         assert LongStream.of(clusterAddresses).distinct().count() == clusterAddresses.length;
 
         this.address = address;
@@ -46,12 +47,20 @@ public class VanillaVoteTaker implements VoteTaker {
         endOfRoundBlockEvent.address(address)
                 .chainAddress(chainAddress);
         synchronized (this) {
-            assert !addressToBlockNumberMap.containsKey(0L);
-            endOfRoundBlockEvent.blockRecords().putAll(addressToBlockNumberMap);
+            if (addressToBlockNumberMap.size() == 0) {
+                Jvm.warn().on(getClass(), "No blocks to complete");
+                return;
+            }
+            endOfRoundBlockEvent.addressToBlockNumberMap().putAll(addressToBlockNumberMap);
         }
         endOfRoundBlockEvent.blockNumber(blockNumber);
         for (long clusterAddress : clusterAddresses) {
-            lookup.onMessageTo(clusterAddress, endOfRoundBlockEvent);
+            tcpMessageListener.onMessageTo(clusterAddress, endOfRoundBlockEvent);
         }
+    }
+
+    public VanillaVoteTaker tcpMessageListener(MessageToListener tcpMessageListener) {
+        this.tcpMessageListener = tcpMessageListener;
+        return this;
     }
 }

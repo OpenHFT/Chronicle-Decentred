@@ -48,9 +48,13 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
     public void replayBlocks() {
         List<Runnable> replayActions = new ArrayList<>();
         synchronized (this) {
+            if (lastEndOfRoundBlockEvent == null) {
+                Jvm.warn().on(getClass(), "No EndOfRoundBlockEvent to process");
+                return;
+            }
             try {
                 for (Map.Entry<Long, TransactionLog> entry : transactionLogMap.entrySet()) {
-                    long upto = lastEndOfRoundBlockEvent.blockRecords()
+                    long upto = lastEndOfRoundBlockEvent.addressToBlockNumberMap()
                             .getOrDefault(entry.getKey(), -1L);
                     if (upto == -1L) {
                         continue;
@@ -77,6 +81,7 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
                 Jvm.warn().on(getClass(), "Giving up waiting - interrupted");
                 Thread.currentThread().interrupt();
             }
+            lastEndOfRoundBlockEvent = null;
         }
 //        postBlockChainProcessor.replayStarted();
         for (Runnable replayAction : replayActions) {

@@ -15,5 +15,5 @@ public interface Verifier {
      * Notify that a server was invalidated
      */
     @MethodId(0xF101)
-    void invalidationEvent(InvalidationEvent record);
+    void invalidationEvent(InvalidationEvent invalidationEvent);
 }

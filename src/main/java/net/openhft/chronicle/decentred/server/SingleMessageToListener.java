@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.Jvm;
-import net.openhft.chronicle.decentred.api.MessageListener;
+import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.SignedMessage;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import net.openhft.chronicle.threads.LongPauser;
@@ -11,15 +11,15 @@ import net.openhft.chronicle.threads.Pauser;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SingleMessageListener implements RunningMessageListener, Runnable {
+public class SingleMessageToListener implements RunningMessageToListener, Runnable {
     private final Pauser pauser = new LongPauser(0, 10, 1, 20, TimeUnit.MILLISECONDS);
-    private final MessageListener xclServer;
+    private final MessageToListener xclServer;
     private final AtomicReference<Bytes> writeLock = new AtomicReference<>();
     private final VanillaSignedMessage signedMessage = new VanillaSignedMessage();
     private final Bytes bytes1 = Bytes.allocateElasticDirect(32 << 20).unchecked(true);
     private final Bytes bytes2 = Bytes.allocateElasticDirect(32 << 20).unchecked(true);
 
-    public SingleMessageListener(MessageListener xclServer) {
+    public SingleMessageToListener(MessageToListener xclServer) {
         this.xclServer = xclServer;
         writeLock.set(bytes1);
     }
@@ -27,11 +27,6 @@ public class SingleMessageListener implements RunningMessageListener, Runnable {
     @Override
     public Runnable[] runnables() {
         return new Runnable[]{this};
-    }
-
-    @Override
-    public void onMessage(SignedMessage message) {
-        onMessageTo(0L, message);
     }
 
     @Override

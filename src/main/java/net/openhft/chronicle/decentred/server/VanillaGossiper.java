@@ -1,24 +1,27 @@
 package net.openhft.chronicle.decentred.server;
 
-import net.openhft.chronicle.decentred.api.MessageRouter;
+import net.openhft.chronicle.core.Jvm;
+import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.dto.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.util.LongLongMap;
+
+import java.util.stream.LongStream;
 
 public class VanillaGossiper implements Gossiper {
     private static final Long NO_BLOCK = -1L;
     private final long address;
     private final LongLongMap lastBlockMap = LongLongMap.withExpectedSize(16);
-    private final LongLongMap lastVoteMap;
     private final long[] clusterAddresses;
     private final TransactionBlockGossipEvent gossip;
-    private MessageRouter<Voter> lookup;
+    private MessageToListener tcpMessageToListener;
 
     public VanillaGossiper(long address, long chainAddress, long[] clusterAddresses) {
         this.address = address;
         this.clusterAddresses = clusterAddresses;
-        lastVoteMap = LongLongMap.withExpectedSize(16);
-        gossip = new TransactionBlockGossipEvent().chainAddress(chainAddress);
+        assert LongStream.of(clusterAddresses).anyMatch(a -> a == address);
+        gossip = new TransactionBlockGossipEvent()
+                .chainAddress(chainAddress);
     }
 
     @Override
@@ -37,14 +40,24 @@ public class VanillaGossiper implements Gossiper {
 
     @Override
     public void sendGossip(long blockNumber) {
+        if (lastBlockMap.size() == 0) {
+            Jvm.warn().on(getClass(), "nothing to gossip about");
+            return;
+        }
+
         gossip.reset();
         gossip.address(address);
         gossip.blockNumber(blockNumber);
         synchronized (this) {
-            lastVoteMap.putAll(lastBlockMap);
+            gossip.addressToBlockNumberMap().putAll(lastBlockMap);
         }
         for (long clusterAddress : clusterAddresses) {
-            lookup.to(clusterAddress).transactionBlockGossipEvent(gossip);
+            tcpMessageToListener.onMessageTo(clusterAddress, gossip);
         }
+    }
+
+    public VanillaGossiper tcpMessageToListener(MessageToListener tcpMessageToListener) {
+        this.tcpMessageToListener = tcpMessageToListener;
+        return this;
     }
 }

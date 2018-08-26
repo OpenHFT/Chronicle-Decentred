@@ -1,11 +1,13 @@
 package net.openhft.chronicle.decentred.server;
 
+import net.openhft.chronicle.core.annotation.UsedViaReflection;
 import net.openhft.chronicle.decentred.api.MessageRouter;
-import net.openhft.chronicle.decentred.api.SystemMessages;
+import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.api.Verifier;
 import net.openhft.chronicle.decentred.dto.*;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.PublicKeyRegistry;
 import net.openhft.chronicle.decentred.util.VanillaPublicKeyRegistry;
 
@@ -13,15 +15,16 @@ import net.openhft.chronicle.decentred.util.VanillaPublicKeyRegistry;
  * This accepts message from the RPCServer and passes them to the appropriate downstream component
  */
 public class VanillaGateway implements Gateway {
+    private static final long MAIN_CHAIN = DecentredUtil.parseAddress("main");
     //    private final long address;
     private final long chainAddress;
-    private final SystemMessages main;
-    private final SystemMessages local;
+    private final BlockEngine main;
+    private final BlockEngine local;
     private final VanillaVerifyIP verifyIP;
     private MessageRouter router;
     private PublicKeyRegistry publicKeyRegistry = new VanillaPublicKeyRegistry();
 
-    public VanillaGateway(long address, long chainAddress, SystemMessages main, SystemMessages local) {
+    public VanillaGateway(long address, long chainAddress, BlockEngine main, BlockEngine local) {
 //        this.address = address;
         this.chainAddress = chainAddress;
         this.main = main;
@@ -29,18 +32,41 @@ public class VanillaGateway implements Gateway {
         verifyIP = new VanillaVerifyIP(addr -> (Verifier) router.to(addr));
     }
 
-    public VanillaGateway router(MessageRouter router) {
-        this.router = router;
-        return this;
-    }
-
-    public static VanillaGateway newGateway(long address, String regionStr, long[] clusterAddresses, int mainPeriodMS, int localPeriodMS) {
+    public static <T> VanillaGateway newGateway(DtoRegistry<T> dtoRegistry,
+                                                long address,
+                                                String regionStr,
+                                                long[] clusterAddresses,
+                                                int mainPeriodMS,
+                                                int localPeriodMS,
+                                                T mainTransactionProcessor,
+                                                T localTransactionPrcoessor) {
         long region = DecentredUtil.parseAddress(regionStr);
         return new VanillaGateway(address,
                 region,
-                BlockEngine.newMain(address, mainPeriodMS, clusterAddresses),
-                BlockEngine.newLocal(address, region, localPeriodMS, clusterAddresses, 2 << 20)
+                VanillaBlockEngine.newMain(dtoRegistry, address, mainPeriodMS, clusterAddresses, mainTransactionProcessor),
+                VanillaBlockEngine.newLocal(dtoRegistry, address, region, localPeriodMS, clusterAddresses, localTransactionPrcoessor)
         );
+    }
+
+    public void start(MessageToListener messageToListener) {
+        main.start(messageToListener);
+        local.start(messageToListener);
+    }
+
+    public void tcpMessageListener(MessageToListener messageToListener) {
+        main.tcpMessageListener(messageToListener);
+        local.tcpMessageListener(messageToListener);
+    }
+
+    @UsedViaReflection
+    public void processOneBlock() {
+        main.processOneBlock();
+        local.processOneBlock();
+    }
+
+    public VanillaGateway router(MessageRouter router) {
+        this.router = router;
+        return this;
     }
 
     @Override
@@ -54,8 +80,8 @@ public class VanillaGateway implements Gateway {
     }
 
     @Override
-    public void invalidationEvent(InvalidationEvent record) {
-        verifyIP.invalidationEvent(record);
+    public void invalidationEvent(InvalidationEvent invalidationEvent) {
+        verifyIP.invalidationEvent(invalidationEvent);
     }
 
     @Override
@@ -70,7 +96,7 @@ public class VanillaGateway implements Gateway {
     }
 
     private boolean isMainChain(long chainAddress) {
-        return chainAddress == 0L;
+        return chainAddress == MAIN_CHAIN;
     }
 
     @Override
@@ -115,12 +141,6 @@ public class VanillaGateway implements Gateway {
 
     private void checkTrusted(SignedMessage message) {
 
-    }
-
-    @Override
-    public void start() {
-//        main.start();
-//        local.start();
     }
 
     @Override

@@ -1,6 +1,9 @@
 verificationEvent: {
-  timestampUS: 2014-10-22T18:22:32.901131,
-  address: ayua2manpmw7f,
-  publicKey: !!binary zswVB9wd3XKVlRwpCIjwla25BE0bc9aW5t8GXWg71Pw=,
+  timestampUS: 2018-08-20T12:53:05.000001,
+  address: ud6jbceicts2,
+  publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o=,
   keyVerified: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=
 }
+---
+processOneBlock: !!null ""
+---

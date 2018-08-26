@@ -1,6 +1,7 @@
 package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
@@ -34,11 +35,13 @@ public class RPCBuilder<T> {
         return new RPCBuilder<>(tClass);
     }
 
-    public RPCServer<T> createServer(int port) throws IOException {
-        return createServer("server:" + port, port);
+    public RPCServer<T> createServer(int port, T mainTransactionProcessor, T localTransactionProcessor) throws IOException {
+        return createServer("server:" + port, port, mainTransactionProcessor, localTransactionProcessor);
     }
 
-    public RPCServer<T> createServer(String name, int port) throws IOException {
+    public RPCServer<T> createServer(String name, int port, T mainTransactionProcessor, T localTransactionProcessor) throws IOException {
+        assert mainTransactionProcessor instanceof TransactionProcessor;
+        assert localTransactionProcessor instanceof TransactionProcessor;
         long serverAddress = this.serverAddress;
         if (serverAddress == 0)
             serverAddress = port;
@@ -56,12 +59,26 @@ public class RPCBuilder<T> {
                         .mapToLong(i -> i)
                         .toArray();
 
-        VanillaGateway gateway = VanillaGateway.newGateway(serverAddress, region, clusterAddressArray,
-                mainBlockPeriodMS, localBlockPeriodMS
-        );
-        RPCServer<T> server = new RPCServer<T>(name, port, serverAddress, publicKey, secretKey, tClass, dtoRegistry, t -> (T) gateway)
+        VanillaGateway gateway = VanillaGateway.newGateway(
+                dtoRegistry,
+                serverAddress,
+                region,
+                clusterAddressArray,
+                mainBlockPeriodMS,
+                localBlockPeriodMS,
+                mainTransactionProcessor,
+                localTransactionProcessor);
+        RPCServer<T> server = new RPCServer<>(
+                name,
+                port,
+                serverAddress,
+                publicKey,
+                secretKey,
+                tClass,
+                dtoRegistry,
+                t -> (T) gateway)
                 .internal(internal);
-        gateway.start();
+        gateway.start(server);
         // register the address - otherwise, verify will fail
         gateway.createAccountEvent(
                 new CreateAddressEvent()

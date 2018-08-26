@@ -21,7 +21,7 @@ public class VanillaTransactionProcessor implements SystemMessages {
     }
 
     @Override
-    public void invalidationEvent(InvalidationEvent record) {
+    public void invalidationEvent(InvalidationEvent invalidationEvent) {
         throw new UnsupportedOperationException();
     }
 

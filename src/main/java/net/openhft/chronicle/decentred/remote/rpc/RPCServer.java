@@ -6,6 +6,7 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.api.SystemMessageListener;
+import net.openhft.chronicle.decentred.dto.SignedMessage;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.remote.net.TCPServer;
@@ -114,7 +115,13 @@ public class RPCServer<T> implements DecentredServer<T>, Closeable {
         tcpServer.close();
     }
 
-    void write(long toAddress, VanillaSignedMessage message) {
+    @Override
+    public synchronized void onMessageTo(long address, SignedMessage message) {
+        System.out.println(Thread.currentThread().getName() + " to " + DecentredUtil.toAddressString(address) + " " + message);
+        write(address, message);
+    }
+
+    void write(long toAddress, SignedMessage message) {
         TCPConnection tcpConnection;
         if (toAddress == 0) {
             tcpConnection = DEFAULT_CONNECTION_TL.get();
@@ -139,7 +146,7 @@ public class RPCServer<T> implements DecentredServer<T>, Closeable {
             if (!message.signed()) {
                 message.sign(secretKey);
             }
-            tcpConnection.write(message.byteBuffer());
+            tcpConnection.write(((VanillaSignedMessage) message).byteBuffer());
 
         } catch (IllegalStateException e2) {
             e2.printStackTrace();
