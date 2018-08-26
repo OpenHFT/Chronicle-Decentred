@@ -11,7 +11,7 @@ public class VanillaTransactionProcessor implements SystemMessages {
     }
 
     @Override
-    public void createAccountRequest(CreateAddressRequest createAddressRequest) {
+    public void createAddressRequest(CreateAddressRequest createAddressRequest) {
         throw new UnsupportedOperationException();
     }
 

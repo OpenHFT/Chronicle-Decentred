@@ -110,7 +110,7 @@ public class VanillaAppreciationGateway implements AppreciationGateway {
     }
 
     @Override
-    public void createAccountRequest(CreateAddressRequest createAddressRequest) {
+    public void createAddressRequest(CreateAddressRequest createAddressRequest) {
 
     }
 }

@@ -1,4 +1,4 @@
-package net.openhft.chronicle.decentred.verification;
+package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.api.ConnectionStatusListener;
@@ -44,7 +44,9 @@ public class VanillaVerifyIP implements Verifier, ConnectionStatusListener {
     }
 
     @Override
-    public void invalidationEvent(InvalidationEvent record) {
-        verifyMap.remove(record.publicKey());
+    public void invalidationEvent(InvalidationEvent invalidationEvent) {
+        verifyMap.remove(invalidationEvent.publicKey());
+        client.to(DEFAULT_CONNECTION)
+                .invalidationEvent(invalidationEvent);
     }
 }

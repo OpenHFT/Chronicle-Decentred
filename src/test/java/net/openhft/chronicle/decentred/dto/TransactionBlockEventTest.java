@@ -1,15 +1,13 @@
 package net.openhft.chronicle.decentred.dto;
 
-import net.openhft.chronicle.bytes.Bytes;
-import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.decentred.api.AccountManagementRequests;
 import net.openhft.chronicle.decentred.api.ConnectionStatusListener;
 import net.openhft.chronicle.decentred.api.SystemMessageListener;
 import net.openhft.chronicle.decentred.api.SystemMessages;
-import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.decentred.remote.rpc.KeyPair;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
-import net.openhft.chronicle.salt.Ed25519;
+import net.openhft.chronicle.wire.Marshallable;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -21,15 +19,8 @@ public class TransactionBlockEventTest {
 
     @Test
     public void writeMarshallable() {
-        BytesStore privateKey = DecentredUtil.testPrivateKey(7);
-        Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-        Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
-        Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
-
-        BytesStore privateKey2 = DecentredUtil.testPrivateKey(17);
-        Bytes publicKey2 = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-        Bytes secretKey2 = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
-        Ed25519.privateToPublicAndSecret(publicKey2, secretKey2, privateKey2);
+        KeyPair kp = new KeyPair(7);
+        KeyPair kp2 = new KeyPair(17);
 
         DtoRegistry<SystemMessages> registry = DtoRegistry.newRegistry(SystemMessages.class)
                 .addProtocol(1, SystemMessageListener.class)
@@ -41,11 +32,11 @@ public class TransactionBlockEventTest {
         tbe.dtoParser(registry.get());
         tbe.addTransaction(
                 registry.create(CreateAddressRequest.class)
-                        .sign(secretKey, new SetTimeProvider("2018-08-20T12:53:04.075128")));
+                        .sign(kp.secretKey, new SetTimeProvider("2018-08-20T12:53:04.075128")));
         tbe.addTransaction(
                 registry.create(CreateAddressRequest.class)
-                        .sign(secretKey2, new SetTimeProvider("2018-08-20T12:53:04.075256")));
-        tbe.sign(secretKey, new SetTimeProvider("2018-08-20T12:53:04.076123"));
+                        .sign(kp2.secretKey, new SetTimeProvider("2018-08-20T12:53:04.075256")));
+        tbe.sign(kp.secretKey, new SetTimeProvider("2018-08-20T12:53:04.076123"));
         assertEquals("!TransactionBlockEvent {\n" +
                 "  timestampUS: 2018-08-20T12:53:04.076123,\n" +
                 "  address: phccofmpy6ci,\n" +
@@ -57,6 +48,9 @@ public class TransactionBlockEventTest {
                 "    !CreateAddressRequest { timestampUS: 2018-08-20T12:53:04.075256, address: ud6jbceicts2, publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o= }\n" +
                 "  ]\n" +
                 "}\n", tbe.toString());
+        System.out.println(tbe);
+        TransactionBlockEvent tbe2 = Marshallable.fromString(tbe.toString());
+        assertEquals(tbe2, tbe);
         assertEquals(
                 "0000 58 01 00 00                                     # length\n" +
                         "0004 ed fd 09 6c 56 74 d4 55 35 a5 74 c1 16 4d 2b e7 # signature start\n" +

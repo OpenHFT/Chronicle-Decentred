@@ -53,18 +53,19 @@ public class DecentredClientServerTest {
         CreateAddressRequest cnac = new CreateAddressRequest()
                 .publicKey(kp.publicKey);
 
-        client.toDefault().createAccountRequest(cnac);
+        client.toDefault().createAddressRequest(cnac);
+        System.out.println(cnac);
 
         for (int i = 0; i <= 20; i++) {
             assertTrue(i < 20);
             Jvm.pause(Jvm.isDebug() ? 2000 : 25);
-            if (out.toString().contains("createAccountRequest")) {
+            if (out.toString().contains("createAddressRequest")) {
                 break;
             }
             System.out.println(out);
         }
         assertEquals(
-                "createAccountRequest[!CreateAddressRequest {\n" +
+                "createAddressRequest[!CreateAddressRequest {\n" +
                         "  timestampUS: 2018-08-25T09:45:04.18,\n" +
                         "  address: phccofmpy6ci,\n" +
                         "  publicKey: !!binary 9M9t8hyt2kEJmL46Fs+si0VigLTMQt9OafgMm3ljIOg=\n" +

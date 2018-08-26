@@ -1,0 +1,11 @@
+transactionBlockEvent: {
+  timestampUS: 2018-08-20T12:53:04.076123,
+  address: phccofmpy6ci,
+  chainAddress: main,
+  weekNumber: 1,
+  blockNumber: 0,
+  transactions: [
+  !CreateAddressRequest { timestampUS: 2018-08-20T12:53:04.075128, address: phccofmpy6ci, publicKey: !!binary 9M9t8hyt2kEJmL46Fs+si0VigLTMQt9OafgMm3ljIOg= },
+  !CreateAddressRequest { timestampUS: 2018-08-20T12:53:04.075256, address: ud6jbceicts2, publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o= }
+  ]
+}

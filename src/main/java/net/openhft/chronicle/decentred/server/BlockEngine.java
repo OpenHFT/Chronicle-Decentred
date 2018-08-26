@@ -120,7 +120,7 @@ public class BlockEngine<T> implements SystemMessages, Closeable {
 */
 
     @Override
-    public void createAccountRequest(CreateAddressRequest createAddressRequest) {
+    public void createAddressRequest(CreateAddressRequest createAddressRequest) {
         throw new UnsupportedOperationException();
     }
 

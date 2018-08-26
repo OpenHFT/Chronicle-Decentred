@@ -39,6 +39,7 @@ public class VerificationEventTest {
                 .protocol(1).messageType(22)
                 .keyVerified(publicKey)
                 .sign(secretKey2, timeProvider);
+        System.out.println(v);
 
         assertEquals("0000 9a 00 00 00                                     # length\n" +
                 "0004 62 1b 02 4b a1 9a 76 c6 84 28 68 9d 35 56 dc fb # signature start\n" +
@@ -64,5 +65,9 @@ public class VerificationEventTest {
 
         assertTrue(v.verify(i -> privateKey2));
 
+        InvalidationEvent ie = new InvalidationEvent()
+                .protocol(1).messageType(2)
+                .sign(secretKey2, timeProvider);
+        System.out.println(ie);
     }
 }

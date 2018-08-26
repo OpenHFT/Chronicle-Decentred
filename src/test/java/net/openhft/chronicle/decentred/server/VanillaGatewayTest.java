@@ -1,21 +1,21 @@
 package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.core.io.IORuntimeException;
-import net.openhft.chronicle.decentred.api.SystemMessages;
+import net.openhft.chronicle.decentred.dto.DtoAliases;
 import net.openhft.chronicle.wire.TextMethodTester;
 import org.junit.Test;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
 public class VanillaGatewayTest {
+    static {
+        DtoAliases.addAliases();
+    }
 
     public static void test(String basename) {
-        try {
+/*        try {
             for (String file : "setup.yaml,in.yaml,out.yaml".split(",")) {
                 String path = "src/test/resources/" + basename;
                 new File(path).mkdirs();
@@ -24,12 +24,12 @@ public class VanillaGatewayTest {
             }
         } catch (IOException e) {
             throw new AssertionError(e);
-        }
+        }*/
 
-        TextMethodTester<SystemMessages> tester = new TextMethodTester<>(
+        TextMethodTester<GatewayTester> tester = new TextMethodTester<>(
                 basename + "/in.yaml",
                 VanillaGatewayTest::createGateway,
-                SystemMessages.class,
+                GatewayTester.class,
                 basename + "/out.yaml");
         tester.setup(basename + "/setup.yaml");
         try {
@@ -40,14 +40,13 @@ public class VanillaGatewayTest {
         assertEquals(tester.expected(), tester.actual());
     }
 
-    static VanillaGateway createGateway(SystemMessages tester) {
-        VanillaTransactionProcessor blockchain = new VanillaTransactionProcessor(tester);
-        return new VanillaGateway(0, 0, tester, tester);
+    static VanillaGateway createGateway(GatewayTester tester) {
+        return new VanillaGateway(0, 0, tester, tester).router(tester);
     }
 
     @Test
-    public void createAccountRequest() {
-        test("gateway/createAccountRequest");
+    public void createAddressRequest() {
+        test("gateway/createAddressRequest");
     }
 
     @Test
@@ -82,6 +81,6 @@ public class VanillaGatewayTest {
 
     @Test
     public void createAccountEvent() {
-        test("gateway/createAccountEvent");
+        test("gateway/createAddressRequest");
     }
 }

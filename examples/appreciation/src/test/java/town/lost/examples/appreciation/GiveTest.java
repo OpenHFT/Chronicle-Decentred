@@ -28,11 +28,11 @@ public class GiveTest {
 
         TextWire wire = new TextWire(Bytes.elasticHeapByteBuffer(128));
         AppreciationTester tester = wire.methodWriter(AppreciationTester.class);
-        tester.createAccountRequest(new CreateAddressRequest()
+        tester.createAddressRequest(new CreateAddressRequest()
                 .address(0)
                 .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
                 .publicKey(publicKey1));
-        tester.createAccountRequest(new CreateAddressRequest()
+        tester.createAddressRequest(new CreateAddressRequest()
                 .address(0)
                 .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
                 .publicKey(publicKey2));

@@ -1,0 +1,5 @@
+createAddressRequest: {
+  timestampUS: 2018-08-25T09:45:04.181818,
+  address: phccofmpy6ci,
+  publicKey: !!binary 9M9t8hyt2kEJmL46Fs+si0VigLTMQt9OafgMm3ljIOg=
+}

@@ -1,19 +1,24 @@
 package net.openhft.chronicle.decentred.server;
 
+import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.SystemMessages;
+import net.openhft.chronicle.decentred.api.Verifier;
 import net.openhft.chronicle.decentred.dto.*;
+import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.PublicKeyRegistry;
 import net.openhft.chronicle.decentred.util.VanillaPublicKeyRegistry;
 
 /**
- * This accepts message from the XCLServer and passes them to the appropriate downstream component
+ * This accepts message from the RPCServer and passes them to the appropriate downstream component
  */
 public class VanillaGateway implements Gateway {
     //    private final long address;
     private final long chainAddress;
     private final SystemMessages main;
     private final SystemMessages local;
+    private final VanillaVerifyIP verifyIP;
+    private MessageRouter router;
     private PublicKeyRegistry publicKeyRegistry = new VanillaPublicKeyRegistry();
 
     public VanillaGateway(long address, long chainAddress, SystemMessages main, SystemMessages local) {
@@ -21,8 +26,13 @@ public class VanillaGateway implements Gateway {
         this.chainAddress = chainAddress;
         this.main = main;
         this.local = local;
+        verifyIP = new VanillaVerifyIP(addr -> (Verifier) router.to(addr));
     }
 
+    public VanillaGateway router(MessageRouter router) {
+        this.router = router;
+        return this;
+    }
 
     public static VanillaGateway newGateway(long address, String regionStr, long[] clusterAddresses, int mainPeriodMS, int localPeriodMS) {
         long region = DecentredUtil.parseAddress(regionStr);
@@ -34,18 +44,18 @@ public class VanillaGateway implements Gateway {
     }
 
     @Override
-    public void createAccountRequest(CreateAddressRequest createAddressRequest) {
+    public void createAddressRequest(CreateAddressRequest createAddressRequest) {
         main.onMessage(createAddressRequest);
     }
 
     @Override
     public void verificationEvent(VerificationEvent verificationEvent) {
-        throw new UnsupportedOperationException();
+        verifyIP.verificationEvent(verificationEvent);
     }
 
     @Override
     public void invalidationEvent(InvalidationEvent record) {
-        throw new UnsupportedOperationException();
+        verifyIP.invalidationEvent(record);
     }
 
     @Override
@@ -118,4 +128,11 @@ public class VanillaGateway implements Gateway {
 //        main.close();
 //        local.close();
     }
+
+    @Override
+    public void onConnection(TCPConnection connection) {
+        Gateway.super.onConnection(connection);
+        verifyIP.onConnection(connection);
+    }
+
 }

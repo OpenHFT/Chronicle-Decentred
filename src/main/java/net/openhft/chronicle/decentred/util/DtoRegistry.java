@@ -1,6 +1,7 @@
 package net.openhft.chronicle.decentred.util;
 
 import net.openhft.chronicle.bytes.MethodId;
+import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.Maths;
 import net.openhft.chronicle.core.util.ObjectUtils;
 import net.openhft.chronicle.decentred.api.SystemMessages;
@@ -18,6 +19,7 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
     private final Class<T> superInterface;
     private final Map<Class, Integer> classToProtocolMessageType = new LinkedHashMap<>();
     private final IntObjMap<DtoParselet> parseletMap = IntObjMap.withExpectedSize(DtoParselet.class, 128);
+    private final Map<Class, Method> classConsumerMap = new LinkedHashMap<>();
 
     private DtoRegistry(Class<T> superInterface) {
         this.superInterface = superInterface;
@@ -41,7 +43,14 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
                 try {
                     parseletMap.justPut(key,
                             new DtoParselet(method, protocol, Maths.toUInt16(mid.value())));
-                    classToProtocolMessageType.put(method.getParameterTypes()[0], key);
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    if (parameterTypes.length != 1) {
+                        Jvm.warn().on(getClass(), "Methods must have 1 parameter " + method);
+                        continue;
+                    }
+                    Class<?> parameterType = parameterTypes[0];
+                    classToProtocolMessageType.put(parameterType, key);
+                    classConsumerMap.putIfAbsent(parameterType, method);
                 } catch (Exception e) {
                     throw new IllegalArgumentException(e);
                 }
@@ -68,7 +77,7 @@ public class DtoRegistry<T> implements Supplier<DtoParser<T>> {
     public DtoParser<T> get() {
         IntObjMap<DtoParselet> parseletMap2 = IntObjMap.withExpectedSize(DtoParselet.class, parseletMap.size() * 2);
         parseletMap.forEach((i, dp) -> parseletMap2.justPut(i, new DtoParselet(dp)));
-        return new VanillaDtoParser<>(superInterface, parseletMap2);
+        return new VanillaDtoParser<>(superInterface, parseletMap2, classConsumerMap);
     }
 
     public <M extends VanillaSignedMessage<M>> M create(Class<M> tClass) {

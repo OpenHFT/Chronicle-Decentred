@@ -3,8 +3,8 @@ package net.openhft.chronicle.decentred.remote.rpc;
 import net.openhft.chronicle.core.Mocker;
 import net.openhft.chronicle.decentred.api.Verifier;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
+import net.openhft.chronicle.decentred.server.VanillaVerifyIP;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
-import net.openhft.chronicle.decentred.verification.VanillaVerifyIP;
 import org.junit.Test;
 
 import java.io.IOException;

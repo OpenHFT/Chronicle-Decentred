@@ -13,5 +13,5 @@ public interface AccountManagementRequests {
      * @param createAddressRequest to be processed
      */
     @MethodId(0xF000)
-    void createAccountRequest(CreateAddressRequest createAddressRequest);
+    void createAddressRequest(CreateAddressRequest createAddressRequest);
 }

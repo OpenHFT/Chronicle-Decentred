@@ -4,6 +4,7 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
+import net.openhft.chronicle.decentred.server.VanillaVerifyIP;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.TextMethodTester;
 import net.openhft.chronicle.wire.TextWire;
@@ -55,6 +56,7 @@ public class VerifyIPTest {
         tester.verificationEvent(verificationEvent);
 
         System.out.println(wire);
+
     }
 
     @Test

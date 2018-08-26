@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> {
     private transient DtoParser<T> dtoParser;
@@ -23,6 +25,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     // where to read transactions from
     private transient long messagesStart;
     private transient Bytes transactions;
+    private transient List<SignedMessage> transactionsList;
 
     @LongConversion(AddressConverter.class)
     private long chainAddress;
@@ -57,6 +60,11 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     }
 
     public void replay(T allMessages) {
+        if (transactionsList != null) {
+            for (SignedMessage signedMessage : transactionsList) {
+                dtoParser.onMessage(allMessages, signedMessage);
+            }
+        }
         long p0 = transactions.readPosition();
         transactions.readPosition(messagesStart);
         long limit = transactions.readLimit();
@@ -107,9 +115,11 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     public void readMarshallable(@NotNull WireIn wire) throws IORuntimeException {
         reset();
         super.readMarshallable(wire);
+        if (transactionsList == null)
+            transactionsList = new ArrayList<>();
         wire.read("transactions").sequence(this, (tbe, in) -> {
             while (in.hasNextSequenceItem()) {
-                tbe.addTransaction(in.object(VanillaSignedMessage.class));
+                tbe.transactionsList.add(in.object(VanillaSignedMessage.class));
             }
         });
     }
@@ -117,17 +127,22 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     @Override
     public void writeMarshallable(@NotNull WireOut wire) {
         super.writeMarshallable(wire);
-        Class<T> superInterface = dtoParser.superInterface();
-        //noinspection unchecked
-        wire.write("transactions").sequence(out -> replay(
-                (T) Proxy.newProxyInstance(superInterface.getClassLoader(),
-                        new Class[]{superInterface},
-                        new AbstractMethodWriterInvocationHandler() {
-                            @Override
-                            protected void handleInvoke(Method method, Object[] args) {
-                                out.object(args[0]);
-                            }
-                        })));
+        if (dtoParser == null) {
+            wire.write("transactions").sequence(transactionsList);
+
+        } else {
+            Class<T> superInterface = dtoParser.superInterface();
+            //noinspection unchecked
+            wire.write("transactions").sequence(out -> replay(
+                    (T) Proxy.newProxyInstance(superInterface.getClassLoader(),
+                            new Class[]{superInterface},
+                            new AbstractMethodWriterInvocationHandler() {
+                                @Override
+                                protected void handleInvoke(Method method, Object[] args) {
+                                    out.object(args[0]);
+                                }
+                            })));
+        }
     }
 
     public long chainAddress() {
