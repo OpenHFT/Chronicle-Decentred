@@ -30,3 +30,4 @@ The Enterprise version is designed to add features a commercial operator would l
 
 Under `examples/appreciation` there is a module containing tests for transaction.
 
+A more complex example is `examples/exchange` for transfer and exchange of value.
