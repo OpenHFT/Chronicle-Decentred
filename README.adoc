@@ -1,6 +1,8 @@
 = Chronicle-Decentred
 Peter Lawrey
 
+image::https://github.com/OpenHFT/Chronicle-Decentred/blob/master/docs/images/XCL-Banner.png[]
+
 Chronicle Decentred is a framework for building Secure Scalable Microservices on Distributed Ledger Technology.
 
 The purpose of this library is to make it easy to create a high throughput microservice which can be run in a decentralised manner.
@@ -25,6 +27,23 @@ The Enterprise version is designed to add features a commercial operator would l
 - more options for exchange of value including continuous auctions.
 - more pluggable consensus strategies
 - doesn't require a digital currency to run.
+
+=== How does it work?
+
+.Workflow for transactions on the blockchain
+image::https://github.com/OpenHFT/Chronicle-Decentred/blob/master/docs/images/XCL-Chain.png[]
+
+- A client connects to a server over TCP.
+- The gateway receives the transaction and verifies its signature
+- The gateway can process the request or query and send a reply, or it can pass the request onto the blockchain.
+- Transactions passed to the blockchain are batched into blocks. Each node creates a block concurrently (as needed)
+- Blocks are replicated across nodes via TCP.
+- Each node gossips about the blocks it has.
+- Each node votes on which blocks to include in the next round.
+- Once a majority of node vote the same way, those blocks are included in the next round.
+- Transaction in the next round are processed in order.
+- The results of those transactions are published on all nodes.
+- Events to pass back to the client are returned over TCP.
 
 === Getting started
 
