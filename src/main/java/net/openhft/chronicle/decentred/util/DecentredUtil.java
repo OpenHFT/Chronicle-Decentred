@@ -11,10 +11,10 @@ import java.net.UnknownHostException;
 
 public enum DecentredUtil {
     ;
-    static final long ADDRESS_MASK = 0x1FFF_FFFF_FFFF_FFFFL;
-    private static final long MASK_48 = 0x0000_FFFF_FFFF_FFFFL;
     public static final long MASK_32 = 0x0000_0000_FFFF_FFFFL;
     public static final int MASK_16 = 0xFFFF;
+    static final long ADDRESS_MASK = 0x1FFF_FFFF_FFFF_FFFFL;
+    private static final long MASK_48 = 0x0000_FFFF_FFFF_FFFFL;
     private static final int MASK_8 = 0xFF;
 
 
@@ -60,7 +60,6 @@ public enum DecentredUtil {
     }
 
 
-
     public static long toAddress(BytesStore publicKey) {
         return publicKey.readLong(Ed25519.PUBLIC_KEY_LENGTH - Long.BYTES);
     }
@@ -83,9 +82,14 @@ public enum DecentredUtil {
         // plain address
         if ((value | MASK_48) == MASK_48)
             ipPort(text, value);
-        else if ((value >>> 60) < 0xE)
+        else if (isAddressNamed(value))
+            base32(text, value & ADDRESS_MASK);
+        else
             ipPortKey(text, value);
-        else base32(text, value & ADDRESS_MASK);
+    }
+
+    public static boolean isAddressNamed(long value) {
+        return (value >>> 60) >= ~ADDRESS_MASK >>> 60;
     }
 
     private static void base32(StringBuilder text, long value) {

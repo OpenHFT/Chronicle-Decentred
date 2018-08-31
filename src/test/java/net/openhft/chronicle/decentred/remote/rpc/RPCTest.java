@@ -5,6 +5,7 @@ import net.openhft.chronicle.decentred.api.Verifier;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
 import net.openhft.chronicle.decentred.server.VanillaVerifyIP;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import org.junit.Test;
 
 import java.io.IOException;

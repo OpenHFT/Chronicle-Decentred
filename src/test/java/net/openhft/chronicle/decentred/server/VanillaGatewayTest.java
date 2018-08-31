@@ -6,7 +6,7 @@ import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.*;
-import net.openhft.chronicle.decentred.remote.rpc.KeyPair;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.wire.TextMethodTester;

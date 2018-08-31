@@ -4,7 +4,7 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.Mocker;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
-import net.openhft.chronicle.decentred.remote.rpc.KeyPair;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
