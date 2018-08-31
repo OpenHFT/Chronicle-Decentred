@@ -1,0 +1,81 @@
+= Chain Evolution
+Peter Lawrey
+
+This highlights the stages to go through to create a new chain.
+
+=== Create an address
+
+To create an address, you need to
+
+- generate a random private 32-byte key. The more randomly sourced the better. Keep this secure
+- compute a secret/public key from the private key.
+
+Request to create a new address from the main chain with `CreateAddressRequest` which will produce a `CreateAddressEvent` if successful.
+In the genesis block there will be `CreateAddressEvent`s without requests to create them.
+
+=== Running a node
+
+In order to run a node, you need an address which has a verified IP and matches the last 6 bytes of the public key. i.e. the last 6 bytes are the port and IP address in little endian.
+
+If you do not, you need to delegate authority to nodes which have verified IP addresses to run the chain.
+
+=== Running multiple nodes
+
+The primary address can delegate authority to multiple nodes.
+The number of nodes running as servers determines how many are require to
+ achieve a majority (50%+1) or super majority (2/3rd + 1)
+
+=== Setting a fee structure
+
+The primary address can determine the fee structure and initial state of the chain.
+
+The initial
+
+    - token types
+    - amounts for addresses
+    - fair exchange rates for settlement purposes
+
+Rewards for running a node
+
+    - per transaction
+    - per round, including "winning" rounds
+
+The cost for individual transactions, including
+
+    - transfer
+    - exchange
+    - creating tokens
+
+NOTE: The rewards and the fees don't have to match
+which can lead to inflationary or deflationary pressure.
+
+=== Securing the chain
+
+At any time an address can invalidate itself preventing it being used in future.
+
+If it hasn't delegated authority, this will prevent any further action for the address or the chain.
+
+However, if authority has been delegated, a majority of addresses deleted to, can act on the addresses behalf.
+These addresses in turn, can change the list of delegates allowing nodes to join and leave a cluster over time.
+
+Such delegation ensures that one address or node being compromised doesn't give access tot he account.
+
+=== Batches of approved transactions
+
+Delegates to act on an addresses behalf,
+a batch of the same transaction signed
+by a majority of delegates must submitted as a batch.
+
+This isn't required if only one delegate exists.
+
+== Inter chain transfers
+
+To pass money from one chain to another,
+the transaction has to be confirmed by the chain which created the token.
+
+Initially, all tokens will be on the first "main" chain,
+however over time chains might pass tokens to each other via a third chain.
+
+
+
+

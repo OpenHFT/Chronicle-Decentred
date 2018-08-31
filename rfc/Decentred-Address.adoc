@@ -1,7 +1,7 @@
 = Decentred Address
 Peter Lawrey
 
-Chronicle Decentred uses a long for addresses of accounts and destinations. Addresses have a range for different purposes
+Chronicle Decentred uses a 64-bit unsigned `long` for addresses of accounts and destinations. Addresses have a range for different purposes
 
 === Ranges
 
