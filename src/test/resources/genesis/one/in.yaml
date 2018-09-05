@@ -88,43 +88,43 @@ createTokenRequest: {
 #  amount: 0.01
 #}
 ---
-transferRequest: {
-  timestampUS: 2018-09-03T14:36:41,
-  address: g62j3usr3yrr,
-  toAddress: g62j3usr3yrr,
-  symbolHome: g62j3usr3yrr,
-  symbol: WORK,
-  amount: 500.0,
-}
----
-clusterTransferRequest: {
-  timestampUS: 2018-09-03T14:36:42,
-  address: g62j3usr3yrr,
-  toAddress: g62j3usr3yrr,
-  symbolHome: g62j3usr3yrr,
-  symbol: WORK,
-  amount: 100.0,
-}
----
-delegateAddressEvent: {
-  timestampUS: 2018-09-03T14:36:43,
-  address: g62j3usr3yrr,
-  requests: [
-  !DelegateAddressRequest: {
-    timestampUS: 2018-09-03T14:36:43,
-    address: g62j3usr3yrr,
-    addresses: [ 127.102.155.73:26065:bc79, 127.162.254.71:54087:781, 127.27.187.195:45455:a9ac, 127.180.252.252:59774:fa8e, 127.182.134.255:60203:ec86 ],
-  }
-  ]
-}
----
-invalidateAddressEvent: {
-  timestampUS: 2018-09-03T14:36:44,
-  address: g62j3usr3yrr # genesis address
-}
----
+#transferRequest: {
+#  timestampUS: 2018-09-03T14:36:41,
+#  address: g62j3usr3yrr,
+#  toAddress: g62j3usr3yrr,
+#  symbolHome: g62j3usr3yrr,
+#  symbol: WORK,
+#  amount: 500.0,
+#}
+#---
+#clusterTransferRequest: {
+#  timestampUS: 2018-09-03T14:36:42,
+#  address: g62j3usr3yrr,
+#  toAddress: g62j3usr3yrr,
+#  symbolHome: g62j3usr3yrr,
+#  symbol: WORK,
+#  amount: 100.0,
+#}
+#---
+#delegateAddressEvent: {
+#  timestampUS: 2018-09-03T14:36:43,
+#  address: g62j3usr3yrr,
+#  requests: [
+#  !DelegateAddressRequest: {
+#    timestampUS: 2018-09-03T14:36:43,
+#    address: g62j3usr3yrr,
+#    addresses: [ 127.102.155.73:26065:bc79, 127.162.254.71:54087:781, 127.27.187.195:45455:a9ac, 127.180.252.252:59774:fa8e, 127.182.134.255:60203:ec86 ],
+#  }
+#  ]
+#}
+#---
+#invalidateAddressEvent: {
+#  timestampUS: 2018-09-03T14:36:44,
+#  address: g62j3usr3yrr # genesis address
+#}
+#---
 blockchainPhase: REPLAY
 ---
-endOfBlockRecord: {
-}
+#endOfBlockRecord: {
+#}
 
