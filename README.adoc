@@ -12,12 +12,13 @@ The purpose of this library is to make it easy to create many high throughput mi
 The open source version will
 
 - peer to peer chains running concurrently
+- a near unlimited number of chains. The theoretical limit is one bllion chains for every person in the world.
 - 25K - 500K transactions per second per chain depending on hardware.
 - latencies down to single digit milli-seconds (depending on network connectivity)
 - testing tools for creating new transaction types
 - simple decentralised consensus strategy (PoIP - Proof Of IP)
 - simple exchange of value
-- supports digital and fiat currencies including XCL (Accelerate token)
+- supports digital and fiat currencies including XCL (Chronicle Accelerate's token)
 
 === What features will the Enterprise version have
 
