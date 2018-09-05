@@ -1,14 +1,14 @@
 package town.lost.examples.exchange.dto;
 
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
-import net.openhft.chronicle.decentred.util.AddressConverter;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.wire.LongConversion;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 public class OpeningBalanceEvent extends VanillaSignedMessage<OpeningBalanceEvent> implements Validable {
-    @LongConversion(AddressConverter.class)
+    @LongConversion(AddressLongConverter.class)
     private long balanceAddress;
     private final Map<Currency, Double> balances = new EnumMap<>(Currency.class);
 

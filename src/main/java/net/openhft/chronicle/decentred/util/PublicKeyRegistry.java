@@ -4,9 +4,9 @@ import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.wire.LongConversion;
 
 public interface PublicKeyRegistry {
-    void register(@LongConversion(AddressConverter.class) long address, BytesStore publicKey);
+    void register(@LongConversion(AddressLongConverter.class) long address, BytesStore publicKey);
 
-    Boolean verify(@LongConversion(AddressConverter.class) long address, BytesStore sigAndMsg);
+    Boolean verify(@LongConversion(AddressLongConverter.class) long address, BytesStore sigAndMsg);
 
     boolean internal();
 

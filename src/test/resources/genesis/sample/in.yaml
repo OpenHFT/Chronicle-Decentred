@@ -1,0 +1,94 @@
+# genesis block test
+createAddressRequest: {
+  address: g62j3usr3yrr,
+  publicKey: !!binary ===
+}
+---
+createChainRequest: {
+  address: g62j3usr3yrr,
+  cycle: WEEKLY,
+  epochTime: 2018-0802T09:00:00Z,
+  roundsPerWeek: 100000 # 1 per 864 ms.
+}
+---
+createAddressRequest: {
+  address: a7qdfowowgpqz,
+  publicKey: !!binary === # +
+}
+---
+createAddressRequest: {
+  address: 776f2i2ndahy,
+  publicKey: !!binary === # 9
+}
+---
+createAddressRequest: {
+  address: tlfradjvulwo,
+  publicKey: !!binary === # k
+}
+---
+createAddressRequest: {
+  address: aoi6osdp72yit, # v
+  publicKey: !!binary ===
+}
+---
+createAddressRequest: {
+  address: 7y7spxnvmau7,
+  publicKey: !!binary === # O
+}
+---
+createTokenRequest: {
+  address: g62j3usr3yrr,
+  symbol: WORK,
+  amount: 500.0,
+  granularity: 0.01
+}
+---
+actionFeeRequest: {
+  address: g62j3usr3yrr,
+  action: transferRequest,
+  symbol: WORK,
+  fixed: 0.1,
+  faction: 0.001,
+  consumed: 0.50
+}
+---
+actionFeeRequest: {
+  address: g62j3usr3yrr,
+  action: createTokenRequest,
+  symbol: WORK,
+  fixed: 1000000,
+  faction: 0.01,
+  consumed: 0.50
+}
+---
+actionRewardRequest: {
+  address: g62j3usr3yrr,
+  action: endOfBlockRecord,
+  symbol: WORK,
+  amount: 0.01
+}
+---
+transferRequest: {
+  address: g62j3usr3yrr,
+  toAddress: g62j3usr3yrr,
+  symbol: WORK,
+  amount: 500.0,
+}
+---
+clusterTransferRequest: {
+  address: g62j3usr3yrr,
+  toAddress: g62j3usr3yrr,
+  symbol: WORK@g62j3usr3yrr,
+  amount: 100.0,
+}
+---
+delegateAddressRequest: {
+  address: g62j3usr3yrr,
+  addresses: [ a7qdfowowgpqz, 776f2i2ndahy, tlfradjvulwo, aoi6osdp72yit, 7y7spxnvmau7 ]
+}
+---
+invalidateAddressEvent: {
+  address: g62j3usr3yrr # genesis address
+}
+---
+

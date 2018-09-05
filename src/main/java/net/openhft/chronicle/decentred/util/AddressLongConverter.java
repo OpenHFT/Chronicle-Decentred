@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.util;
 
 import net.openhft.chronicle.wire.LongConverter;
 
-public class AddressConverter implements LongConverter {
+public class AddressLongConverter implements LongConverter {
     @Override
     public long parse(CharSequence text) {
         return DecentredUtil.parseAddress(text);

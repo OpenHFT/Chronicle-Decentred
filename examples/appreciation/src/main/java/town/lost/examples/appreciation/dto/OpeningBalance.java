@@ -1,11 +1,11 @@
 package town.lost.examples.appreciation.dto;
 
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
-import net.openhft.chronicle.decentred.util.AddressConverter;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.wire.LongConversion;
 
 public class OpeningBalance extends VanillaSignedMessage<OpeningBalance> {
-    @LongConversion(AddressConverter.class)
+    @LongConversion(AddressLongConverter.class)
     private long balanceAddress;
 
     private double amount;

@@ -113,6 +113,15 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     @Override
+    public void createChainRequest(CreateChainRequest createChainRequest) {
+        chainer.onMessage(createChainRequest);
+    }
+
+    public void createTokenRequest(CreateTokenRequest createTokenRequest) {
+        chainer.onMessage(createTokenRequest);
+    }
+
+    @Override
     public void createAddressRequest(CreateAddressRequest createAddressRequest) {
         throw new UnsupportedOperationException();
     }
@@ -139,7 +148,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
 
     void runVoter() {
         try {
-//            Histogram one = new Histogram();
+//            Histogram sample = new Histogram();
 //            Histogram two = new Histogram();
 //            Histogram three = new Histogram();
 //            Histogram four = new Histogram();
@@ -160,7 +169,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
 
 /*
                 if (++count % 100 == 0) {
-                    System.out.println(one.toMicrosFormat());
+                    System.out.println(sample.toMicrosFormat());
                     System.out.println(two.toMicrosFormat());
                     System.out.println(three.toMicrosFormat());
                     System.out.println(four.toMicrosFormat());
@@ -176,7 +185,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
 
     private void doProcessOneBlock() throws InterruptedException {
         TransactionBlockEvent tbe = chainer.nextTransactionBlockEvent();
-//                one.sample(System.nanoTime() - start);
+//                sample.sample(System.nanoTime() - start);
 //                start = System.nanoTime();
         // tg System.out.println("TBE "+tbe);
         if (tbe != null) {

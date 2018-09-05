@@ -75,6 +75,16 @@ public class VanillaGateway implements Gateway {
     }
 
     @Override
+    public void createChainRequest(CreateChainRequest createChainRequest) {
+        main.createChainRequest(createChainRequest);
+    }
+
+    @Override
+    public void createTokenRequest(CreateTokenRequest createTokenRequest) {
+        main.createTokenRequest(createTokenRequest);
+    }
+
+    @Override
     public void verificationEvent(VerificationEvent verificationEvent) {
         verifyIP.verificationEvent(verificationEvent);
     }

@@ -1,14 +1,14 @@
 package town.lost.examples.exchange.dto;
 
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
-import net.openhft.chronicle.decentred.util.AddressConverter;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
 public class TradeEvent extends VanillaSignedMessage<TradeEvent> {
     @LongConversion(MicroTimestampLongConverter.class)
     private long orderTimestampUS;
-    @LongConversion(AddressConverter.class)
+    @LongConversion(AddressLongConverter.class)
     private long orderAddress;
     private double quantity;
     private double price;

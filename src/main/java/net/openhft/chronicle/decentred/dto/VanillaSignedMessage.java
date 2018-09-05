@@ -4,12 +4,14 @@ import net.openhft.chronicle.bytes.*;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.TimeProvider;
-import net.openhft.chronicle.decentred.util.AddressConverter;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.UniqueMicroTimeProvider;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.AbstractBytesMarshallable;
 import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
+import net.openhft.chronicle.wire.WireIn;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -40,10 +42,16 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     private transient int messageType, protocol;
     @LongConversion(MicroTimestampLongConverter.class)
     private long timestampUS;
-    @LongConversion(AddressConverter.class)
+    @LongConversion(AddressLongConverter.class)
     private long address;
 
     public VanillaSignedMessage() {
+    }
+
+    @Override
+    public void readMarshallable(@NotNull WireIn wire) throws IORuntimeException {
+        signed = false;
+        super.readMarshallable(wire);
     }
 
     @Override

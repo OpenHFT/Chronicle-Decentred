@@ -1,6 +1,6 @@
 package net.openhft.chronicle.decentred.api;
 
-import net.openhft.chronicle.decentred.util.AddressConverter;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.wire.LongConversion;
 
 public interface MessageRouter<T> {
@@ -10,5 +10,5 @@ public interface MessageRouter<T> {
         return to(DEFAULT_CONNECTION);
     }
 
-    T to(@LongConversion(AddressConverter.class) long address);
+    T to(@LongConversion(AddressLongConverter.class) long address);
 }

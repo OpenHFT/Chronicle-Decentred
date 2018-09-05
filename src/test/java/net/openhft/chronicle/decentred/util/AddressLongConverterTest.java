@@ -4,10 +4,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class AddressConverterTest {
+public class AddressLongConverterTest {
     @Test
     public void parseAppend() {
-        AddressConverter ac = new AddressConverter();
+        AddressLongConverter ac = new AddressLongConverter();
         StringBuilder sb = new StringBuilder();
         for (String s : ("1.1.1.1:1111," +
                 "2.2.2.2:2222:deaf," +

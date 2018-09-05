@@ -5,7 +5,7 @@ import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IORuntimeException;
-import net.openhft.chronicle.decentred.util.AddressConverter;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
@@ -28,7 +28,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     private transient Bytes transactions;
     private transient List<SignedMessage> transactionsList;
 
-    @LongConversion(AddressConverter.class)
+    @LongConversion(AddressLongConverter.class)
     private long chainAddress;
 
     @IntConversion(UnsignedIntConverter.class)

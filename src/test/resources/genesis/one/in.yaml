@@ -1,94 +1,130 @@
+blockchainPhase: INIT
+---
 # genesis block test
 createAddressRequest: {
+  timestampUS: 2018-09-03T14:14:47.468,
   address: g62j3usr3yrr,
-  publicKey: !!binary ===
+  publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
 }
 ---
 createChainRequest: {
+  timestampUS: 2018-09-03T14:14:47.469,
   address: g62j3usr3yrr,
   cycle: WEEKLY,
-  epochTime: 2018-0802T09:00:00Z,
+  epochTime: 2018-09-02T09:00:00Z,
   roundsPerWeek: 100000 # 1 per 864 ms.
 }
 ---
+blockchainPhase: BOOTSTRAP
+---
+# 142 127.102.155.73:26065:bc79
 createAddressRequest: {
-  address: a7qdfowowgpqz,
-  publicKey: !!binary === # +
+  timestampUS: 2018-09-03T14:36:36.166,
+  address: 127.102.155.73:26065:bc79,
+  publicKey: !!binary WQnL2+L1VdG2wfERctkxxmGQlkqrkVQ8ebzRZUmbZn8=
 }
 ---
+# 229 127.162.254.71:54087:781
 createAddressRequest: {
-  address: 776f2i2ndahy,
-  publicKey: !!binary === # 9
+  timestampUS: 2018-09-03T14:36:36.173,
+  address: 127.162.254.71:54087:781,
+  publicKey: !!binary z5iG3FI73ytbQnkGbtxua348mppMFaF0gQdH00f+on8=
 }
 ---
+# 602 127.27.187.195:45455:a9ac
 createAddressRequest: {
-  address: tlfradjvulwo,
-  publicKey: !!binary === # k
+  timestampUS: 2018-09-03T14:36:36.196,
+  address: 127.27.187.195:45455:a9ac,
+  publicKey: !!binary Qg2oHQDK3bwQHFOb9mh00z2abkhB+PwLrKmPscO7G38=
 }
 ---
+# 849 127.180.252.252:59774:fa8e
 createAddressRequest: {
-  address: aoi6osdp72yit, # v
-  publicKey: !!binary ===
+  timestampUS: 2018-09-03T14:36:36.211,
+  address: 127.180.252.252:59774:fa8e,
+  publicKey: !!binary v/BD7xu7t46RABudGm94AcxYyhJlESkCjvp+6fz8tH8=
 }
 ---
+# 981 127.182.134.255:60203:ec86
 createAddressRequest: {
-  address: 7y7spxnvmau7,
-  publicKey: !!binary === # O
+  timestampUS: 2018-09-03T14:36:36.223,
+  address: 127.182.134.255:60203:ec86,
+  publicKey: !!binary wEompuoWYKSGhKwj0y2QUJTlBUuu5A+xhuwr6/+Gtn8=
 }
 ---
 createTokenRequest: {
+  timestampUS: 2018-09-03T14:36:37,
   address: g62j3usr3yrr,
   symbol: WORK,
   amount: 500.0,
   granularity: 0.01
 }
----
-actionFeeRequest: {
-  address: g62j3usr3yrr,
-  action: transferRequest,
-  symbol: WORK,
-  fixed: 0.1,
-  faction: 0.001,
-  consumed: 0.50
-}
----
-actionFeeRequest: {
-  address: g62j3usr3yrr,
-  action: createTokenRequest,
-  symbol: WORK,
-  fixed: 1000000,
-  faction: 0.01,
-  consumed: 0.50
-}
----
-actionRewardRequest: {
-  address: g62j3usr3yrr,
-  action: endOfBlockRecord,
-  symbol: WORK,
-  amount: 0.01
-}
+#---
+#actionFeeRequest: {
+#  timestampUS: 2018-09-03T14:36:38,
+#  address: g62j3usr3yrr,
+#  action: transferRequest,
+#  symbol: WORK,
+#  fixed: 0.1,
+#  faction: 0.001,
+#  consumed: 0.50
+#}
+#---
+#actionFeeRequest: {
+#  timestampUS: 2018-09-03T14:36:39,
+#  address: g62j3usr3yrr,
+#  action: createTokenRequest,
+#  symbol: WORK,
+#  fixed: 1000000,
+#  faction: 0.01,
+#  consumed: 0.50
+#}
+#---
+#actionRewardRequest: {
+#  timestampUS: 2018-09-03T14:36:40,
+#  address: g62j3usr3yrr,
+#  action: endOfBlockRecord,
+#  symbol: WORK,
+#  amount: 0.01
+#}
 ---
 transferRequest: {
+  timestampUS: 2018-09-03T14:36:41,
   address: g62j3usr3yrr,
   toAddress: g62j3usr3yrr,
+  symbolHome: g62j3usr3yrr,
   symbol: WORK,
   amount: 500.0,
 }
 ---
 clusterTransferRequest: {
+  timestampUS: 2018-09-03T14:36:42,
   address: g62j3usr3yrr,
   toAddress: g62j3usr3yrr,
-  symbol: WORK@g62j3usr3yrr,
+  symbolHome: g62j3usr3yrr,
+  symbol: WORK,
   amount: 100.0,
 }
 ---
-delegateAddressRequest: {
+delegateAddressEvent: {
+  timestampUS: 2018-09-03T14:36:43,
   address: g62j3usr3yrr,
-  addresses: [ a7qdfowowgpqz, 776f2i2ndahy, tlfradjvulwo, aoi6osdp72yit, 7y7spxnvmau7 ]
+  requests: [
+  !DelegateAddressRequest: {
+    timestampUS: 2018-09-03T14:36:43,
+    address: g62j3usr3yrr,
+    addresses: [ 127.102.155.73:26065:bc79, 127.162.254.71:54087:781, 127.27.187.195:45455:a9ac, 127.180.252.252:59774:fa8e, 127.182.134.255:60203:ec86 ],
+  }
+  ]
 }
 ---
 invalidateAddressEvent: {
+  timestampUS: 2018-09-03T14:36:44,
   address: g62j3usr3yrr # genesis address
 }
 ---
+blockchainPhase: REPLAY
+---
+endOfBlockRecord: {
+}
 

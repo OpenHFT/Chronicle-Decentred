@@ -10,6 +10,7 @@ public enum DtoAliases {
                 ApplicationErrorResponse.class,
                 CreateAddressRequest.class,
                 CreateAddressEvent.class,
+                CreateChainRequest.class,
                 InvalidationEvent.class,
                 TransactionBlockEvent.class,
                 TransactionBlockGossipEvent.class,

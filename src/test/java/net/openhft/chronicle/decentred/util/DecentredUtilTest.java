@@ -2,6 +2,7 @@ package net.openhft.chronicle.decentred.util;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
 import net.openhft.chronicle.salt.Ed25519;
 import org.junit.Test;
 
@@ -54,15 +55,28 @@ public class DecentredUtilTest {
      */
 
     public static void main(String[] args) {
+        KeyPair kp = new KeyPair('X');
+        CreateAddressRequest car0 = new CreateAddressRequest()
+                .protocol(1).messageType(1)
+                .publicKey(kp.publicKey)
+                .sign(kp.secretKey);
+        System.out.println(car0);
+
         // generate user addresses
         for (int i = -999; i < 10000; i++) {
             BytesStore privateKey = DecentredUtil.testPrivateKey(i);
             Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
             Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
             Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
+
             long address = DecentredUtil.toAddress(publicKey);
             if ((address >> 56) == 127) {
                 System.out.println(i + "\t" + DecentredUtil.toAddressString(address));
+                CreateAddressRequest car = new CreateAddressRequest()
+                        .protocol(1).messageType(1)
+                        .publicKey(publicKey)
+                        .sign(secretKey);
+                System.out.println(car);
             }
         }
     }

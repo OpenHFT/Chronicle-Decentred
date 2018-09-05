@@ -7,7 +7,7 @@ import net.openhft.chronicle.decentred.util.LongLongMap;
 
 import java.util.stream.LongStream;
 
-// TODO only take a majority view rather than last one wins.
+// TODO only take a majority view rather than last sample wins.
 // TODO might need a stage before this where the servers announce a proposed EndOfRoundBlock.
 
 public class VanillaVoteTaker implements VoteTaker {

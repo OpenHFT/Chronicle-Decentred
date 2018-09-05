@@ -5,7 +5,6 @@ import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.DtoAliases;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
-import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.wire.TextMethodTester;
@@ -17,7 +16,7 @@ import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 
-public class VanillaGatewayTest {
+public class VanillaTransactionProcessorTest {
     static {
         DtoAliases.addAliases();
     }
@@ -34,10 +33,10 @@ public class VanillaGatewayTest {
             throw new AssertionError(e);
         }*/
 
-        TextMethodTester<GatewayTester> tester = new TextMethodTester<>(
+        TextMethodTester<TransactionProcessorTester> tester = new TextMethodTester<>(
                 basename + "/in.yaml",
-                VanillaGatewayTest::createGateway,
-                GatewayTester.class,
+                VanillaTransactionProcessorTest::createGateway,
+                TransactionProcessorTester.class,
                 basename + "/out.yaml");
         tester.setup(basename + "/setup.yaml");
 //                .timeoutMS(Jvm.isDebug() ? 2_000 : 200);
@@ -68,58 +67,15 @@ public class VanillaGatewayTest {
         assertEquals(tester.expected(), tester.actual());
     }
 
-    static SystemMessages createGateway(GatewayTester tester) {
-        long address = DecentredUtil.parseAddress("server");
-        DtoRegistry<SystemMessages> dtoRegistry = DtoRegistry.newRegistry(SystemMessages.class);
-        VanillaGateway gateway = VanillaGateway.newGateway(
-                dtoRegistry,
-                address,
-                "local",
-                new long[]{address, DecentredUtil.parseAddress("phccofmpy6ci")},
-                50,
-                50,
-                tester,
-                tester);
-        KeyPair kp = new KeyPair(17);
-        SetTimeProvider stp = new SetTimeProvider("2018-08-20T12:53:05.000001")
-                .autoIncrement(1, TimeUnit.MICROSECONDS);
-        gateway.tcpMessageListener(tester);
-        return gateway;
+
+    static SystemMessages createGateway(TransactionProcessorTester tester) {
+        VanillaTransactionProcessor vtp = new VanillaTransactionProcessor();
+        vtp.messageRouter(tester);
+        return vtp;
     }
 
     @Test
-    public void createAddressRequest() {
-        test("gateway/createAddressRequest");
+    public void genesisOne() {
+        test("genesis/one");
     }
-
-    @Test
-    public void verificationEvent() {
-        test("gateway/verificationEvent");
-    }
-
-    @Test
-    public void invalidationEvent() {
-        test("gateway/invalidationEvent");
-    }
-
-    @Test
-    public void transactionBlockEvent() {
-        test("gateway/transactionBlockEvent");
-    }
-
-    @Test
-    public void transactionBlockGossipEvent() {
-        test("gateway/transactionBlockGossipEvent");
-    }
-
-    @Test
-    public void transactionBlockVoteEvent() {
-        test("gateway/transactionBlockVoteEvent");
-    }
-
-    @Test
-    public void endOfRoundBlockEvent() {
-        test("gateway/endOfRoundBlockEvent");
-    }
-
 }

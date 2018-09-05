@@ -3,7 +3,7 @@ package net.openhft.chronicle.decentred.dto;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.io.IORuntimeException;
-import net.openhft.chronicle.decentred.util.AddressConverter;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.LongLongMap;
 import net.openhft.chronicle.decentred.util.LongU32Writer;
@@ -14,7 +14,7 @@ import static net.openhft.chronicle.decentred.util.DecentredUtil.MASK_16;
 import static net.openhft.chronicle.decentred.util.DecentredUtil.MASK_32;
 
 public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEvent> {
-    @LongConversion(AddressConverter.class)
+    @LongConversion(AddressLongConverter.class)
     private long chainAddress;
     @IntConversion(UnsignedIntConverter.class)
     private short weekNumber;
