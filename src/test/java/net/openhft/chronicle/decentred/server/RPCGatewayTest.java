@@ -4,11 +4,11 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.Mocker;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
-import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
-public class RPCGateway {
+public class RPCGatewayTest {
     @Test
     public void endToEnd() throws IOException, InterruptedException {
         KeyPair kp = new KeyPair(7);
@@ -48,6 +48,7 @@ public class RPCGateway {
                 "  }\n" +
                 "}\n" +
                 "]", s.replaceAll("timestampUS: 20[^,]+", "timestampUS: {deleted}"));
+        client.close();
         server.close();
     }
 }
