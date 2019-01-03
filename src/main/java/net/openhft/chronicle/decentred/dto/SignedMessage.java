@@ -7,6 +7,7 @@ public interface SignedMessage extends BytesMarshallable {
     int protocol();
 
     int messageType();
+
     /**
      * Once a message is signed it can't be modified, only read.
      * <p>

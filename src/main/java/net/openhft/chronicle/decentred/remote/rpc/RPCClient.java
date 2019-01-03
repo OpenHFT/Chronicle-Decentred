@@ -31,8 +31,8 @@ public class RPCClient<T> implements Closeable, TCPConnection, MessageRouter<T> 
     private final DtoParser<T> parser;
     private final LongObjMap<BytesStore> addressToPublicKey =
             LongObjMap.withExpectedSize(BytesStore.class, 16);
-    private boolean internal = false;
     private final T proxy;
+    private boolean internal = false;
     private TimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;
 
     public RPCClient(String name,
@@ -115,6 +115,15 @@ public class RPCClient<T> implements Closeable, TCPConnection, MessageRouter<T> 
         return this;
     }
 
+    public TimeProvider timeProvider() {
+        return timeProvider;
+    }
+
+    public RPCClient<T> timeProvider(TimeProvider timeProvider) {
+        this.timeProvider = timeProvider;
+        return this;
+    }
+
     class ClientListener implements TCPClientListener {
 
         @Override
@@ -129,14 +138,5 @@ public class RPCClient<T> implements Closeable, TCPConnection, MessageRouter<T> 
                 throw iore;
             }
         }
-    }
-
-    public TimeProvider timeProvider() {
-        return timeProvider;
-    }
-
-    public RPCClient<T> timeProvider(TimeProvider timeProvider) {
-        this.timeProvider = timeProvider;
-        return this;
     }
 }
