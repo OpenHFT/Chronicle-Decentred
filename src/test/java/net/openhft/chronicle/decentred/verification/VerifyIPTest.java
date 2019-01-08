@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.verification;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IORuntimeException;
-import net.openhft.chronicle.core.time.SystemTimeProvider;
+import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
 import net.openhft.chronicle.decentred.server.VanillaVerifyIP;
 import net.openhft.chronicle.salt.Ed25519;
@@ -50,7 +50,7 @@ public class VerifyIPTest {
                 .protocol(1).messageType(4)
                 .keyVerified(publicKey)
                 .address(publicKey.readLong(0))
-                .timestampUS(SystemTimeProvider.INSTANCE.currentTimeMicros())
+                .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
                 .publicKey(publicKey)
                 .keyVerified(publicKey2);
         tester.verificationEvent(verificationEvent);
