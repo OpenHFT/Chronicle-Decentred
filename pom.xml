@@ -29,7 +29,6 @@
                 <version>3.6.8</version>
                 <scope>import</scope>
             </dependency>
-
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-bom</artifactId>
