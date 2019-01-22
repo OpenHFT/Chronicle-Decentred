@@ -109,11 +109,11 @@
                     </checkinComment>
                     <content>${project.reporting.outputDirectory}</content>
                     <skipDeletedFiles>true</skipDeletedFiles>
-                    <pubScmUrl>scm:git:git@github.com:OpenHFT/Chronicle-Wire</pubScmUrl>
+                    <pubScmUrl>scm:git:git@github.com:OpenHFT/Chronicle-Decentred</pubScmUrl>
                     <scmBranch>gh-pages</scmBranch>
                 </configuration>
             </plugin>
-<!--            <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.1</version>
@@ -122,7 +122,7 @@
                         <link>http://openhft.github.io/Chronicle-Decentred/apidocs/</link>
                     </links>
                 </configuration>
-            </plugin>-->
+            </plugin>
 <!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
