@@ -92,3 +92,66 @@ image::https://github.com/OpenHFT/Chronicle-Decentred/blob/master/docs/images/XC
 Under `examples/appreciation` there is a module containing tests for transaction.
 
 A more complex example is `examples/exchange` for transfer and exchange of value.
+
+== In detail
+
+There are a number of key concepts need to understand how this works.
+
+=== Addresses
+
+Information is associated with an address. You need the private key for the public key registered to an address to alter that data.
+
+Addresses are registered allowing them to be limited in size. Decentred uses 64-bit addresses. Addresses can be
+
+- Base32 encoded string (top 3 bits are all set)
+- IPv4:port:id (top 3 bits are not all set)
+
+The IPv4:port:id is shorten to IPv4:port if the id is 0.
+
+See DecentredUtils for more details.
+
+=== Creating a chain
+
+==== Create a private/public key pair.
+The KeyPair class can help.
+
+==== Send a create address request
+
+[source, yaml]
+----
+# create a new unique id/address for the chain
+createAddressRequest: {
+  timestampUS: 2019-02-04T14:31:56.013465,
+  address: phccofmpy6ci,
+  publicKey: !!binary 9M9t8hyt2kEJmL46Fs+si0VigLTMQt9OafgMm3ljIOg=
+}
+
+# create a chain for this address
+createChainRequest: {
+  timestampUS: 2019-02-04T14:31:56.101034,
+  address: phccofmpy6ci,
+  cycleOffset: -02:00,
+  roundsPerDay: 1000
+}
+----
+
+This allows you to run a private chain for yourself, however to run it on multiple node, you have to delegate to one or more IPv4:port addresses. To do this generate an IPV4:port for each of your nodes using brute force. These can be done in parallel.
+
+----
+
+# assign five delegates to run this chain.
+# 165.225.124.237:25956:3b17, 101.255.243.30:17634:9989, 143.245.75.233:729:2a88, 91.102.70.210:2096:2257, 133.194.48.160:27831:945e
+assignDelegatesRequest: {
+  timestampUS: 2019-02-04T15:09:06.356534,
+  address: phccofmpy6ci,
+  delegates: [
+    !!binary 9M9t8hyt2kEJmL46Fs+si0VigLTMQt9OafgMm3ljIOg=,
+    !!binary Ddk/qZ8BB63XgUsBsKCOub6IWoL9+VvvK8kaea/oJfA=,
+    !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o=,
+    !!binary WClTgi5nnngj3bIkiofts5sFv8CwMPeUEL5Y5MxKwPw=,
+    !!binary B/WVrcp+P2Dv7aX5tm5YXvUDk5PKuAyk6ppDoXfIiPk=
+  ]
+}
+----
+
+Finally, Start the nodes on the IPv4:port as above

@@ -1,9 +1,28 @@
 package net.openhft.chronicle.decentred.dto;
 
-import java.time.ZonedDateTime;
+import net.openhft.chronicle.decentred.util.OffsetIntConverter;
+import net.openhft.chronicle.wire.IntConversion;
 
 public class CreateChainRequest extends VanillaSignedMessage<CreateChainRequest> {
-    private Cycle cycle;
-    private ZonedDateTime epochTime;
-    private int roundsPerWeek;
+    @IntConversion(OffsetIntConverter.class)
+    private int cycleOffset;
+    private int roundsPerDay;
+
+    public int cycleOffset() {
+        return cycleOffset;
+    }
+
+    public CreateChainRequest cycleOffset(int cycleOffset) {
+        this.cycleOffset = cycleOffset;
+        return this;
+    }
+
+    public int roundsPerDay() {
+        return roundsPerDay;
+    }
+
+    public CreateChainRequest roundsPerDay(int roundsPerDay) {
+        this.roundsPerDay = roundsPerDay;
+        return this;
+    }
 }

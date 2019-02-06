@@ -14,7 +14,7 @@ public enum DecentredUtil {
     public static final long MASK_32 = 0x0000_0000_FFFF_FFFFL;
     public static final int MASK_16 = 0xFFFF;
     static final long ADDRESS_MASK = 0x1FFF_FFFF_FFFF_FFFFL;
-    private static final long MASK_48 = 0x0000_FFFF_FFFF_FFFFL;
+    static final long TOP_3 = 0xE000_0000_0000_0000L;
     private static final int MASK_8 = 0xFF;
 
 
@@ -45,7 +45,8 @@ public enum DecentredUtil {
 
     private static long parseIpPortKey(String text) {
         int last = text.lastIndexOf(':');
-        return (parseIpPort(text.substring(0, last)) << 16) + Integer.parseInt(text.substring(last + 1), 16);
+        return parseIpPort(text.substring(0, last))
+                + Integer.parseInt(text.substring(last + 1), 16);
     }
 
     private static long parseIpPort(String text) {
@@ -53,7 +54,7 @@ public enum DecentredUtil {
             int last = text.lastIndexOf(':');
             InetAddress address = InetAddress.getByName(text.substring(0, last));
             int port = Integer.parseInt(text.substring(last + 1));
-            return ((address.hashCode() & MASK_32) << 16) + port;
+            return ((long) address.hashCode() << 32) + ((port & MASK_16) << 16);
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException("Not an address format '" + text + "'", e);
         }
@@ -80,16 +81,14 @@ public enum DecentredUtil {
 
     public static void appendAddress(StringBuilder text, long value) {
         // plain address
-        if ((value | MASK_48) == MASK_48)
-            ipPort(text, value);
-        else if (isAddressNamed(value))
+        if (isAddressNamed(value))
             base32(text, value & ADDRESS_MASK);
         else
             ipPortKey(text, value);
     }
 
     public static boolean isAddressNamed(long value) {
-        return (value >>> 60) >= ~ADDRESS_MASK >>> 60;
+        return (value & TOP_3) == TOP_3;
     }
 
     private static void base32(StringBuilder text, long value) {
@@ -97,24 +96,18 @@ public enum DecentredUtil {
     }
 
     private static void ipPortKey(StringBuilder text, long value) {
-        ipPort(text, value >>> 16);
-        text.append(':');
-        text.append(Integer.toHexString((int) (value & MASK_16)));
-    }
-
-    private static void ipPort(StringBuilder text, long value) {
+        AppendableUtil.append(text, (value >> 56) & MASK_8);
+        text.append('.');
+        AppendableUtil.append(text, (value >> 48) & MASK_8);
+        text.append('.');
         AppendableUtil.append(text, (value >> 40) & MASK_8);
         text.append('.');
         AppendableUtil.append(text, (value >> 32) & MASK_8);
-        text.append('.');
-        AppendableUtil.append(text, (value >> 24) & MASK_8);
-        text.append('.');
-        AppendableUtil.append(text, (value >> 16) & MASK_8);
         text.append(':');
-        AppendableUtil.append(text, value & MASK_16);
-    }
-
-    public static int parseRegion(String region) {
-        return (int) (LetterBase32.decode(region) & MASK_16);
+        AppendableUtil.append(text, (value >> 16) & MASK_16);
+        if ((value & MASK_16) != 0) {
+            text.append(':');
+            text.append(Integer.toHexString((int) (value & MASK_16)));
+        }
     }
 }
