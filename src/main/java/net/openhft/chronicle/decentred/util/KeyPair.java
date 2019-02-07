@@ -22,7 +22,7 @@ public class KeyPair {
     public KeyPair(long id) {
         Bytes<Void> privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
         privateKey.zeroOut(0, Ed25519.PRIVATE_KEY_LENGTH);
-        privateKey.writeLong(Ed25519.PRIVATE_KEY_LENGTH - Long.BYTES, id);
+        privateKey.writeLong(Ed25519.PRIVATE_KEY_LENGTH - (long) Long.BYTES, id);
         privateKey.writeSkip(Ed25519.PRIVATE_KEY_LENGTH);
         Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
         privateKey.release();

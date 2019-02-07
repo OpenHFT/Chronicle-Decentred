@@ -68,7 +68,7 @@ public enum DecentredUtil {
     public static BytesStore testPrivateKey(long seed) {
         Bytes privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
         privateKey.zeroOut(0, Ed25519.PRIVATE_KEY_LENGTH);
-        privateKey.writeSkip(Ed25519.PRIVATE_KEY_LENGTH - Long.BYTES);
+        privateKey.writeSkip(Ed25519.PRIVATE_KEY_LENGTH - (long) Long.BYTES);
         privateKey.writeLong(seed);
         return privateKey;
     }
