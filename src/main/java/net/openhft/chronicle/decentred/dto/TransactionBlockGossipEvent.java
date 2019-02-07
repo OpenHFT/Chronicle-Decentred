@@ -66,8 +66,10 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
         bytes.writeShort(weekNumber);
         bytes.writeInt(blockNumber);
         bytes.writeStopBit(addressToBlockNumberMap.size());
-        if (longU32Writer == null) longU32Writer = new LongU32Writer();
-        longU32Writer.bytes = bytes;
+        if (longU32Writer == null) {
+            longU32Writer = new LongU32Writer();
+        }
+        longU32Writer.bytes(bytes);
         addressToBlockNumberMap.forEach(longU32Writer);
     }
 
