@@ -18,7 +18,7 @@
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-core</artifactId>
-            <version>1.16.23-SNAPSHOT</version>
+            <version>1.16.23</version>
         </dependency>
         <dependency>
             <groupId>net.openhft</groupId>
