@@ -142,6 +142,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
             doProcessOneBlock();
             blockReplayer.replayBlocks();
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new AssertionError(e);
         }
     }

@@ -17,6 +17,8 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> {
     private transient DtoParser<T> dtoParser;
 
@@ -43,7 +45,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     }
 
     public TransactionBlockEvent dtoParser(DtoParser<T> dtoParser) {
-        this.dtoParser = dtoParser;
+        this.dtoParser = requireNonNull(dtoParser);
         return this;
     }
 

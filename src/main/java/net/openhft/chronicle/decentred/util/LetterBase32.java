@@ -30,7 +30,7 @@ public enum LetterBase32 {
             byte code = VALUES[text.charAt(i)];
             if (code < 0)
                 throw new IllegalArgumentException("Cannot decode " + text);
-            value = (value << 5) + code;
+            value = (value << 5) + (code & 0xff);
         }
         return value;
     }

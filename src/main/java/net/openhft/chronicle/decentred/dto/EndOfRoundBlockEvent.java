@@ -68,7 +68,7 @@ public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEv
         super.writeMarshallable0(bytes);
         bytes.writeStopBit(addressToBlockNumberMap.size());
         if (longU32Writer == null) longU32Writer = new LongU32Writer();
-        longU32Writer.bytes = bytes;
+        longU32Writer.bytes(bytes);
         addressToBlockNumberMap.forEach(longU32Writer);
     }
 

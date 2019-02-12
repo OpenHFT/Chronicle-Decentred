@@ -47,6 +47,7 @@ public class VanillaGateway implements Gateway {
         );
     }
 
+    @Override
     public void start(DecentredServer decentredServer) {
         this.decentredServer = decentredServer;
         main.start(decentredServer);

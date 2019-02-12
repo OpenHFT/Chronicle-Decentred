@@ -27,28 +27,28 @@ public class RPCGatewayTest {
                 .secretKey(kp.secretKey)
                 .publicKey(kp.publicKey);
         VanillaTransactionProcessor vtp = new VanillaTransactionProcessor();
-        RPCServer<SystemMessages> server = rpcBuilder.createServer(9009, vtp, vtp);
-        System.out.println("Server address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp.publicKey)));
+        try (RPCServer<SystemMessages> server = rpcBuilder.createServer(9009, vtp, vtp)) {
+            System.out.println("Server address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp.publicKey)));
 
-        KeyPair kp2 = new KeyPair(17);
-        DtoRegistry<SystemMessages> dtoRegistry = DtoRegistry.newRegistry(SystemMessages.class);
-        BlockingQueue<String> queue = new LinkedBlockingQueue<>();
-        SystemMessages listener = Mocker.queuing(SystemMessages.class, "", queue);
-        RPCClient<SystemMessages> client = new RPCClient<>("test", "localhost", 9009, kp2.secretKey, dtoRegistry, listener);
-        System.out.println("Client address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp2.publicKey)));
-        client.toDefault().createAddressRequest(new CreateAddressRequest());
-        String s = queue.poll(Jvm.isDebug() ? 100 : 10, TimeUnit.SECONDS);
-        assertEquals("createAddressEvent[!CreateAddressEvent {\n" +
-                "  timestampUS: {deleted},\n" +
-                "  address: phccofmpy6ci,\n" +
-                "  createAddressRequest: {\n" +
-                "    timestampUS: {deleted},\n" +
-                "    address: ud6jbceicts2,\n" +
-                "    publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o=\n" +
-                "  }\n" +
-                "}\n" +
-                "]", s.replaceAll("timestampUS: 20[^,]+", "timestampUS: {deleted}"));
-        client.close();
-        server.close();
+            KeyPair kp2 = new KeyPair(17);
+            DtoRegistry<SystemMessages> dtoRegistry = DtoRegistry.newRegistry(SystemMessages.class);
+            BlockingQueue<String> queue = new LinkedBlockingQueue<>();
+            SystemMessages listener = Mocker.queuing(SystemMessages.class, "", queue);
+            try (RPCClient<SystemMessages> client = new RPCClient<>("test", "localhost", 9009, kp2.secretKey, dtoRegistry, listener)) {
+                System.out.println("Client address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp2.publicKey)));
+                client.toDefault().createAddressRequest(new CreateAddressRequest());
+                String s = queue.poll(Jvm.isDebug() ? 100 : 10, TimeUnit.SECONDS);
+                assertEquals("createAddressEvent[!CreateAddressEvent {\n" +
+                    "  timestampUS: {deleted},\n" +
+                    "  address: phccofmpy6ci,\n" +
+                    "  createAddressRequest: {\n" +
+                    "    timestampUS: {deleted},\n" +
+                    "    address: ud6jbceicts2,\n" +
+                    "    publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o=\n" +
+                    "  }\n" +
+                    "}\n" +
+                    "]", s.replaceAll("timestampUS: 20[^,]+", "timestampUS: {deleted}"));
+            }
+        }
     }
 }

@@ -97,7 +97,7 @@ public class RPCBuilder<T> {
     }*/
 
 
-    public RPCBuilder addClusterAddress(long serverAddress) {
+    public RPCBuilder<T> addClusterAddress(long serverAddress) {
         clusterAddresses.add(serverAddress);
         return this;
     }
@@ -106,7 +106,7 @@ public class RPCBuilder<T> {
         return publicKey;
     }
 
-    public RPCBuilder publicKey(Bytes publicKey) {
+    public RPCBuilder<T> publicKey(Bytes publicKey) {
         this.publicKey = publicKey;
         return this;
     }
@@ -115,7 +115,7 @@ public class RPCBuilder<T> {
         return secretKey;
     }
 
-    public RPCBuilder secretKey(Bytes secretKey) {
+    public RPCBuilder<T> secretKey(Bytes secretKey) {
         this.secretKey = secretKey;
         return this;
     }
@@ -124,7 +124,7 @@ public class RPCBuilder<T> {
         return clusterAddresses;
     }
 
-    public RPCBuilder clusterAddresses(Set<Long> clusterAddresses) {
+    public RPCBuilder<T> clusterAddresses(Set<Long> clusterAddresses) {
         this.clusterAddresses = clusterAddresses;
         return this;
     }
@@ -133,7 +133,7 @@ public class RPCBuilder<T> {
         return mainBlockPeriodMS;
     }
 
-    public RPCBuilder mainBlockPeriodMS(int mainBlockPeriodMS) {
+    public RPCBuilder<T> mainBlockPeriodMS(int mainBlockPeriodMS) {
         this.mainBlockPeriodMS = mainBlockPeriodMS;
         return this;
     }
@@ -151,7 +151,7 @@ public class RPCBuilder<T> {
         return region;
     }
 
-    public RPCBuilder region(String region) {
+    public RPCBuilder<T> region(String region) {
         this.region = region;
         return this;
     }
@@ -160,7 +160,7 @@ public class RPCBuilder<T> {
         return internal;
     }
 
-    public RPCBuilder internal(boolean internal) {
+    public RPCBuilder<T> internal(boolean internal) {
         this.internal = internal;
         return this;
     }

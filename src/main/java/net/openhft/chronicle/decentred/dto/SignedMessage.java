@@ -40,9 +40,12 @@ public interface SignedMessage extends BytesMarshallable {
     BytesStore publicKey();
 
     /**
-     * This will signed the message as well as set the public key (if any) and address
+     * Signs and returns this message. As an additional side effect, also sets
+     * the public key (if any) and address in this message.
      *
-     * @param secretKey to signed this message with.
+     * @param secretKey to sign this message with.
+     * @return this signed message
+     * @throws NullPointerException if the provided {@code secretKey} is {@code null}
      */
     SignedMessage sign(BytesStore secretKey);
 
