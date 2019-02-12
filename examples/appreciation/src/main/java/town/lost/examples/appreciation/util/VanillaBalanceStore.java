@@ -2,6 +2,8 @@ package town.lost.examples.appreciation.util;
 
 import net.openhft.chronicle.decentred.util.LongObjMap;
 
+import java.util.StringJoiner;
+
 public class VanillaBalanceStore implements BalanceStore {
     private final LongObjMap<Balances> amountsMap = LongObjMap.withExpectedSize(Balances.class, 1024);
 
@@ -63,9 +65,9 @@ public class VanillaBalanceStore implements BalanceStore {
     }
 
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringJoiner builder = new StringJoiner(", ");
         amountsMap.forEach((address, balance)  -> {
-           builder.append("" + address + " has " + balance.balance());
+            builder.add(address + " has " + balance.balance());
         });
         return builder.toString();
     }

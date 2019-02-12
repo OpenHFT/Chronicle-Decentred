@@ -8,7 +8,7 @@ import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import town.lost.examples.appreciation.api.AppreciationGateway;
 
-public class Node<U extends T, T> {
+public abstract class Node<U extends T, T> {
     private final BytesStore privateKey;
     private final VanillaBytes<Void> publicKey;
     private final VanillaBytes<Void> secretKey;
@@ -55,5 +55,7 @@ public class Node<U extends T, T> {
     public RPCBuilder<U, T> getRpcBuilder() {
         return rpcBuilder;
     }
+
+    abstract void close();
 
 }

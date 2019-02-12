@@ -1,5 +1,6 @@
 package town.lost.examples.appreciation.benchmark;
 
+import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
@@ -29,6 +30,8 @@ import java.util.function.Function;
 
 public class Server extends Node<AppreciationMessages, AppreciationRequests> {
     public static final int DEFAULT_SERVER_PORT = 9010;
+    private static final double START_AMOUNT = 2_000_000d;
+    private static final int MAX_SEED = 4;
 
     private final RPCServer<AppreciationMessages, AppreciationRequests> rpcServer;
 
@@ -87,6 +90,11 @@ public class Server extends Node<AppreciationMessages, AppreciationRequests> {
         ((TransactionProcessor) localProcessor).messageRouter(rpcServer);
     }
 
+    @Override
+    public void close() {
+        rpcServer.close();
+    }
+
     private static String formatBalance(BalanceStore store, long address) {
         Balances balance = store.getBalances(address);
         if (balance != null) {
@@ -130,11 +138,38 @@ public class Server extends Node<AppreciationMessages, AppreciationRequests> {
         BalanceStore balanceStore = new VanillaBalanceStore();
         Server server = new Server(42, DEFAULT_SERVER_PORT, balanceStore);
 
-        while (true) {
+        System.out.println("Server started at port " + DEFAULT_SERVER_PORT);
+
+        setOpeningBalances("0.0.0.0");
+
+        System.out.println("Press <enter> to stop server.");
+
+        while (System.in.available() == 0) {
             Thread.sleep(5000);
             System.out.println("balanceStore = " + balanceStore);
         }
+        server.close();
+        System.exit(0);
 
     }
+
+
+    private static void setOpeningBalances(String serverHost) {
+        final Client client = new Client(2342323, serverHost, Server.DEFAULT_SERVER_PORT); // Unused seed
+        client.connect();
+
+        for (int i = 1; i <= MAX_SEED; i++) {
+            final long address = Client.addressFromSeed(i);
+            final OpeningBalance openingBalance = new OpeningBalance()
+                .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
+                .init(address, START_AMOUNT);
+            client.sendMsg(openingBalance);
+            System.out.println("Setting seed " + i + " address " + address + " to " + START_AMOUNT);
+        }
+
+        client.close();
+    }
+
+
 
 }
