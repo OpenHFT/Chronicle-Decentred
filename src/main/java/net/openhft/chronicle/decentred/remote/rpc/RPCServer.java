@@ -192,9 +192,12 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
             try {
 
                 long sourceAddress = dtoParser.parseOne(bytes, serverComponent);
-                synchronized (connections) {
-                    System.out.println("Associating address " + sourceAddress + " to " + channel);
-                    connections.justPut(sourceAddress, channel);
+
+                if (!connections.containsKey(sourceAddress)) { // Todo -- fix this way of adding connections. This is wrong
+                    synchronized (connections) {
+                        System.out.println("Associating address " + sourceAddress + " to " + channel);
+                        connections.justPut(sourceAddress, channel);
+                    }
                 }
             } catch (IORuntimeException iore) {
                 if (iore.getCause() instanceof IOException)
