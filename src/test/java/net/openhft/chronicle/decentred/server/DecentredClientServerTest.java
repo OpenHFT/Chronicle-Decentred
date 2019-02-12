@@ -33,7 +33,7 @@ public class DecentredClientServerTest {
         SystemMessages logging = Mocker.logging(SystemMessages.class, "", out);
         DtoRegistry<SystemMessages> dtoRegistry = DtoRegistry.newRegistry(SystemMessages.class);
 
-        RPCServer<SystemMessages> server = new RPCServer<>(
+        RPCServer<SystemMessages, SystemMessages> server = new RPCServer<>(
                 "test", 9900,
                 1,
                 kp.publicKey, kp.secretKey,
@@ -46,8 +46,8 @@ public class DecentredClientServerTest {
         List<InetSocketAddress> addresses = Arrays.asList(new InetSocketAddress("localhost", 9900));
 
         SystemMessages logging2 = Mocker.logging(SystemMessages.class, "", out);
-        RPCClient<SystemMessages> client = new RPCClient<>(
-                "test-client", addresses, kp.secretKey, dtoRegistry, logging2)
+        RPCClient<SystemMessages, SystemMessages> client = new RPCClient<>(
+                "test-client", addresses, kp.secretKey, dtoRegistry, logging2, SystemMessages.class)
                 .timeProvider(new SetTimeProvider("2018-08-25T09:45:04.18"));
 
         CreateAddressRequest cnac = new CreateAddressRequest()

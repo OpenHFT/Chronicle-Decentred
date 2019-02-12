@@ -19,25 +19,27 @@ public class RPCTest {
         KeyPair one = new KeyPair(1);
 
         DtoRegistry<Verifier> protocol = DtoRegistry.newRegistry(Verifier.class)
-                .addProtocol(1, Verifier.class);
-        RPCServer<Verifier> server = new RPCServer<>("test",
-                9999,
-                9999,
-                zero.publicKey,
-                zero.secretKey,
-                Verifier.class,
-                protocol,
-                VanillaVerifyIP::new);
+            .addProtocol(1, Verifier.class);
+        RPCServer<Verifier, Verifier> server = new RPCServer<>("test",
+            9999,
+            9999,
+            zero.publicKey,
+            zero.secretKey,
+            Verifier.class,
+            protocol,
+            VanillaVerifyIP::new);
 
         BlockingQueue<String> queue = new LinkedBlockingQueue<>();
         Verifier verifier = Mocker.queuing(Verifier.class, "", queue);
-        RPCClient<Verifier> client = new RPCClient<>(
-                "test",
-                "localhost",
-                9999,
-                zero.secretKey,
-                protocol,
-                verifier);
+        RPCClient<Verifier, Verifier> client = new RPCClient<>(
+            "test",
+            "localhost",
+            9999,
+            zero.secretKey,
+            protocol,
+            verifier,
+            Verifier.class
+        );
 
         VerificationEvent message = protocol.create(VerificationEvent.class);
         message.keyVerified(one.publicKey);

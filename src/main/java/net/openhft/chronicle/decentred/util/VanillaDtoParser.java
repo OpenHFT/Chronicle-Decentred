@@ -25,15 +25,16 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
     }
 
     @Override
-    public void parseOne(Bytes bytes, T listener) {
+    public long parseOne(Bytes bytes, T listener) {
         requireNonNull(bytes);
         requireNonNull(listener);
         final int protocolMessageType = bytes.readInt(bytes.readPosition() + VanillaSignedMessage.MESSAGE_TYPE);
         final DtoParselet parselet = parseletMap.get(protocolMessageType);
         if (parselet == null) {
             Jvm.warn().on(getClass(), "Unable to find a parselet for protocol " + (protocolMessageType >>> 16) + " messageType " + (protocolMessageType & 0xFFFF));
+            return 0;
         } else {
-            parselet.parse(bytes, listener);
+            return parselet.parse(bytes, listener);
         }
     }
 

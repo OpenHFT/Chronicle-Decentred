@@ -2,8 +2,8 @@ package net.openhft.chronicle.decentred.util;
 
 import net.openhft.chronicle.bytes.Bytes;
 
-public interface DtoParser<T>
-    extends HasSuperInterface<T> {
+public interface DtoParser<U>
+    extends HasSuperInterface<U> {
 
     /**
      * Parses one data transfer object (dto) from the provided {@code bytes} and
@@ -21,7 +21,10 @@ public interface DtoParser<T>
      * are {@code null}
      *
      */
-    void parseOne(Bytes bytes, T listener);
+
+    // TODO -- ugly return type
+
+    long parseOne(Bytes bytes, U listener);
 
     /**
      * Invokes a method on the given {@code component} with the given {@code message}
@@ -37,5 +40,5 @@ public interface DtoParser<T>
      * @throws NullPointerException if any of the provided parameters
      * are {@code null}
      */
-    void onMessage(T component, Object message);
+    void onMessage(U component, Object message);
 }

@@ -32,7 +32,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     private long nextSendUS;
     private MessageToListener tcpMessageListener;
 
-    public VanillaBlockEngine(DtoRegistry<T> dtoRegistry,
+    public <U extends T> VanillaBlockEngine(DtoRegistry<U> dtoRegistry,
                               long address,
                               long chainAddress,
                               int periodMS,
@@ -56,7 +56,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
 //        writerSes = Executors.newCachedThreadPool(new NamedThreadFactory(regionStr + "-writer", true, Thread.MIN_PRIORITY));
     }
 
-    public static <T> VanillaBlockEngine<T> newMain(DtoRegistry<T> dtoRegistry,
+    public static <T, U extends T> VanillaBlockEngine<T> newMain(DtoRegistry<U> dtoRegistry,
                                                     long address,
                                                     int periodMS,
                                                     long[] clusterAddresses,
@@ -68,7 +68,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         return new VanillaBlockEngine<>(dtoRegistry, address, main, periodMS, postBlockChainProcessor, clusterAddresses);
     }
 
-    public static <T> VanillaBlockEngine<T> newLocal(DtoRegistry<T> dtoRegistry,
+    public static <T, U extends T> VanillaBlockEngine<T> newLocal(DtoRegistry<U> dtoRegistry,
                                                      long address,
                                                      long chainAddress,
                                                      int periodMS,

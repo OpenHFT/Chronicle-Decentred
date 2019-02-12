@@ -33,6 +33,7 @@ public class VanillaTCPServer implements TCPServer {
             while (running) {
                 SocketChannel accept = serverChannel.accept();
                 TCPConnection connection = connectionListener.createConnection(this, accept);
+                System.out.println("server connection = " + connection);
                 connections.add(connection);
                 pool.submit(((Runnable) connection));
             }

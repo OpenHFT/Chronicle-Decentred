@@ -82,6 +82,7 @@ public class VanillaTCPClient extends AbstractTCPConnection {
         InetSocketAddress socketAddress = socketAddresses.get(nextChannel);
         try {
             channel(SocketChannel.open(socketAddress));
+            System.out.println("client channel = " + this.channel);
             Socket socket = channel.socket();
             socket.setReceiveBufferSize(1 << 20);
 //            socket.setTcpNoDelay(true);

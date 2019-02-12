@@ -39,13 +39,14 @@ class DtoParselet<T> {
         return vsm.protocol(protocol).messageType(messageType);
     }
 
-    public void parse(Bytes bytes, T listener) {
+    public long parse(Bytes bytes, T listener) {
         vsm.readMarshallable(bytes);
         try {
             method.invoke(listener, vsm);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+        return vsm.address();
     }
 
     @Override

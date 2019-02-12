@@ -7,7 +7,7 @@ import java.net.SocketException;
 import java.nio.channels.SocketChannel;
 
 @FunctionalInterface
-public interface TCPServerConnectionListener<C extends TCPConnection> {
+public interface TCPServerConnectionListener<C extends TCPConnection & Runnable> {
     default void onNewConnection(TCPServer server, C channel) {
 
     }

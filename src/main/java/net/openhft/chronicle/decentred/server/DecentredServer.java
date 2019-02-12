@@ -6,6 +6,6 @@ import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.PublicKeyRegistry;
 import net.openhft.chronicle.wire.LongConversion;
 
-public interface DecentredServer<T> extends MessageRouter<T>, MessageToListener, PublicKeyRegistry {
+public interface DecentredServer<U> extends MessageRouter<U>, MessageToListener, PublicKeyRegistry {
     void subscribe(@LongConversion(AddressLongConverter.class) long address);
 }

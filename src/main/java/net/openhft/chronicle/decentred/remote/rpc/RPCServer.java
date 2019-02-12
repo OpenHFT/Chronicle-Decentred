@@ -24,18 +24,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class RPCServer<T> implements DecentredServer<T>, Closeable {
+public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable {
     private static final ThreadLocal<TCPConnection> DEFAULT_CONNECTION_TL = new ThreadLocal<>();
     private final LongObjMap<TCPConnection> connections = LongObjMap.withExpectedSize(TCPConnection.class, 128);
     private final LongObjMap<TCPConnection> remoteMap = LongObjMap.withExpectedSize(TCPConnection.class, 128);
-    private final Map<Long, T> allMessagesMap = new ConcurrentHashMap<>();
+    private final Map<Long, U> allMessagesMap = new ConcurrentHashMap<>();
     private final PublicKeyRegistry publicKeyRegistry = new VanillaPublicKeyRegistry();
     private final TCPServer tcpServer;
     private final long address;
     private final BytesStore publicKey;
     private final BytesStore secretKey;
     private final Class<T> tClass;
-    private final DtoRegistry<T> dtoRegistry;
+    private final DtoRegistry<U> dtoRegistry;
     private final T serverComponent;
 
     public RPCServer(String name,
@@ -44,14 +44,14 @@ public class RPCServer<T> implements DecentredServer<T>, Closeable {
                      BytesStore publicKey,
                      BytesStore secretKey,
                      Class<T> tClass,
-                     DtoRegistry<T> dtoRegistry,
-                     Function<DecentredServer<T>, T> serverComponentBuilder) throws IOException {
+                     DtoRegistry<U> dtoRegistry,
+                     Function<DecentredServer<U>, T> serverComponentBuilder) throws IOException {
         this.address = address;
         this.publicKey = publicKey;
         this.secretKey = secretKey;
         this.tClass = tClass;
         this.dtoRegistry = dtoRegistry;
-        tcpServer = new VanillaTCPServer(name, port, new XCLConnectionListener(dtoRegistry.get()));
+        tcpServer = new VanillaTCPServer(name, port, new XCLConnectionListener(dtoRegistry.get(tClass)));
         this.serverComponent = serverComponentBuilder.apply(this);
     }
 
@@ -69,7 +69,7 @@ public class RPCServer<T> implements DecentredServer<T>, Closeable {
         return publicKeyRegistry.internal();
     }
 
-    public RPCServer internal(boolean internal) {
+    public RPCServer<U, T> internal(boolean internal) {
         publicKeyRegistry.internal(internal);
         return this;
     }
@@ -93,11 +93,12 @@ public class RPCServer<T> implements DecentredServer<T>, Closeable {
     }
 
     @Override
-    public T to(long addressOrRegion) {
+    public U to(long addressOrRegion) {
         InvocationHandler handler = new ServerInvocationHandler(addressOrRegion);
+        Class<U> uClass = dtoRegistry.superInterface();
         //noinspection unchecked
-        T proxy = (T) Proxy.newProxyInstance(tClass.getClassLoader(),
-                new Class[]{tClass, SystemMessageListener.class},
+        U proxy = (U) Proxy.newProxyInstance(uClass.getClassLoader(),
+                new Class[]{uClass, SystemMessageListener.class},
                 handler);
         return proxy;
     }
@@ -190,8 +191,11 @@ public class RPCServer<T> implements DecentredServer<T>, Closeable {
             bytes.readSkip(-4);
             try {
 
-                dtoParser.parseOne(bytes, serverComponent);
-
+                long sourceAddress = dtoParser.parseOne(bytes, serverComponent);
+                synchronized (connections) {
+                    System.out.println("Associating address " + sourceAddress + " to " + channel);
+                    connections.justPut(sourceAddress, channel);
+                }
             } catch (IORuntimeException iore) {
                 if (iore.getCause() instanceof IOException)
                     throw (IOException) iore.getCause();

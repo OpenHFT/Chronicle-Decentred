@@ -88,6 +88,8 @@ public interface DtoRegistry<T> extends Supplier<DtoParser<T>>, HasSuperInterfac
     @Override
     DtoParser<T> get();
 
+    <K> DtoParser<K> get(Class<K> token);
+
     /**
      * Creates and returns a new VanillaSignedMessage of the provided {@code tClass} type.
      *

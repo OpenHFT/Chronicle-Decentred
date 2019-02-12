@@ -7,6 +7,7 @@ import net.openhft.chronicle.core.util.ObjectUtils;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.DtoAliases;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
@@ -87,9 +88,20 @@ public final class VanillaDtoRegistry<T>  implements DtoRegistry<T> {
 
     @Override
     public DtoParser<T> get() {
+        return getTypedDtoParser(superInterface);
+    }
+
+    @Override
+    public <K> DtoParser<K> get(Class<K> token) {
+        assert superInterface.isAssignableFrom(token);
+        return getTypedDtoParser(token);
+    }
+
+    @NotNull
+    private <K> DtoParser<K> getTypedDtoParser(Class<K> listenerType) {
         final IntObjMap<DtoParselet> parseletMap2 = IntObjMap.withExpectedSize(DtoParselet.class, parseletMap.size() * 2);
         parseletMap.forEach((i, dp) -> parseletMap2.justPut(i, new DtoParselet(dp)));
-        return new VanillaDtoParser<>(superInterface, parseletMap2, classConsumerMap);
+        return new VanillaDtoParser<>(listenerType, parseletMap2, classConsumerMap);
     }
 
     @Override

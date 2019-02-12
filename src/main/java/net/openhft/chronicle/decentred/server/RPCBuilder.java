@@ -12,10 +12,11 @@ import net.openhft.chronicle.salt.Ed25519;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.function.Function;
 
-public class RPCBuilder<T> {
+public class RPCBuilder<U extends T, T> {
     private final Class<T> tClass;
-    private final DtoRegistry<T> dtoRegistry;
+    private final DtoRegistry<U> dtoRegistry;
 
     private Bytes privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
     private Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
@@ -26,20 +27,29 @@ public class RPCBuilder<T> {
     private String region = "test";
     private boolean internal = false;
 
-    private RPCBuilder(Class<T> tClass) {
+    private RPCBuilder(Class<U> uClass, Class<T> tClass) {
         this.tClass = tClass;
-        dtoRegistry = DtoRegistry.newRegistry(tClass);
+        dtoRegistry = DtoRegistry.newRegistry(uClass);
     }
 
-    public static <T> RPCBuilder<T> of(Class<T> tClass) {
-        return new RPCBuilder<>(tClass);
+    private RPCBuilder(int protocol, Class<U> uClass, Class<T> tClass) {
+        this.tClass = tClass;
+        dtoRegistry = DtoRegistry.newRegistry(protocol, uClass);
     }
 
-    public RPCServer<T> createServer(int port, T mainTransactionProcessor, T localTransactionProcessor) throws IOException {
-        return createServer("server:" + port, port, mainTransactionProcessor, localTransactionProcessor);
+    public static <U extends T, T> RPCBuilder<U, T> of(Class<U> uClass, Class<T> tClass) {
+        return new RPCBuilder<>(uClass, tClass);
     }
 
-    public RPCServer<T> createServer(String name, int port, T mainTransactionProcessor, T localTransactionProcessor) throws IOException {
+    public static <U extends T, T> RPCBuilder<U, T> of(int protocol, Class<U> uClass, Class<T> tClass) {
+        return new RPCBuilder<>(protocol, uClass, tClass);
+    }
+
+    public RPCServer<U, T> createServer(int port, T mainTransactionProcessor, T localTransactionProcessor, Function<GatewayConfiguration<U>, VanillaGateway> gatewayConstructor) throws IOException {
+        return createServer("server:" + port, port, mainTransactionProcessor, localTransactionProcessor, gatewayConstructor);
+    }
+
+    public RPCServer<U, T> createServer(String name, int port, T mainTransactionProcessor, T localTransactionProcessor, Function<GatewayConfiguration<U>, VanillaGateway> gatewayConstructor) throws IOException {
         assert mainTransactionProcessor instanceof TransactionProcessor;
         assert localTransactionProcessor instanceof TransactionProcessor;
 
@@ -58,16 +68,19 @@ public class RPCBuilder<T> {
                         .mapToLong(i -> i)
                         .toArray();
 
-        VanillaGateway gateway = VanillaGateway.newGateway(
-                dtoRegistry,
-                serverAddress,
-                region,
-                clusterAddressArray,
-                mainBlockPeriodMS,
-                localBlockPeriodMS,
-                mainTransactionProcessor,
-                localTransactionProcessor);
-        RPCServer<T> server = new RPCServer<>(
+        VanillaGateway gateway = gatewayConstructor.apply(GatewayConfiguration.of(
+            dtoRegistry,
+            serverAddress,
+            region,
+            clusterAddressArray,
+            mainBlockPeriodMS,
+            localBlockPeriodMS,
+            mainTransactionProcessor,
+            localTransactionProcessor
+        ));
+
+
+        RPCServer<U, T> server = new RPCServer<>(
                 name,
                 port,
                 serverAddress,
@@ -75,8 +88,8 @@ public class RPCBuilder<T> {
                 secretKey,
                 tClass,
                 dtoRegistry,
-                t -> (T) gateway)
-                .internal(internal);
+                t -> (T) gateway
+        ).internal(internal);
         ((TransactionProcessor) mainTransactionProcessor).messageRouter(server);
         ((TransactionProcessor) localTransactionProcessor).messageRouter(server);
         gateway.start(server);
@@ -97,7 +110,7 @@ public class RPCBuilder<T> {
     }*/
 
 
-    public RPCBuilder<T> addClusterAddress(long serverAddress) {
+    public RPCBuilder<U, T> addClusterAddress(long serverAddress) {
         clusterAddresses.add(serverAddress);
         return this;
     }
@@ -106,7 +119,7 @@ public class RPCBuilder<T> {
         return publicKey;
     }
 
-    public RPCBuilder<T> publicKey(Bytes publicKey) {
+    public RPCBuilder<U, T> publicKey(Bytes publicKey) {
         this.publicKey = publicKey;
         return this;
     }
@@ -115,7 +128,7 @@ public class RPCBuilder<T> {
         return secretKey;
     }
 
-    public RPCBuilder<T> secretKey(Bytes secretKey) {
+    public RPCBuilder<U, T> secretKey(Bytes secretKey) {
         this.secretKey = secretKey;
         return this;
     }
@@ -124,7 +137,7 @@ public class RPCBuilder<T> {
         return clusterAddresses;
     }
 
-    public RPCBuilder<T> clusterAddresses(Set<Long> clusterAddresses) {
+    public RPCBuilder<U, T> clusterAddresses(Set<Long> clusterAddresses) {
         this.clusterAddresses = clusterAddresses;
         return this;
     }
@@ -133,7 +146,7 @@ public class RPCBuilder<T> {
         return mainBlockPeriodMS;
     }
 
-    public RPCBuilder<T> mainBlockPeriodMS(int mainBlockPeriodMS) {
+    public RPCBuilder<U, T> mainBlockPeriodMS(int mainBlockPeriodMS) {
         this.mainBlockPeriodMS = mainBlockPeriodMS;
         return this;
     }
@@ -151,7 +164,7 @@ public class RPCBuilder<T> {
         return region;
     }
 
-    public RPCBuilder<T> region(String region) {
+    public RPCBuilder<U, T> region(String region) {
         this.region = region;
         return this;
     }
@@ -160,7 +173,7 @@ public class RPCBuilder<T> {
         return internal;
     }
 
-    public RPCBuilder<T> internal(boolean internal) {
+    public RPCBuilder<U, T> internal(boolean internal) {
         this.internal = internal;
         return this;
     }

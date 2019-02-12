@@ -24,15 +24,15 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
 
-public class RPCClient<T> implements Closeable, TCPConnection, MessageRouter<T> {
+public class RPCClient<U extends T, T> implements Closeable, TCPConnection, MessageRouter<U> {
     private final VanillaTCPClient tcpClient;
     private final T listener;
     private final BytesStore secretKey;
-    private final DtoRegistry<T> registry;
+    private final DtoRegistry<U> registry;
     private final DtoParser<T> parser;
     private final LongObjMap<BytesStore> addressToPublicKey =
             LongObjMap.withExpectedSize(BytesStore.class, 16);
-    private final T proxy;
+    private final U proxy;
     private boolean internal = false;
     private TimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;
 
@@ -40,18 +40,20 @@ public class RPCClient<T> implements Closeable, TCPConnection, MessageRouter<T> 
                      String socketHost,
                      int socketPort,
                      BytesStore secretKey,
-                     DtoRegistry<T> registry,
-                     T listener) {
-        this(name, Collections.singletonList(new InetSocketAddress(socketHost, socketPort)), secretKey, registry, listener);
+                     DtoRegistry<U> registry,
+                     T listener,
+                     Class<T> tClass) {
+        this(name, Collections.singletonList(new InetSocketAddress(socketHost, socketPort)), secretKey, registry, listener, tClass);
     }
 
     public RPCClient(String name,
                      List<InetSocketAddress> socketAddresses,
                      BytesStore secretKey,
-                     DtoRegistry<T> registry,
-                     T listener) {
+                     DtoRegistry<U> registry,
+                     T listener,
+                     Class<T> tClass) {
         this.secretKey = secretKey;
-        this.parser = registry.get();
+        this.parser = registry.get(tClass);
         this.registry = registry;
         InvocationHandler handler = new AbstractMethodWriterInvocationHandler() {
             @Override
@@ -61,17 +63,17 @@ public class RPCClient<T> implements Closeable, TCPConnection, MessageRouter<T> 
                 write(vsm);
             }
         };
+        Class<U> uClass = registry.superInterface();
         //noinspection unchecked
-        Class<T> tClass = registry.superInterface();
-        proxy = (T) Proxy.newProxyInstance(tClass.getClassLoader(),
-                new Class[]{tClass, SystemMessageListener.class},
+        proxy = (U) Proxy.newProxyInstance(uClass.getClassLoader(),
+                new Class[]{uClass, SystemMessageListener.class},
                 handler);
         this.listener = listener;
         this.tcpClient = new VanillaTCPClient(name, socketAddresses, new ClientListener());
     }
 
     @Override
-    public T to(long address) {
+    public U to(long address) {
         return proxy;
     }
 
@@ -120,7 +122,7 @@ public class RPCClient<T> implements Closeable, TCPConnection, MessageRouter<T> 
         return timeProvider;
     }
 
-    public RPCClient<T> timeProvider(TimeProvider timeProvider) {
+    public RPCClient<U, T> timeProvider(TimeProvider timeProvider) {
         this.timeProvider = timeProvider;
         return this;
     }

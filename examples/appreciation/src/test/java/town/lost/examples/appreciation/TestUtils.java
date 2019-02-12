@@ -29,7 +29,7 @@ public enum TestUtils {
     public static VanillaAppreciationGateway createGateway(AppreciationTester tester) {
         VanillaBalanceStore balanceStore = new VanillaBalanceStore();
         VanillaAppreciationTransactions blockchain = new VanillaAppreciationTransactions(tester, balanceStore);
-        return new VanillaAppreciationGateway(tester, blockchain, balanceStore);
+        return new VanillaAppreciationGateway(0, null, null, tester, blockchain, balanceStore);
     }
 
 }

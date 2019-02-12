@@ -22,19 +22,28 @@ public class RPCGatewayTest {
     @Test
     public void endToEnd() throws IOException, InterruptedException {
         KeyPair kp = new KeyPair(7);
-        RPCBuilder<SystemMessages> rpcBuilder = RPCBuilder.of(SystemMessages.class)
+        RPCBuilder<SystemMessages, SystemMessages> rpcBuilder = RPCBuilder.of(SystemMessages.class, SystemMessages.class)
                 .addClusterAddress(DecentredUtil.toAddress(kp.publicKey))
                 .secretKey(kp.secretKey)
                 .publicKey(kp.publicKey);
         VanillaTransactionProcessor vtp = new VanillaTransactionProcessor();
-        try (RPCServer<SystemMessages> server = rpcBuilder.createServer(9009, vtp, vtp)) {
+        try (RPCServer<SystemMessages, SystemMessages> server = rpcBuilder.createServer(9009, vtp, vtp, config -> VanillaGateway.newGateway(
+            config.dtoRegistry(),
+            config.address(),
+            config.regionStr(),
+            config.clusterAddresses(),
+            config.mainPeriodMS(),
+            config.localPeriodMS(),
+            vtp,
+            vtp
+        ))) {
             System.out.println("Server address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp.publicKey)));
 
             KeyPair kp2 = new KeyPair(17);
             DtoRegistry<SystemMessages> dtoRegistry = DtoRegistry.newRegistry(SystemMessages.class);
             BlockingQueue<String> queue = new LinkedBlockingQueue<>();
             SystemMessages listener = Mocker.queuing(SystemMessages.class, "", queue);
-            try (RPCClient<SystemMessages> client = new RPCClient<>("test", "localhost", 9009, kp2.secretKey, dtoRegistry, listener)) {
+            try (RPCClient<SystemMessages, SystemMessages> client = new RPCClient<>("test", "localhost", 9009, kp2.secretKey, dtoRegistry, listener, SystemMessages.class)) {
                 System.out.println("Client address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp2.publicKey)));
                 client.toDefault().createAddressRequest(new CreateAddressRequest());
                 String s = queue.poll(Jvm.isDebug() ? 100 : 10, TimeUnit.SECONDS);

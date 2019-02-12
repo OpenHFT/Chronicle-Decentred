@@ -22,7 +22,7 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
     private LongLongMap replayedMap = LongLongMap.withExpectedSize(16);
     private DtoParser dtoParser;
 
-    public VanillaBlockReplayer(long address, DtoRegistry<T> dtoRegistry, T postBlockChainProcessor) {
+    public <U extends T> VanillaBlockReplayer(long address, DtoRegistry<U> dtoRegistry, T postBlockChainProcessor) {
         this.address = address;
         dtoParser = dtoRegistry.get();
         this.postBlockChainProcessor = postBlockChainProcessor;
