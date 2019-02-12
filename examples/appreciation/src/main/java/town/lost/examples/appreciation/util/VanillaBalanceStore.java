@@ -61,4 +61,12 @@ public class VanillaBalanceStore implements BalanceStore {
             amountsMap.forEach((k, b) -> b.freeBalance = amount);
         }
     }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        amountsMap.forEach((address, balance)  -> {
+           builder.append("" + address + " has " + balance.balance());
+        });
+        return builder.toString();
+    }
 }
