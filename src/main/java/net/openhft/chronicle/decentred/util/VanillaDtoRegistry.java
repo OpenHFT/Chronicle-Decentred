@@ -93,7 +93,7 @@ public final class VanillaDtoRegistry<T>  implements DtoRegistry<T> {
 
     @Override
     public <K> DtoParser<K> get(Class<K> token) {
-        assert superInterface.isAssignableFrom(token);
+        assert token.isAssignableFrom(superInterface);
         return getTypedDtoParser(token);
     }
 
