@@ -179,6 +179,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     }
 
     public TransactionBlockEvent blockNumber(long blockNumber) {
+        assert !signed();
         this.blockNumber = (int) blockNumber;
         return this;
     }

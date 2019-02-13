@@ -25,7 +25,7 @@ public class Client extends Node<AppreciationMessages, AppreciationResponses> im
 
     private final RPCClient<AppreciationMessages, AppreciationResponses> rpcClient;
 
-    Client(int seed, String serverHost, int serverPort) {
+    public Client(int seed, String serverHost, int serverPort) {
         super(seed, AppreciationMessages.class, AppreciationResponses.class);
         DtoRegistry<AppreciationMessages> dtoRegistry = DtoRegistry.newRegistry(17, AppreciationMessages.class);
         rpcClient = new RPCClient<>("test", serverHost, serverPort, getSecretKey(), dtoRegistry, this, AppreciationResponses.class);

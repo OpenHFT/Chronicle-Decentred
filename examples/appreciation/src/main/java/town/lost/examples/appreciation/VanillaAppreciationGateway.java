@@ -107,7 +107,7 @@ public class VanillaAppreciationGateway extends VanillaGateway implements Apprec
         if (balances == null) {
             AppreciationResponses listener = errorMessageRouter.to(address);
             error.init(msg,
-                    "Cannot give balance: Account doesn't exist)");
+                    "Cannot give balance: Account doesn't exist");
             // to set a timestamp when testing, overridden by the framework.
             error.timestampUS(msg.timestampUS());
             listener.applicationError(error);

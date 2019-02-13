@@ -55,6 +55,10 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
         this.serverComponent = serverComponentBuilder.apply(this);
     }
 
+    public int getPort() {
+        return tcpServer.getPort();
+    }
+
     @Override
     public void register(long address, BytesStore publicKey) {
         publicKeyRegistry.register(address, publicKey);

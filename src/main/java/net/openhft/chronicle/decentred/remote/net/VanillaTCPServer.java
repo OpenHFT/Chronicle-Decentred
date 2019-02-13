@@ -28,6 +28,14 @@ public class VanillaTCPServer implements TCPServer {
         pool.submit(this::run);
     }
 
+    @Override
+    public int getPort() {
+        if (serverChannel == null) {
+            throw new IllegalStateException("Not yet bound");
+        }
+        return serverChannel.socket().getLocalPort();
+    }
+
     private void run() {
         try {
             while (running) {
