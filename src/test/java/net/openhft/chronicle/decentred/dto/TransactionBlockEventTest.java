@@ -1,7 +1,7 @@
 package net.openhft.chronicle.decentred.dto;
 
 import net.openhft.chronicle.core.time.SetTimeProvider;
-import net.openhft.chronicle.decentred.api.AccountManagementRequests;
+import net.openhft.chronicle.decentred.api.AddressManagementRequests;
 import net.openhft.chronicle.decentred.api.ConnectionStatusListener;
 import net.openhft.chronicle.decentred.api.SystemMessageListener;
 import net.openhft.chronicle.decentred.api.SystemMessages;
@@ -26,7 +26,7 @@ public class TransactionBlockEventTest {
 
         DtoRegistry<SystemMessages> registry = DtoRegistry.newRegistry(SystemMessages.class)
                 .addProtocol(1, SystemMessageListener.class)
-                .addProtocol(2, AccountManagementRequests.class)
+                .addProtocol(2, AddressManagementRequests.class)
                 .addProtocol(3, ConnectionStatusListener.class);
         @SuppressWarnings("unchecked")
         TransactionBlockEvent<SystemMessages> tbe = registry.create(TransactionBlockEvent.class);

@@ -6,7 +6,7 @@ import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
 /**
  * Allows messages to be passed without needing to be self signing i.e. using just an account.
  */
-public interface AccountManagementRequests {
+public interface AddressManagementRequests {
     /**
      * Attempt to create an account.
      *
