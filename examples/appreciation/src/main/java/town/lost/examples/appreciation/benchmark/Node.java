@@ -6,14 +6,12 @@ import net.openhft.chronicle.bytes.VanillaBytes;
 import net.openhft.chronicle.decentred.server.RPCBuilder;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
-import town.lost.examples.appreciation.api.AppreciationGateway;
 
 public abstract class Node<U extends T, T> {
     private final BytesStore privateKey;
     private final VanillaBytes<Void> publicKey;
     private final VanillaBytes<Void> secretKey;
     private final RPCBuilder<U, T> rpcBuilder;
-    private AppreciationGateway gateway;
 
     public Node(int seed, Class<U> uClass, Class<T> tClass) {
         privateKey = DecentredUtil.testPrivateKey(seed);
