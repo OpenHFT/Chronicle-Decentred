@@ -3,7 +3,6 @@ verificationEvent: {
   timestampUS: 2018-08-08T08:03:08.231112,
   address: ab34booole7la,
   publicKey: !!binary GucBAEizPpfnf7Kkqg+RF97BjjNhSDfnHlsm1HgpRsg=,
-  addressVerified: 0.0.0.0:0,
   keyVerified: !!binary riUxYqLVMfa4vTGKp64D8nCrhsDLHui/hgeC+vapDpg=
 }
 ---
@@ -12,7 +11,6 @@ verificationEvent: {
   timestampUS: 2018-08-08T08:03:08.231112,
   address: ab34booole7la,
   publicKey: !!binary GucBAEizPpfnf7Kkqg+RF97BjjNhSDfnHlsm1HgpRsg=,
-  addressVerified: 0.0.0.0:0,
   keyVerified: !!binary riUxYqLVMfa4vTGKp64D8nCrhsDLHui/hgeC+vapDpg=
 }
 ---

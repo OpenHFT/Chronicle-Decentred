@@ -6,7 +6,7 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.dto.ApplicationErrorResponse;
 
 public interface SystemMessageListener extends
-        AccountManagementResponses,
+        AddressManagementResponses,
         Verifier,
         ConnectionStatusListener {
 

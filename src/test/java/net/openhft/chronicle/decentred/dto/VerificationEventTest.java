@@ -41,25 +41,27 @@ public class VerificationEventTest {
                 .sign(secretKey2, timeProvider);
         System.out.println(v);
 
-        assertEquals("0000 9a 00 00 00                                     # length\n" +
-                "0004 62 1b 02 4b a1 9a 76 c6 84 28 68 9d 35 56 dc fb # signature start\n" +
-                "0014 4c 4a 49 dd 7b 92 ab 84 db 6a b8 3a ee 94 6d 40\n" +
-                "0024 6e e8 44 1f 09 5c 80 c5 4d 25 2a 9a 63 7c 45 87\n" +
-                "0034 2b 9a 56 44 78 1b de 58 f5 84 4d 03 ff 8f 0f 09 # signature end\n" +
+        assertEquals("0000 a2 00 00 00                                     # length\n" +
+                "0004 4c 9e 2a 4c 4c c4 02 34 2c 10 d6 8c 61 3d 0f f2 # signature start\n" +
+                "0014 69 78 4e b1 e0 a7 a2 d5 1d 85 35 be ed e5 af 76\n" +
+                "0024 a4 1b 77 1c 18 2b 70 cf 11 f5 a4 c1 d0 18 fe 96\n" +
+                "0034 a8 a8 79 e4 9f 27 9e 92 24 d8 72 af d4 b5 57 08 # signature end\n" +
                 "0044 16 00                                           # messageType\n" +
                 "0046 01 00                                           # protocol\n" +
                 "0048    0b 0a 09 08 07 06 05 00                         # timestampUS\n" +
                 "0050    e6 df 06 5d 68 3b d4 fc                         # address\n" +
                 "0058    20 ce cc 15 07 dc 1d dd 72 95 95 1c 29 08 88 f0 # publicKey\n" +
                 "0068    95 ad b9 04 4d 1b 73 d6 96 e6 df 06 5d 68 3b d4\n" +
-                "0078    fc 20 3b 6a 27 bc ce b6 a4 2d 62 a3 a8 d0 2a 6f # keyVerified\n" +
-                "0088    0d 73 65 32 15 77 1d e2 43 a6 3a c0 48 a1 8b 59\n" +
-                "0098    da 29\n", v.toHexString());
+                "0078    fc 3a c0 48 a1 8b 59 da 29                      # addressVerified\n" +
+                "0081    20 3b 6a 27 bc ce b6 a4 2d 62 a3 a8 d0 2a 6f 0d # keyVerified\n" +
+                "0091    73 65 32 15 77 1d e2 43 a6 3a c0 48 a1 8b 59 da\n" +
+                "00a1    29\n", v.toHexString());
 
         assertEquals("!VerificationEvent {\n" +
                 "  timestampUS: 2014-10-22T18:22:32.901131,\n" +
                 "  address: ayua2manpmw7f,\n" +
                 "  publicKey: !!binary zswVB9wd3XKVlRwpCIjwla25BE0bc9aW5t8GXWg71Pw=,\n" +
+                "  addressVerified: 41.218.89.139:41288:c03a,\n" +
                 "  keyVerified: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +
                 "}\n", v.toString());
 

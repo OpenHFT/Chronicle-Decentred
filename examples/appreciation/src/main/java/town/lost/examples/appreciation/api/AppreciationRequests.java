@@ -1,14 +1,14 @@
 package town.lost.examples.appreciation.api;
 
 import net.openhft.chronicle.bytes.MethodId;
-import net.openhft.chronicle.decentred.api.AccountManagementRequests;
+import net.openhft.chronicle.decentred.api.AddressManagementRequests;
 import town.lost.examples.appreciation.dto.QueryBalance;
 
 /**
  * Transactions passed through the block chain
  */
 public interface AppreciationRequests extends
-        AccountManagementRequests,
+        AddressManagementRequests,
         AppreciationTransactions {
 
     /**

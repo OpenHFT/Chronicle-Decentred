@@ -7,7 +7,7 @@ import net.openhft.chronicle.decentred.dto.CreateAddressEvent;
 /**
  * Allows messages to be passed without needing to be self signing i.e. using just an account.
  */
-public interface AccountManagementResponses {
+public interface AddressManagementResponses {
     /**
      * Notify that an account was created.
      *
