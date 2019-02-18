@@ -1,6 +1,6 @@
 package town.lost.examples.exchange.dto;
 
-import net.openhft.chronicle.core.annotation.NotNull;
+import org.jetbrains.annotations.NotNull;
 import town.lost.examples.exchange.util.CouldBeNaN;
 
 import static java.lang.Math.nextUp;
