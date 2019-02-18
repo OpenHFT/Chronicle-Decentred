@@ -1,5 +1,6 @@
 package net.openhft.chronicle.decentred.dto;
 
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.decentred.api.AddressManagementRequests;
 import net.openhft.chronicle.decentred.api.ConnectionStatusListener;
@@ -9,7 +10,10 @@ import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.decentred.util.LongLongMap;
+import net.openhft.chronicle.wire.BinaryWire;
 import net.openhft.chronicle.wire.Marshallable;
+import net.openhft.chronicle.wire.Wire;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -97,6 +101,42 @@ public class TransactionBlockEventTest {
                 .gossipEvent(gossip);
         vote.sign(kp.secretKey, new SetTimeProvider("2018-08-20T12:53:04.761234"));
         System.out.println(vote);
+
+    }
+
+    @Ignore("TODO: Marshalling to BinaryWire fails")
+    @Test
+    public void testTbeMarshall() {
+        KeyPair kp = new KeyPair(7);
+        KeyPair kp2 = new KeyPair(17);
+
+        DtoRegistry<SystemMessages> registry = DtoRegistry.newRegistry(SystemMessages.class)
+            .addProtocol(1, SystemMessageListener.class)
+            .addProtocol(2, AddressManagementRequests.class)
+            .addProtocol(3, ConnectionStatusListener.class);
+        @SuppressWarnings("unchecked")
+        TransactionBlockEvent<SystemMessages> tbe = registry.create(TransactionBlockEvent.class);
+        tbe.timestampUS(1534769584076123L);
+        tbe.dtoParser(registry.get());
+
+        tbe.addTransaction(
+            registry.create(CreateAddressRequest.class)
+                .sign(kp.secretKey, new SetTimeProvider("2018-08-20T12:53:04.075128")));
+        tbe.addTransaction(
+            registry.create(CreateAddressRequest.class)
+                .sign(kp2.secretKey, new SetTimeProvider("2018-08-20T12:53:04.075256")));
+
+        tbe.sign(kp.secretKey, new SetTimeProvider("2018-08-20T12:53:04.076123"));
+
+        TransactionBlockEvent<SystemMessages> tbe2 = registry.create(TransactionBlockEvent.class);
+        Wire wire = new BinaryWire(Bytes.allocateElasticDirect(1 << 11));
+        //Wire wire = new TextWire(Bytes.allocateElasticDirect(1 << 11)); - works with this
+        tbe.writeMarshallable(wire);
+        tbe2.readMarshallable(wire);
+
+        assertEquals(tbe.toString(), tbe2.toString());
+
+        System.out.println("wire = " + wire);
 
     }
 }
