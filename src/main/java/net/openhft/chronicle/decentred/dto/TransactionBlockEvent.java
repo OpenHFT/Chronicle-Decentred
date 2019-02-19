@@ -52,7 +52,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     @Override
     public void readMarshallable(BytesIn bytes) throws IORuntimeException {
         super.readMarshallable(bytes);
-        messagesStart = bytes.readPosition();
+        messagesStart = this.bytes.readPosition();
         transactions = this.bytes;
     }
 
