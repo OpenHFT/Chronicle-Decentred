@@ -96,6 +96,45 @@ public class TransactionBlockEventTest {
         map.justPut(DecentredUtil.parseAddress("yyy"), 109);
         map.justPut(DecentredUtil.parseAddress("zzz"), 195);
         gossip.sign(kp.secretKey, new SetTimeProvider("2018-08-20T12:53:04.076123"));
+        assertEquals("!TransactionBlockGossipEvent {\n" +
+            "  timestampUS: 2018-08-20T12:53:04.076123,\n" +
+            "  address: phccofmpy6ci,\n" +
+            "  chainAddress: local,\n" +
+            "  weekNumber: 0,\n" +
+            "  blockNumber: 1,\n" +
+            "  addressToBlockNumberMap: {\n" +
+            "    yyy: 109,\n" +
+            "    zzz: 195,\n" +
+            "    xxx: 123\n" +
+            "  }\n" +
+            "}\n", gossip.toString());
+
+        TransactionBlockGossipEvent gossip2 = Marshallable.fromString(gossip.toString());
+        assertEquals(gossip, gossip2);
+        assertEquals(
+            "0000 66 00 00 00                                     # length\n" +
+                "0004 b0 d3 84 b1 a4 5c 46 f5 2d 5b 64 c7 c8 87 22 da # signature start\n" +
+                "0014 1c 85 28 a6 d5 fd fa 21 a4 d4 a7 43 0e 7c f2 d4\n" +
+                "0024 d7 c0 5e 2b 2f f4 26 6d f4 44 f8 25 e2 e8 b3 96\n" +
+                "0034 ea 5d 03 a7 b0 5c b8 ec 77 dc b3 1a 8a db bd 0a # signature end\n" +
+                "0044 f1 ff                                           # messageType\n" +
+                "0046 ff ff                                           # protocol\n" +
+                "0048    5b f5 de 63 dd 73 05 00                         # timestampUS\n" +
+                "0050    69 f8 0c 9b 79 63 20 e8                         # address\n" +
+                "0058    2c 8c c7 00 00 00 00 e0                         # chainAddress\n" +
+                "0060    00 00                                           # weekNumber\n" +
+                "0062    01 00 00 00                                     # blockNumber\n", gossip.toHexString());
+
+        Wire wire = new BinaryWire(Bytes.allocateElasticDirect(1 << 11));
+
+        TransactionBlockEvent<SystemMessages> tbe3 = registry.create(TransactionBlockEvent.class);
+
+        tbe.writeMarshallable(wire);
+        //gossip.writeMarshallable(wire);
+        tbe3.readMarshallable(wire);
+        //gossip2.readMarshallable(wire);
+        assertEquals(gossip.toString(), gossip2.toString());
+
         System.out.println(gossip);
 
         TransactionBlockVoteEvent vote = registry.create(TransactionBlockVoteEvent.class)

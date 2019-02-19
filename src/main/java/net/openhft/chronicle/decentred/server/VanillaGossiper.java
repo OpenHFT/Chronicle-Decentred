@@ -13,7 +13,7 @@ public class VanillaGossiper implements Gossiper {
     private final LongLongMap lastBlockMap = LongLongMap.withExpectedSize(16);
     private final long[] clusterAddresses;
     private final Voter voter;
-    private final TransactionBlockGossipEvent gossip;
+    private TransactionBlockGossipEvent gossip;
     private MessageToListener tcpMessageToListener;
 
     public VanillaGossiper(long address, long chainAddress, long[] clusterAddresses, Voter voter) {
@@ -46,7 +46,7 @@ public class VanillaGossiper implements Gossiper {
             return;
         }
 
-        gossip.reset();
+        gossip = new TransactionBlockGossipEvent().chainAddress(gossip.chainAddress());
         gossip.address(address);
         gossip.blockNumber(blockNumber);
         synchronized (this) {

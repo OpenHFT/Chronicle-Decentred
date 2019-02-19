@@ -182,6 +182,12 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
         }
     }
 
+    public void setRoute(long address, TCPConnection connection) {
+        synchronized (connections) {
+            connections.justPut(address, connection);
+        }
+    }
+
     class XCLConnectionListener implements TCPServerConnectionListener {
         final DtoParser<T> dtoParser;
 
@@ -194,15 +200,9 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
             DEFAULT_CONNECTION_TL.set(channel);
             bytes.readSkip(-4);
             try {
-
-                long sourceAddress = dtoParser.parseOne(bytes, serverComponent);
-
-                if (!connections.containsKey(sourceAddress)) { // Todo -- fix this way of adding connections. This is wrong
-                    synchronized (connections) {
-                        System.out.println("Associating address " + sourceAddress + " to " + channel);
-                        connections.justPut(sourceAddress, channel);
-                    }
-                }
+                // TODO - clarify whether this is a proper way to make sure responses find their way back
+                dtoParser.parseOne(bytes, serverComponent);
+                //setRoute(sourceAddress, channel);
             } catch (IORuntimeException iore) {
                 if (iore.getCause() instanceof IOException)
                     throw (IOException) iore.getCause();

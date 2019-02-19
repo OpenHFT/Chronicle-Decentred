@@ -3,7 +3,10 @@ package town.lost.examples.appreciation;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.bytes.VanillaBytes;
-import net.openhft.chronicle.decentred.api.*;
+import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
+import net.openhft.chronicle.decentred.api.BlockchainPhase;
+import net.openhft.chronicle.decentred.api.MessageRouter;
+import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.*;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
@@ -11,14 +14,9 @@ import net.openhft.chronicle.decentred.server.*;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.salt.Ed25519;
-import town.lost.examples.appreciation.api.AppreciationGateway;
-import town.lost.examples.appreciation.api.AppreciationRequests;
-import town.lost.examples.appreciation.api.AppreciationResponses;
-import town.lost.examples.appreciation.api.AppreciationTransactions;
-import town.lost.examples.appreciation.api.AppreciationMessages;
+import town.lost.examples.appreciation.api.*;
 import town.lost.examples.appreciation.dto.*;
 import town.lost.examples.appreciation.util.BalanceStore;
-import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import town.lost.examples.appreciation.util.Balances;
 import town.lost.examples.appreciation.util.VanillaBalanceStore;
 
@@ -150,7 +148,7 @@ public class EndToEndConversationTest {
                 };
 
                 return new VanillaAppreciationGateway(
-                    config.address(), mainEngine, localEngine, messageRouter, blockChain, balanceStore);
+                    region, mainEngine, localEngine, messageRouter, blockChain, balanceStore);
             };
             rpcServer = getRpcBuilder().createServer(port, mainProcessor, localProcessor, gatewayConstructor);
             ((TransactionProcessor) mainProcessor).messageRouter(rpcServer);

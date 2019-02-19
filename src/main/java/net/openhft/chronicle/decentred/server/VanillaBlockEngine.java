@@ -13,6 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.LongStream;
 
 public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
+    public static final int STEP_PAUSE_MILLIS = 5000;
+
     private final long address;
     private final long chainAddress;
     private final int periodUS;
@@ -204,17 +206,17 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
 
 //                int subRound = Math.max(100_000, periodUS * 100);
 //                two.sample(System.nanoTime() - start);
-        Thread.sleep(1);
+        Thread.sleep(STEP_PAUSE_MILLIS);
 //                LockSupport.parkNanos(subRound);
         gossiper.sendGossip(blockNumber);
-        Thread.sleep(1);
+        Thread.sleep(STEP_PAUSE_MILLIS);
 //                LockSupport.parkNanos(subRound);
 
 //                start = System.nanoTime();
         voter.sendVote(blockNumber);
 //                three.sample(System.nanoTime() - start);
 
-        Thread.sleep(1);
+        Thread.sleep(STEP_PAUSE_MILLIS);
 //                LockSupport.parkNanos(subRound);
 //                start = System.nanoTime();
         //System.out.println(address + " " + blockNumber);

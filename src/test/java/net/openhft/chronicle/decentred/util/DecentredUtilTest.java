@@ -6,6 +6,11 @@ import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
 import net.openhft.chronicle.salt.Ed25519;
 import org.junit.Test;
 
+import java.util.Random;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.junit.Assert.assertEquals;
 
 public class DecentredUtilTest {
@@ -95,5 +100,27 @@ public class DecentredUtilTest {
         assertEquals(privateKey2, privateKey);
         assertEquals(publicKey2, publicKey);
         assertEquals(secretKey2, secretKey);
+    }
+
+    @Test
+    public void testIpAddressInvariant() {
+        Random random = new Random(42);
+        Supplier<Integer> byteFactory = () -> random.nextInt(7 << 5);  // never set the three high bits
+        IntStream.range(0, 10000)
+            .mapToObj(i -> IntStream.range(0, 4)
+                    .map($ -> byteFactory.get())
+                    .mapToObj(Integer::toString)
+                    .collect(Collectors.joining(".")))
+            .forEach(address -> {
+                int port = byteFactory.get();
+                testIpAddressInvariant(address + ":" + port);
+            });
+
+    }
+
+    private void testIpAddressInvariant(String addressString) {
+        long address = DecentredUtil.parseAddress(addressString);
+        String roundtripped = DecentredUtil.toAddressString(address);
+        assertEquals(addressString, roundtripped);
     }
 }

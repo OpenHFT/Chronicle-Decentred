@@ -4,12 +4,14 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
+import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.salt.Ed25519;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -74,9 +76,7 @@ public class RPCBuilder<U extends T, T> {
             region,
             clusterAddressArray,
             mainBlockPeriodMS,
-            localBlockPeriodMS,
-            mainTransactionProcessor,
-            localTransactionProcessor
+            localBlockPeriodMS
         ));
 
 
@@ -104,11 +104,15 @@ public class RPCBuilder<U extends T, T> {
         return server;
     }
 
-   /* public RPCClient<T, T> createClient(String name, String hostname, int port, long serverAddress, T allMessages) {
-        return new RPCClient(name, hostname, port, serverAddress, secretKey, allMessages)
-                .internal(internal);
-    }*/
+    public RPCClient<U, T> createClient(String name, InetSocketAddress socketAddress, T allMessages) {
+        return new RPCClient<>(name, socketAddress.getHostName(), socketAddress.getPort(), secretKey, dtoRegistry, allMessages, tClass)
+            .internal(internal);
+    }
 
+    public RPCClient<U, T> createAccountClient(String name, Bytes secretKey, InetSocketAddress socketAddress, T allMessages) {
+        return new RPCClient<>(name, socketAddress.getHostName(), socketAddress.getPort(), secretKey, dtoRegistry, allMessages, tClass)
+            .internal(true);
+    }
 
     public RPCBuilder<U, T> addClusterAddress(long serverAddress) {
         clusterAddresses.add(serverAddress);

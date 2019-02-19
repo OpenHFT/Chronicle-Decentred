@@ -16,9 +16,7 @@ public interface GatewayConfiguration<U> {
         String region,
         long[] clusterAddressArray,
         int mainBlockPeriodMS,
-        int localBlockPeriodMS,
-        T mainTransactionProcessor,
-        T localTransactionProcessor
+        int localBlockPeriodMS
     ) {
         return new GatewayConfiguration<U>() {
             @Override

@@ -35,7 +35,7 @@ public class Server extends Node<AppreciationMessages, AppreciationRequests> {
 
     private final RPCServer<AppreciationMessages, AppreciationRequests> rpcServer;
 
-    public Server(int seed, int port, BalanceStore balanceStore) throws IOException {
+    public Server(long seed, int port, BalanceStore balanceStore) throws IOException {
         super(seed, AppreciationMessages.class, AppreciationRequests.class);
 
         MessageRouter<AppreciationResponses> messageRouter = address -> new AppreciationResponses() {

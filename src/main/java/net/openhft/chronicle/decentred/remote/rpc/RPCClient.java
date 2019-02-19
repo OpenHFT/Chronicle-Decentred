@@ -12,7 +12,10 @@ import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.remote.net.TCPClientListener;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.remote.net.VanillaTCPClient;
-import net.openhft.chronicle.decentred.util.*;
+import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.decentred.util.DtoParser;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.util.LongObjMap;
 import net.openhft.chronicle.wire.AbstractMethodWriterInvocationHandler;
 
 import java.io.IOException;
@@ -113,7 +116,7 @@ public class RPCClient<U extends T, T> implements Closeable, TCPConnection, Mess
         return internal;
     }
 
-    public RPCClient internal(boolean internal) {
+    public RPCClient<U, T> internal(boolean internal) {
         this.internal = internal;
         return this;
     }

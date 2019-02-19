@@ -33,6 +33,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
                 String key = in.readEvent(String.class);
                 long addr = DecentredUtil.parseAddress(key);
                 long value = in.getValueIn().int64();
+                System.out.println("<GE " + key + " = " + value);
                 addressToBlockNumberMap().justPut(addr, value);
             }
         });
@@ -43,7 +44,12 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
         super.writeMarshallable(wire);
         if (addressToBlockNumberMap != null && addressToBlockNumberMap.size() > 0)
             wire.write("addressToBlockNumberMap").marshallable(out -> {
-                addressToBlockNumberMap.forEach((k, v) -> out.write(DecentredUtil.toAddressString(k)).int64(v));
+                addressToBlockNumberMap.forEach((k, v) -> {
+                    String key = DecentredUtil.toAddressString(k);
+                    System.out.println(">GE " + key + " = " + v);
+                    out.write(key);
+                    out.getValueOut().int64(v);
+                });
             });
     }
 
@@ -53,6 +59,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
         weekNumber = bytes.readShort();
         blockNumber = bytes.readInt();
         int entries = (int) bytes.readStopBit();
+        System.out.println("read gossip table entries = " + entries + " chain address " + DecentredUtil.toAddressString(chainAddress));
         if (addressToBlockNumberMap == null)
             addressToBlockNumberMap = LongLongMap.withExpectedSize(entries);
         for (int i = 0; i < entries; i++)
@@ -65,7 +72,9 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
         bytes.writeLong(chainAddress);
         bytes.writeShort(weekNumber);
         bytes.writeInt(blockNumber);
-        bytes.writeStopBit(addressToBlockNumberMap.size());
+        int size = addressToBlockNumberMap.size();
+        System.out.println("write gossip table entries = " + size + " chain address " + DecentredUtil.toAddressString(chainAddress));
+        bytes.writeStopBit(size);
         if (longU32Writer == null) {
             longU32Writer = new LongU32Writer();
         }
@@ -86,5 +95,12 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
         if (addressToBlockNumberMap == null)
             addressToBlockNumberMap = LongLongMap.withExpectedSize(16);
         return addressToBlockNumberMap;
+    }
+
+    @Override
+    public void reset() {
+            addressToBlockNumberMap.clear();
+        if (addressToBlockNumberMap != null)
+        super.reset();
     }
 }

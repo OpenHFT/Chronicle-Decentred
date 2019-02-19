@@ -7,7 +7,6 @@ import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.server.BlockEngine;
 import net.openhft.chronicle.decentred.server.VanillaGateway;
 import town.lost.examples.appreciation.api.AppreciationGateway;
-import town.lost.examples.appreciation.api.AppreciationRequests;
 import town.lost.examples.appreciation.api.AppreciationResponses;
 import town.lost.examples.appreciation.api.AppreciationTransactions;
 import town.lost.examples.appreciation.dto.*;
@@ -19,7 +18,7 @@ import town.lost.examples.appreciation.util.Balances;
  * Run as a gateway before the blockchain.
  */
 public class VanillaAppreciationGateway extends VanillaGateway implements AppreciationGateway {
-    private final MessageRouter<AppreciationResponses> errorMessageRouter;
+    private final MessageRouter<AppreciationResponses> responseRouter;
     private final AppreciationTransactions blockchain;
     private final BalanceStore balanceStore;
 
@@ -30,12 +29,12 @@ public class VanillaAppreciationGateway extends VanillaGateway implements Apprec
         long chainAddress,
         BlockEngine mainEngine,
         BlockEngine localEngine,
-        MessageRouter<AppreciationResponses> errorMessageRouter,
+        MessageRouter<AppreciationResponses> responseRouter,
         AppreciationTransactions blockchain,
         BalanceStore balanceStore
     ) {
         super(0, chainAddress, mainEngine, localEngine);
-        this.errorMessageRouter = errorMessageRouter;
+        this.responseRouter = responseRouter;
         this.blockchain = blockchain;
         this.balanceStore = balanceStore;
     }
@@ -54,7 +53,7 @@ public class VanillaAppreciationGateway extends VanillaGateway implements Apprec
     @Override
     public void queryBalance(QueryBalance queryBalance) {
         long address = queryBalance.address();
-        AppreciationResponses listener = errorMessageRouter.to(address);
+        AppreciationResponses listener = responseRouter.to(address);
         Balances balance = balanceStore.getBalances(address);
         if (balance == null) {
             error.init(queryBalance,
@@ -72,7 +71,7 @@ public class VanillaAppreciationGateway extends VanillaGateway implements Apprec
     @Override
     public void give(Give give) {
         if (give.amount() < 0) {
-            AppreciationResponses listener = errorMessageRouter.to(give.toAddress());
+            AppreciationResponses listener = responseRouter.to(give.toAddress());
             error.init(give,
                     "Cannot give a negative amount");
             error.timestampUS(give.timestampUS());
@@ -89,7 +88,7 @@ public class VanillaAppreciationGateway extends VanillaGateway implements Apprec
     @Override
     public void topup(Topup topup) {
         if (!verifyPrivilegedServerNode(topup.address())) {
-            AppreciationResponses listener = errorMessageRouter.to(topup.address());
+            AppreciationResponses listener = responseRouter.to(topup.address());
             error.init(topup, "Only privileged accounts can generate an auto topup");
             error.timestampUS(topup.timestampUS());
             listener.applicationError(error);
@@ -105,7 +104,7 @@ public class VanillaAppreciationGateway extends VanillaGateway implements Apprec
     private <T extends VanillaSignedMessage<T>> boolean validAccount(T msg, long address) {
         Balances balances = balanceStore.getBalances(address);
         if (balances == null) {
-            AppreciationResponses listener = errorMessageRouter.to(address);
+            AppreciationResponses listener = responseRouter.to(address);
             error.init(msg,
                     "Cannot give balance: Account doesn't exist");
             // to set a timestamp when testing, overridden by the framework.

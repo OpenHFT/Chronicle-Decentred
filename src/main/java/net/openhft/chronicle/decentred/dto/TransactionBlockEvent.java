@@ -56,6 +56,11 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
         transactions = this.bytes;
     }
 
+    @Override
+    public void writeMarshallable(BytesOut bytes) throws IORuntimeException {
+        super.writeMarshallable(bytes);
+    }
+
     public void replay(DtoRegistry<T> dtoRegistry, T allMessages) {
         if (dtoParser == null)
             dtoParser = dtoRegistry.get();

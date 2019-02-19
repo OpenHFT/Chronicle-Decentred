@@ -9,15 +9,11 @@ import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import town.lost.examples.appreciation.api.AppreciationMessages;
 import town.lost.examples.appreciation.api.AppreciationResponses;
-import town.lost.examples.appreciation.dto.Give;
 import town.lost.examples.appreciation.dto.OnBalance;
-import town.lost.examples.appreciation.dto.OpeningBalance;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class Client extends Node<AppreciationMessages, AppreciationResponses> implements AppreciationResponses {
-
     private static final double START_AMOUNT = 10_000_000d;
     private static final int ITERATIONS = 1_000_000;
 
@@ -31,15 +27,17 @@ public class Client extends Node<AppreciationMessages, AppreciationResponses> im
         rpcClient = new RPCClient<>("test", serverHost, serverPort, getSecretKey(), dtoRegistry, this, AppreciationResponses.class);
     }
 
-    public void connect() {
+    public Client connect() {
         sendMsg(new CreateAddressRequest()
             .address(0)
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             .publicKey(getPublicKey()));
+        return this;
     }
 
-    public void sendMsg(VanillaSignedMessage msg) {
+    public Client sendMsg(VanillaSignedMessage msg) {
         rpcClient.write(msg);
+        return this;
     }
 
     @Override
@@ -69,25 +67,22 @@ public class Client extends Node<AppreciationMessages, AppreciationResponses> im
 
         final long otherAddress = Client.addressFromSeed(otherSeed);
 
+/*
         final Client client = new Client(seed, serverHost, Server.DEFAULT_SERVER_PORT);
         client.connect();
         System.out.println("Client " + seed + " started with address " + client.address());
 
-/*
         final OpeningBalance openingBalance = new OpeningBalance()
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             .init(client.address(), START_AMOUNT * seed);
         client.sendMsg(openingBalance);
-*/
 
-/*        waitForKey("Make sure all other clients are up"); */
 
         final Give give = new Give()
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             .address(client.address())
             .init(otherAddress, seed);
 
-        /*client.sendMsg(give);*/
 
         waitForKey("Start benchmark.");
 
@@ -106,6 +101,7 @@ public class Client extends Node<AppreciationMessages, AppreciationResponses> im
             System.out.format("%n%s %,d iterations took %,9d ns (%,6.0f tps)%n%n", stage, ITERATIONS, duration, tps);
         }
 
+*/
 
     }
 

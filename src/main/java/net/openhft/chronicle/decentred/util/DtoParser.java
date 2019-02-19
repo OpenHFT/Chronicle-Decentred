@@ -21,10 +21,7 @@ public interface DtoParser<U>
      * are {@code null}
      *
      */
-
-    // TODO -- ugly return type
-
-    long parseOne(Bytes bytes, U listener);
+    void parseOne(Bytes bytes, U listener);
 
     /**
      * Invokes a method on the given {@code component} with the given {@code message}

@@ -13,7 +13,7 @@ public abstract class Node<U extends T, T> {
     private final VanillaBytes<Void> secretKey;
     private final RPCBuilder<U, T> rpcBuilder;
 
-    public Node(int seed, Class<U> uClass, Class<T> tClass) {
+    public Node(long seed, Class<U> uClass, Class<T> tClass) {
         privateKey = DecentredUtil.testPrivateKey(seed);
         publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
         secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
@@ -26,12 +26,16 @@ public abstract class Node<U extends T, T> {
 
     }
 
-    public static long addressFromSeed(int seed) {
+    public static long addressFromSeed(int seed) {  // TODO - convenient for bootstrapping seeded keys
         BytesStore privateKey = DecentredUtil.testPrivateKey(seed);
         VanillaBytes<Void> publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
         VanillaBytes<Void> secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
         Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
         return  DecentredUtil.toAddress(publicKey);
+    }
+
+    public void addClusterAddress(long address) {
+        rpcBuilder.addClusterAddress(address);
     }
 
     public long address() {

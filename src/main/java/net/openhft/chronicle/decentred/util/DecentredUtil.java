@@ -54,7 +54,9 @@ public enum DecentredUtil {
             int last = text.lastIndexOf(':');
             InetAddress address = InetAddress.getByName(text.substring(0, last));
             int port = Integer.parseInt(text.substring(last + 1));
-            return ((long) address.hashCode() << 32) + ((port & MASK_16) << 16);
+            int addressHash = address.hashCode();
+            long shiftedAddress = (long) addressHash << 32;
+            return shiftedAddress + ((port & MASK_16) << 16);
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException("Not an address format '" + text + "'", e);
         }

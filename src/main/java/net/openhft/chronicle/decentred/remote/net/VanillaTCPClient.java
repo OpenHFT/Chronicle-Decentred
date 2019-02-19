@@ -62,7 +62,8 @@ public class VanillaTCPClient extends AbstractTCPConnection {
                     } catch (IOException ioe) {
                         Jvm.pause(1);
                         if (running)
-                            ioe.printStackTrace();
+                            System.out.println("closed client channel = " + this.channel);
+                            // ioe.printStackTrace();
                         channel.close();
                         clientListener.onClosedChannel(this);
                     }
@@ -88,9 +89,10 @@ public class VanillaTCPClient extends AbstractTCPConnection {
 //            socket.setTcpNoDelay(true);
 
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            System.out.println("failed for socketAddress " + socketAddress + ", " + ioe.getMessage());
+            //ioe.printStackTrace();
             channel(null);
-            Jvm.pause(500);
+            Jvm.pause(5000);
         }
     }
 }

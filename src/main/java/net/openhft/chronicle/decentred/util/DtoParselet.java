@@ -6,6 +6,7 @@ import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 class DtoParselet<T> {
     private final Method method;
@@ -14,7 +15,7 @@ class DtoParselet<T> {
     private final VanillaSignedMessage vsm;
 
     public DtoParselet(Method method, int protocol, int midValue) {
-        this.method = method;
+        this.method = Objects.requireNonNull(method);
         this.protocol = protocol;
         this.midValue = midValue;
         this.vsm = createVSM(method, protocol, midValue);
@@ -39,14 +40,13 @@ class DtoParselet<T> {
         return vsm.protocol(protocol).messageType(messageType);
     }
 
-    public long parse(Bytes bytes, T listener) {
+    public void parse(Bytes bytes, T listener) {
         vsm.readMarshallable(bytes);
         try {
             method.invoke(listener, vsm);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        return vsm.address();
     }
 
     @Override
