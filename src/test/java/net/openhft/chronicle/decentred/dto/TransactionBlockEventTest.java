@@ -154,7 +154,6 @@ public class TransactionBlockEventTest {
         @SuppressWarnings("unchecked")
         TransactionBlockEvent<SystemMessages> tbe = registry.create(TransactionBlockEvent.class);
         tbe.timestampUS(1534769584076123L);
-        tbe.dtoParser(registry.get());
 
         tbe.addTransaction(
                 registry.create(CreateAddressRequest.class)
@@ -171,7 +170,7 @@ public class TransactionBlockEventTest {
         tbe.writeMarshallable(bytes);
 
         tbe2.readMarshallable(bytes);
-        tbe2.replay(registry, Mocker.logging(SystemMessages.class, "", System.out));
+        tbe2.replay(registry, Mocker.logging(SystemMessages.class, "tbe2: ", System.out));
 
         // so we can dump the contents as strings
         tbe.dtoParser(registry.get());
