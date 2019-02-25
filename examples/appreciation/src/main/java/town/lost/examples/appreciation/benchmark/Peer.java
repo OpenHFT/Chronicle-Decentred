@@ -7,10 +7,8 @@ import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
-import net.openhft.chronicle.decentred.dto.CreateAddressEvent;
-import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
-import net.openhft.chronicle.decentred.dto.InvalidationEvent;
-import net.openhft.chronicle.decentred.dto.VerificationEvent;
+import net.openhft.chronicle.decentred.dto.*;
+import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.server.BlockEngine;
@@ -131,11 +129,14 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
 
     private void setOpeningBalances() throws InterruptedException {
         //Thread.sleep(10000);
+/*
 
         Map<String, Bytes> publicKeys = new HashMap<>();
         Map<String, Bytes> secretKeys = new HashMap<>();
 
-        Stream.of(GIVER/*ACCOUNTS*/).forEachOrdered(accountName -> {
+        Stream.of(GIVER*/
+/*ACCOUNTS*//*
+).forEachOrdered(accountName -> {
             long address = DecentredUtil.parseAddress(accountName);
             BytesStore privateKey = DecentredUtil.testPrivateKey(address);
             Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
@@ -147,7 +148,7 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
             publicKeys.put(accountName, publicKey);
             secretKeys.put(accountName, secretKey);
 
-            RPCClient<AppreciationMessages, AppreciationRequests> client = getRpcBuilder()
+            RPCClient<AppreciationMessages, AppreciationResponses> client = getRpcBuilder()
                 .createAccountClient(accountName, secretKey, socketAddress, new ResponseSink());
 
             Jvm.pause(7000);
@@ -176,6 +177,7 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
 
         });
 
+*/
         /*
 
         Thread.sleep(10000);
@@ -237,6 +239,9 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
             router.to(createAddressRequest.address())
                 .createAddressEvent(new CreateAddressEvent()
                     .createAddressRequest(createAddressRequest));
+
+            balanceStore.setBalance(createAddressRequest.address(), 0.0); // Sets an initial value, indicating that the account is created
+
         }
 
         @Override
@@ -251,9 +256,44 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
     }
 
 
-    public static class ResponseSink implements AppreciationRequests {
+
+    public static class ResponseSink implements AppreciationResponses {
+        @Override
+        public void onBalance(OnBalance onBalance) {
+            System.out.println("RequestsSink.onBalance = " + onBalance);
+        }
 
         @Override
+        public void verificationEvent(VerificationEvent verificationEvent) {
+            System.out.println("RequestsSink.verificationEvent = " + verificationEvent);
+        }
+
+        @Override
+        public void invalidationEvent(InvalidationEvent invalidationEvent) {
+            System.out.println("RequestsSink.invalidationEvent = " + invalidationEvent);
+        }
+
+        @Override
+        public void applicationError(ApplicationErrorResponse applicationErrorResponse) {
+            System.out.println("RequestsSink.applicationErrorResponse = " + applicationErrorResponse);
+        }
+
+        @Override
+        public void createAddressEvent(CreateAddressEvent createAddressEvent) {
+            System.out.println("RequestsSink.createAddressEvent = " + createAddressEvent);
+        }
+
+        @Override
+        public void onConnection(TCPConnection connection) {
+            System.out.println("RequestsSink.connection = " + connection);
+        }
+
+        @Override
+        public void onDisconnection(TCPConnection connection) {
+            System.out.println("RequestsSink.connection = " + connection);
+        }
+
+        /*@Override
         public void queryBalance(QueryBalance queryBalance) {
             System.out.println("ResponseSink.queryBalance");
         }
@@ -276,7 +316,7 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
         @Override
         public void topup(Topup topup) {
             System.out.println("ResponseSink.topup");
-        }
+        }*/
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

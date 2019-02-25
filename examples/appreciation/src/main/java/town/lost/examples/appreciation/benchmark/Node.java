@@ -27,7 +27,7 @@ public abstract class Node<U extends T, T> {
         address = DecentredUtil.toAddress(publicKey);
 
         rpcBuilder = RPCBuilder.of(17, uClass, tClass)
-            .addClusterAddress(address)
+            //.addClusterAddress(address) // Todo: Why do we add our own address?
             .secretKey(secretKey)
             .publicKey(publicKey);
 

@@ -11,6 +11,7 @@ import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import town.lost.examples.appreciation.api.AppreciationMessages;
 import town.lost.examples.appreciation.api.AppreciationRequests;
+import town.lost.examples.appreciation.api.AppreciationResponses;
 import town.lost.examples.appreciation.dto.*;
 
 import java.net.InetSocketAddress;
@@ -41,8 +42,8 @@ public class Traffic  {
 
             long address = DecentredUtil.toAddress(publicKey); // Isn't this the address to use?
             System.out.println("Setting RPC client");
-            RPCClient<AppreciationMessages, AppreciationRequests> client =
-                RPCBuilder.of(17, AppreciationMessages.class, AppreciationRequests.class)
+            RPCClient<AppreciationMessages, AppreciationResponses> client =
+                RPCBuilder.of(17, AppreciationMessages.class, AppreciationResponses.class)
                     .secretKey(secretKey)
                     .publicKey(publicKey)
                     .createClient(DecentredUtil.toAddressString(address), socketAddress, new Peer.ResponseSink());
@@ -96,4 +97,6 @@ public class Traffic  {
         System.exit(0);*/
 
     }
+
+
 }

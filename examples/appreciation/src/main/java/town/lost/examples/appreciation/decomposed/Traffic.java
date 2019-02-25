@@ -11,6 +11,7 @@ import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import town.lost.examples.appreciation.api.AppreciationMessages;
 import town.lost.examples.appreciation.api.AppreciationRequests;
+import town.lost.examples.appreciation.api.AppreciationResponses;
 import town.lost.examples.appreciation.benchmark.Peer;
 import town.lost.examples.appreciation.dto.OpeningBalance;
 
@@ -50,8 +51,8 @@ public class Traffic {
             final String addressName = DecentredUtil.toAddressString(address);
 
             System.out.println("Setting RPC client");
-            RPCClient<AppreciationMessages, AppreciationRequests> client =
-                RPCBuilder.of(17, AppreciationMessages.class, AppreciationRequests.class)
+            RPCClient<AppreciationMessages, AppreciationResponses> client =
+                RPCBuilder.of(17, AppreciationMessages.class, AppreciationResponses.class)
                     .secretKey(secretKey)
                     .publicKey(publicKey)
                     .createClient(addressName, socketAddress, new Peer.ResponseSink());

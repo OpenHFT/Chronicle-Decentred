@@ -6,7 +6,7 @@ import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 /**
  * The framework letting the gateway know a connection has appeared of disappeared.
  */
-public interface ConnectionStatusListener {
+public interface    ConnectionStatusListener {
     /**
      * Called by the framework on a new connection
      *
