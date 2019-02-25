@@ -19,9 +19,9 @@ import java.util.stream.Stream;
 public class Traffic  {
     private static final double START_AMOUNT = 2_000_000d;
 
-    public static final String GIVER = "giver";
-    public static final String TAKER = "taker";
-    private static final String[] ACCOUNTS = {GIVER, TAKER};
+    public static final long GIVER = 1;
+    public static final long TAKER = 2;
+    private static final long[] ACCOUNTS = {GIVER, TAKER};
 
     public Traffic() {}
 
@@ -30,22 +30,22 @@ public class Traffic  {
         final InetSocketAddress socketAddress = InetSocketAddress.createUnresolved(addrPair[0], Integer.parseInt(addrPair[1]));
         System.out.println("Connecting to Gateway at " + socketAddress);
 
-        Stream.of(GIVER/*ACCOUNTS*/).forEachOrdered(accountName -> {
+        Stream.of(GIVER/*ACCOUNTS*/).forEachOrdered(accountSeed -> {
             System.out.println("Setting up keys");
-            final long address = DecentredUtil.parseAddress(accountName);
 
-            final BytesStore privateKey = DecentredUtil.testPrivateKey(address);
+            final BytesStore privateKey = DecentredUtil.testPrivateKey(accountSeed);
             final Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
             final Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
             Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
+            System.out.println("Seed " + accountSeed + " is " + DecentredUtil.toAddressString(accountSeed));
 
-            //long address = DecentredUtil.toAddress(publicKey); // Isn't this the address to use?
+            long address = DecentredUtil.toAddress(publicKey); // Isn't this the address to use?
             System.out.println("Setting RPC client");
             RPCClient<AppreciationMessages, AppreciationRequests> client =
                 RPCBuilder.of(17, AppreciationMessages.class, AppreciationRequests.class)
                     .secretKey(secretKey)
                     .publicKey(publicKey)
-                    .createClient(accountName, socketAddress, new Peer.ResponseSink());
+                    .createClient(DecentredUtil.toAddressString(address), socketAddress, new Peer.ResponseSink());
 
             System.out.println("Waiting for ability to send first message...");
             Jvm.pause(7000);
@@ -59,7 +59,7 @@ public class Traffic  {
             System.out.println("Waiting for ability to send second message...");
             Jvm.pause(7000);
 
-            System.out.println("Setting account " + accountName + " to " + START_AMOUNT);
+            System.out.println("Setting account " + accountSeed + " to " + START_AMOUNT);
 
             final OpeningBalance ob = new OpeningBalance()
                 .address(address)
