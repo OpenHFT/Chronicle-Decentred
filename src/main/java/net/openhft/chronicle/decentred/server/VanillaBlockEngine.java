@@ -81,6 +81,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         return new VanillaBlockEngine<>(dtoRegistry, address, chainAddress, periodMS, postBlockChainProcessor, clusterAddresses);
     }
 
+    @Override
     public void start(MessageToListener tcpMessageListener) {
         tcpMessageListener(tcpMessageListener);
         votingSes.submit(this::runVoter);
@@ -90,6 +91,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         }*/
     }
 
+    @Override
     public void tcpMessageListener(MessageToListener tcpMessageListener) {
         this.tcpMessageListener = tcpMessageListener;
         voter.tcpMessageListener(tcpMessageListener);
@@ -97,19 +99,23 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         gossiper.tcpMessageToListener(tcpMessageListener);
     }
 
+    @Override
     public void transactionBlockEvent(TransactionBlockEvent transactionBlockEvent) {
         blockReplayer.transactionBlockEvent(transactionBlockEvent);
         gossiper.transactionBlockEvent(transactionBlockEvent);
     }
 
+    @Override
     public void transactionBlockGossipEvent(TransactionBlockGossipEvent transactionBlockGossipEvent) {
         voter.transactionBlockGossipEvent(transactionBlockGossipEvent);
     }
 
+    @Override
     public void transactionBlockVoteEvent(TransactionBlockVoteEvent transactionBlockVoteEvent) {
         voteTaker.transactionBlockVoteEvent(transactionBlockVoteEvent);
     }
 
+    @Override
     public void endOfRoundBlockEvent(EndOfRoundBlockEvent endOfRoundBlockEvent) {
         blockReplayer.endOfRoundBlockEvent(endOfRoundBlockEvent);
     }
@@ -119,6 +125,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         chainer.onMessage(createChainRequest);
     }
 
+    @Override
     public void createTokenRequest(CreateTokenRequest createTokenRequest) {
         chainer.onMessage(createTokenRequest);
     }

@@ -4,12 +4,14 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.salt.Ed25519;
 
+import javax.imageio.event.IIOWriteProgressListener;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.LinkedHashSet;
@@ -49,6 +51,24 @@ public class RPCBuilder<U extends T, T> {
 
     public RPCServer<U, T> createServer(int port, T mainTransactionProcessor, T localTransactionProcessor, Function<GatewayConfiguration<U>, VanillaGateway> gatewayConstructor) throws IOException {
         return createServer("server:" + port, port, mainTransactionProcessor, localTransactionProcessor, gatewayConstructor);
+    }
+
+    public RPCServer<U, T> createServer(String name, int port, Gateway gateway) throws IOException {
+
+        final long serverAddress = DecentredUtil.toAddress(publicKey);
+
+        final RPCServer<U, T> server = new RPCServer<>(
+            name,
+            port,
+            serverAddress,
+            publicKey,
+            secretKey,
+            tClass,
+            dtoRegistry,
+            t -> (T) gateway
+        ).internal(internal);
+
+        return server;
     }
 
     public RPCServer<U, T> createServer(String name, int port, T mainTransactionProcessor, T localTransactionProcessor, Function<GatewayConfiguration<U>, VanillaGateway> gatewayConstructor) throws IOException {

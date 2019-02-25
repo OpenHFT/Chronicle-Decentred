@@ -38,7 +38,7 @@ public class VanillaTCPClient extends AbstractTCPConnection {
         while (channel == null) {
             Jvm.pause(1);
             if (++count > 1000)
-                throw new IOException("not open yet");
+                throw new IOException("not open yet:" + thread.getName());
         }
     }
 

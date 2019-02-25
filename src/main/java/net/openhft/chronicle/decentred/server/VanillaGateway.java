@@ -103,7 +103,7 @@ public class VanillaGateway implements Gateway {
         else if (this.chainAddress == chainAddress)
             local.transactionBlockEvent(transactionBlockEvent);
         else
-            System.err.println("Unknown chainAddress " + DecentredUtil.toAddressString(chainAddress));
+            logUnknownChainAddress(transactionBlockEvent, chainAddress);
     }
 
     private boolean isMainChain(long chainAddress) {
@@ -118,7 +118,7 @@ public class VanillaGateway implements Gateway {
         else if (this.chainAddress == chainAddress)
             local.transactionBlockGossipEvent(transactionBlockGossipEvent);
         else
-            System.err.println("Unknown chainAddress " + DecentredUtil.toAddressString(chainAddress));
+            logUnknownChainAddress(transactionBlockGossipEvent, chainAddress);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class VanillaGateway implements Gateway {
         else if (this.chainAddress == chainAddress)
             local.transactionBlockVoteEvent(transactionBlockVoteEvent);
         else
-            System.err.println("Unknown chainAddress " + DecentredUtil.toAddressString(chainAddress));
+            logUnknownChainAddress(transactionBlockVoteEvent, chainAddress);
     }
 
     @Override
@@ -140,7 +140,17 @@ public class VanillaGateway implements Gateway {
         else if (this.chainAddress == chainAddress)
             local.endOfRoundBlockEvent(endOfRoundBlockEvent);
         else
-            System.err.println("Unknown chainAddress " + this.chainAddress);
+            logUnknownChainAddress(endOfRoundBlockEvent, chainAddress);
+    }
+
+    private void logUnknownChainAddress(VanillaSignedMessage message, long chainAddress) {
+            System.err.format("%s: Unknown chain address %s (raw %d) (known: %s and %s)%n",
+            message.getClass().getSimpleName(),
+            DecentredUtil.toAddressString(chainAddress),
+            chainAddress,
+            DecentredUtil.toAddressString(MAIN_CHAIN),
+            DecentredUtil.toAddressString(this.chainAddress)
+        );
     }
 
     public void createAddressEvent(CreateAddressEvent createAddressEvent) {

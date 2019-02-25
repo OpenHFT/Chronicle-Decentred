@@ -43,6 +43,11 @@ class DtoParselet<T> {
     public void parse(Bytes bytes, T listener) {
         vsm.readMarshallable(bytes);
         try {
+            System.out.println(String.format("Parslet invoking %s.%s(%s)%n",
+                listener.getClass().getName(),
+                method.getName(),
+                method.getParameterTypes()[0].getSimpleName())
+            );
             method.invoke(listener, vsm);
         } catch (Exception e) {
             throw new IllegalStateException(e);
