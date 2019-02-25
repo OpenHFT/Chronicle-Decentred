@@ -18,7 +18,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
     private short weekNumber; // up to 1256 years
     private int blockNumber; // up to 7k/s on average
     private transient LongLongMap addressToBlockNumberMap;
-    private transient LongU32Writer longU32Writer;
+
 
     public TransactionBlockGossipEvent blockNumber(long blockNumber) {
         this.blockNumber = (int) blockNumber;
@@ -75,11 +75,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
         int size = addressToBlockNumberMap.size();
         System.out.println("write gossip table entries = " + size + " chain address " + DecentredUtil.toAddressString(chainAddress));
         bytes.writeStopBit(size);
-        if (longU32Writer == null) {
-            longU32Writer = new LongU32Writer();
-        }
-        longU32Writer.bytes(bytes);
-        addressToBlockNumberMap.forEach(longU32Writer);
+        addressToBlockNumberMap.forEach(new LongU32Writer(bytes));
     }
 
     public long chainAddress() {

@@ -21,7 +21,6 @@ public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEv
     @IntConversion(UnsignedIntConverter.class)
     private int blockNumber;
     private transient LongLongMap addressToBlockNumberMap;
-    private transient LongU32Writer longU32Writer;
 
     public long chainAddress() {
         return chainAddress;
@@ -59,17 +58,19 @@ public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEv
     @Override
     public void readMarshallable(BytesIn bytes) throws IORuntimeException {
         super.readMarshallable(bytes);
-        addressToBlockNumberMap().justPut(bytes.readLong(), bytes.readUnsignedInt());
-
+        final int entries = (int) bytes.readStopBit();
+        addressToBlockNumberMap = LongLongMap.withExpectedSize(entries);
+        for (int i = 0; i < entries; i++) {
+            addressToBlockNumberMap.justPut(bytes.readLong(), bytes.readUnsignedInt());
+        }
+        // addressToBlockNumberMap().justPut(bytes.readLong(), bytes.readUnsignedInt());
     }
 
     @Override
     protected void writeMarshallable0(BytesOut bytes) {
         super.writeMarshallable0(bytes);
         bytes.writeStopBit(addressToBlockNumberMap.size());
-        if (longU32Writer == null) longU32Writer = new LongU32Writer();
-        longU32Writer.bytes(bytes);
-        addressToBlockNumberMap.forEach(longU32Writer);
+        addressToBlockNumberMap.forEach(new LongU32Writer(bytes));
     }
 
     @Override

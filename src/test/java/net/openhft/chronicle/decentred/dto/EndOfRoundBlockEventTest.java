@@ -1,0 +1,80 @@
+package net.openhft.chronicle.decentred.dto;
+
+import com.koloboke.collect.impl.Scaler;
+import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.core.io.IORuntimeException;
+import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
+import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.salt.Ed25519;
+import net.openhft.chronicle.wire.TextMethodTester;
+import net.openhft.chronicle.wire.TextWire;
+import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+
+public class EndOfRoundBlockEventTest {
+    static void test(String basename) {
+        TextMethodTester<EndOfRoundBlockEventTester> tester = new TextMethodTester<>(
+                basename + "/in.yaml",
+                EndOfRoundBlockEventTest::createGateway,
+            EndOfRoundBlockEventTester.class,
+                basename + "/out.yaml");
+        tester.setup(basename + "/setup.yaml");
+        try {
+            tester.run();
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+        assertEquals(tester.expected(), tester.actual());
+    }
+
+    private static EndOfRoundBlockEvent createGateway(EndOfRoundBlockEventTester tester) {
+        return new EndOfRoundBlockEvent();
+    }
+
+    @Test
+    public void testVerifyOne() {
+        test("gateway/endOfRoundBlockEvent");
+    }
+
+    @Test
+    public void test() {
+        Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
+        Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
+        Ed25519.generatePublicAndSecretKey(publicKey, secretKey);
+
+        final Bytes bytes = Bytes.allocateElasticDirect(1000);
+
+        final EndOfRoundBlockEvent expected = new EndOfRoundBlockEvent()
+            .weekNumber(1)
+            .messageType(0xFFF3)
+            .protocol(17)
+            .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
+            .blockNumber(42)
+            .chainAddress(43)
+            ;
+
+        expected.addressToBlockNumberMap().justPut(0, 16);
+        expected.addressToBlockNumberMap().justPut((192L << 56) + (168L << 48) + (1L << 40) + (147L << 32)+ (10000L << 16), 17);
+        expected.sign(secretKey);
+        System.out.println("expected = " + expected);
+
+        System.out.println(expected.toHexString());
+
+        expected.writeMarshallable(bytes);
+
+        bytes.clear();
+        EndOfRoundBlockEvent actual = new EndOfRoundBlockEvent();
+        actual.readMarshallable(bytes);
+
+
+        System.out.println("actual = " + actual);
+
+
+
+    }
+
+
+}
