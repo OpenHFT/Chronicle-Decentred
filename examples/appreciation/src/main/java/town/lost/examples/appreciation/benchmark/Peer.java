@@ -2,6 +2,7 @@ package town.lost.examples.appreciation.benchmark;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
@@ -37,6 +38,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -105,7 +107,7 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
             return new VanillaAppreciationGateway(
                 region, mainEngine, localEngine, messageRouter, blockChain, balanceStore);
         };
-        rpcServer = getRpcBuilder().createServer(socketAddress.getHostName(), socketAddress.getPort(), mainProcessor, localProcessor, gatewayConstructor);
+        rpcServer = getRpcBuilder(). createServer(socketAddress.getHostName(), socketAddress.getPort(), mainProcessor, localProcessor, gatewayConstructor);
         ((TransactionProcessor) mainProcessor).messageRouter(rpcServer);
         ((TransactionProcessor) localProcessor).messageRouter(rpcServer);
     }
@@ -133,12 +135,14 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
         Map<String, Bytes> publicKeys = new HashMap<>();
         Map<String, Bytes> secretKeys = new HashMap<>();
 
-        Arrays.stream(ACCOUNTS).forEach(accountName -> {
+        Stream.of(GIVER/*ACCOUNTS*/).forEachOrdered(accountName -> {
             long address = DecentredUtil.parseAddress(accountName);
             BytesStore privateKey = DecentredUtil.testPrivateKey(address);
             Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
             Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
             Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
+
+            //long address = DecentredUtil.toAddress(publicKey); // Isn't this the address to use?
 
             publicKeys.put(accountName, publicKey);
             secretKeys.put(accountName, secretKey);
@@ -146,11 +150,18 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
             RPCClient<AppreciationMessages, AppreciationRequests> client = getRpcBuilder()
                 .createAccountClient(accountName, secretKey, socketAddress, new ResponseSink());
 
+            Jvm.pause(7000);
+            System.out.println("CreateAddressRequest");
+
             client.write(new CreateAddressRequest()
                 .address(address)
                 .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
                 .publicKey(publicKey)
             );
+
+            Jvm.pause(7000);
+
+            System.out.println("Setting account " + accountName + " to " + START_AMOUNT);
 
             OpeningBalance ob = new OpeningBalance()
                 .address(address)
@@ -158,21 +169,27 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
                 .init(address, START_AMOUNT);
             client.write(ob);  // when signing this, the address is garbled!
 
+            System.out.println("Waiting");
+            Jvm.pause(2000);
+             System.out.println("Closing");
             client.close();
-            System.out.println("Setting account " + accountName + " to " + START_AMOUNT);
+
         });
 
+        /*
+
         Thread.sleep(10000);
+
 
         RPCClient<AppreciationMessages, AppreciationRequests> client = getRpcBuilder()
             .createAccountClient(GIVER, secretKeys.get(GIVER), socketAddress, new ResponseSink());
 
-        client.write(new Give()
+                client.write(new Give()
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             .address(DecentredUtil.parseAddress(GIVER))
             .init(DecentredUtil.parseAddress(TAKER), 10));
 
-        client.close();
+        client.close();*/
     }
 
     private class IncomingProcessor implements AppreciationRequests {
@@ -234,7 +251,8 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
     }
 
 
-    private class ResponseSink implements AppreciationRequests {
+    public static class ResponseSink implements AppreciationRequests {
+
         @Override
         public void queryBalance(QueryBalance queryBalance) {
             System.out.println("ResponseSink.queryBalance");
@@ -267,32 +285,53 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
 
         BalanceStore balanceStore = new VanillaBalanceStore();
 
+        final int myAddressIndex = Integer.parseInt(args[0]);
+
         List<InetSocketAddress> socketAddresses = Arrays.stream(args[1].split(","))
             .map(addrString -> {
                 String[] addrPair = addrString.split(":");
                 return InetSocketAddress.createUnresolved(addrPair[0], Integer.parseInt(addrPair[1]));
             })
             .collect(toList());
+
         List<Long> addresses = IntStream.range(0, socketAddresses.size())
             .map(seedForPeerIdx)
             .mapToObj(Node::addressFromSeed)
             .collect(toList());
 
-        int addressIndex = Integer.parseInt(args[0]);
+        IntStream.range(0, addresses.size())
+            .forEachOrdered(i -> System.out.format("Peer #%d, address: %21d, addressString: %32s at %s %s%n",
+                i,
+                addresses.get(i),
+                DecentredUtil.toAddressString(addresses.get(i)),
+                socketAddresses.get(i),
+                i == myAddressIndex?"(*)":""
+                )
+            );
 
-        InetSocketAddress myAddress = socketAddresses.get(addressIndex);
 
-        Peer peer = new Peer(seedForPeerIdx.applyAsInt(addressIndex), myAddress, balanceStore);
-        addresses.forEach(peer::addClusterAddress);
+        final InetSocketAddress myAddress = socketAddresses.get(myAddressIndex);
+
+        final Peer peer = new Peer(seedForPeerIdx.applyAsInt(myAddressIndex), myAddress, balanceStore);
+
+        IntStream.range(0, addresses.size())
+            //.filter(i -> i != myAddressIndex)  // Exclude my own address
+            .mapToLong(addresses::get)
+            .forEachOrdered(peer::addClusterAddress);
+
         peer.start();
 
         IntStream.range(0, socketAddresses.size())
-            .filter(i -> i != addressIndex)
-            .forEach(i -> peer.connect(addresses.get(i), socketAddresses.get(i)));
+            .filter(i -> i != myAddressIndex)
+            .peek(i -> System.out.format("Connecting to peer #%d, address %21d at %s%n", i, addresses.get(i), socketAddresses.get(i)))
+            .forEachOrdered(i -> peer.connect(addresses.get(i), socketAddresses.get(i)));
 
-        System.out.println("Peer started at " + myAddress);
+        System.out.format("Peer #%d started at %s%n", myAddressIndex, myAddress);
 
-        if (addressIndex == 0) {
+        if (myAddressIndex == 0 && false) {
+            System.out.println("Waiting for network");
+            Jvm.pause(5000);
+            System.out.println("Send opening balances");
             peer.setOpeningBalances();
         }
 
