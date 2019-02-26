@@ -70,6 +70,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
 
     @Override
     public void writeMarshallable0(BytesOut bytes) {  // was writeMarshallable
+        super.writeMarshallable0(bytes);
         bytes.writeLong(chainAddress);
         bytes.writeShort(weekNumber);
         bytes.writeInt(blockNumber);
