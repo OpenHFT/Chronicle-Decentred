@@ -15,8 +15,8 @@ public class BruteForce {
     public static final long STEP = Long.MAX_VALUE / THREADS;
     public static final long OFFSET = (10_000 * 3_600 * 10 ) * 3;
 
-    public static final String TARGET = "0.0.0.0";
-    public static final char TARGET_FIRST_CHAR = TARGET.charAt(0);
+    public static final long TARGET = (0L << 56) + (0L << 48) + (0L << 40) + (0L << 32);
+    public static final long TARGET_MASK = 0xEFFFFFFF00000000l;
 
     public static final void main(String[] argv) {
 
@@ -66,11 +66,11 @@ public class BruteForce {
 
             final long address = DecentredUtil.toAddress(publicKey);
             if ((address & 0xE000_0000_0000_0000L) != 0xE000_0000_0000_0000L) {
-                sb.setLength(0);
-                DecentredUtil.appendAddress(sb, address);
-                if (sb.charAt(0) == TARGET_FIRST_CHAR) {
+                if ((address & TARGET_MASK) == TARGET) {
+                    sb.setLength(0);
+                    DecentredUtil.appendAddress(sb, address);
                     final String addressString = sb.toString();
-                    if (addressString.startsWith(TARGET)) {
+                    if (addressString.startsWith("0.0.0.0")) {
                         System.out.println("Found seed " + seed + " " + addressString);
                     }
                 }

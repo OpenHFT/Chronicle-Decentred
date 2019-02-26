@@ -7,15 +7,15 @@ import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.LongLongMap;
 import net.openhft.chronicle.decentred.util.LongU32Writer;
-import net.openhft.chronicle.wire.LongConversion;
-import net.openhft.chronicle.wire.WireIn;
-import net.openhft.chronicle.wire.WireOut;
+import net.openhft.chronicle.wire.*;
 import org.jetbrains.annotations.NotNull;
 
 public class TransactionBlockGossipEvent extends VanillaSignedMessage<TransactionBlockGossipEvent> {
     @LongConversion(AddressLongConverter.class)
     private long chainAddress;
+    @IntConversion(UnsignedIntConverter.class)
     private short weekNumber; // up to 1256 years
+    @IntConversion(UnsignedIntConverter.class)
     private int blockNumber; // up to 7k/s on average
     private transient LongLongMap addressToBlockNumberMap;
 
