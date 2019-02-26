@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EndOfRoundBlockEventTest {
     static void test(String basename) {
@@ -54,7 +55,7 @@ public class EndOfRoundBlockEventTest {
             ;
 
         expected.addressToBlockNumberMap().justPut(0, 16);
-        expected.addressToBlockNumberMap().justPut((192L << 56) + (168L << 48) + (1L << 40) + (147L << 32)+ (10000L << 16), 17);
+        expected.addressToBlockNumberMap().justPut((192L << 56) + (168L << 48) + (1L << 40) + (147L << 32)+ (10000L << 16), 17); // 192.168.1.147:10000
         expected.sign(secretKey);
         System.out.println("expected = " + expected);
 
@@ -62,14 +63,18 @@ public class EndOfRoundBlockEventTest {
 
         expected.writeMarshallable(bytes);
 
-        //bytes.clear();
+        bytes.readPosition(0);
         EndOfRoundBlockEvent actual = new EndOfRoundBlockEvent();
         actual.readMarshallable(bytes);
 
+        final String expectedString = actual.toString();
 
-        System.out.println("actual = " + actual);
+        int length = expectedString.indexOf("addressToBlockNumberMap: {");
 
+        assertEquals(expected.toString().substring(0, length), actual.toString().substring(0, length));
 
+        assertTrue(actual.toString().contains("\"192.168.1.147:10000\": 17"));
+        assertTrue(actual.toString().contains("\"0.0.0.0:0\": 16"));
 
     }
 
