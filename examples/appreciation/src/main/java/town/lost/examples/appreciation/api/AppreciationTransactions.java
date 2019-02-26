@@ -6,7 +6,7 @@ import town.lost.examples.appreciation.dto.OpeningBalance;
 import town.lost.examples.appreciation.dto.Topup;
 
 /**
- * Transactions passed through the block chain
+ * Transactions passed through the block chainevent
  */
 public interface AppreciationTransactions {
 

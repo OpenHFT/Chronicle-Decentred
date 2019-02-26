@@ -5,6 +5,14 @@ import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.*;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.dto.chainlifecycle.*;
 
 public class VanillaTransactionProcessor implements SystemMessages, TransactionProcessor {
     private MessageRouter<SystemMessages> router;

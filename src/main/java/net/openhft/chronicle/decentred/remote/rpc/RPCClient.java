@@ -8,7 +8,7 @@ import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.SystemMessageListener;
-import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.remote.net.TCPClientListener;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.remote.net.VanillaTCPClient;

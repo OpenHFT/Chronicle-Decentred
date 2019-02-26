@@ -2,7 +2,7 @@ package town.lost.examples.appreciation.dto;
 
 
 import net.openhft.chronicle.core.annotation.UsedViaReflection;
-import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 
 /**
  * Automated version of Give that is used to allocate new balances for distribution on a regular basis.

@@ -1,8 +1,8 @@
 package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.decentred.api.MessageToListener;
-import net.openhft.chronicle.decentred.dto.TransactionBlockEvent;
-import net.openhft.chronicle.decentred.dto.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.util.LongLongMap;
 
 import java.util.stream.LongStream;
@@ -48,7 +48,7 @@ public class VanillaGossiper implements Gossiper {
 
         gossip = new TransactionBlockGossipEvent().chainAddress(gossip.chainAddress());
         gossip.address(address);
-        gossip.blockNumber(blockNumber);
+        //gossip.blockNumber(blockNumber);
         synchronized (this) {
             gossip.addressToBlockNumberMap().putAll(lastBlockMap);
         }

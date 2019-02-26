@@ -1,0 +1,36 @@
+package net.openhft.chronicle.decentred.dto.base;
+
+import net.openhft.chronicle.core.pool.ClassAliasPool;
+import net.openhft.chronicle.decentred.dto.*;
+import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateChainRequest;
+import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
+import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
+
+public enum DtoAliases {
+    ;
+
+    static {
+        ClassAliasPool.CLASS_ALIASES.addAlias(
+                ApplicationErrorResponse.class,
+                CreateAddressRequest.class,
+                CreateAddressEvent.class,
+                CreateChainRequest.class,
+                InvalidationEvent.class,
+                TransactionBlockEvent.class,
+                TransactionBlockGossipEvent.class,
+                TransactionBlockVoteEvent.class,
+                EndOfRoundBlockEvent.class,
+                VerificationEvent.class
+        );
+    }
+
+    public static void addAliases() {
+        // static init block does everything.
+    }
+}

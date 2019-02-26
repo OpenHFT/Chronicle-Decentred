@@ -3,7 +3,7 @@ package net.openhft.chronicle.decentred.server;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.Mocker;
 import net.openhft.chronicle.decentred.api.SystemMessages;
-import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.util.DecentredUtil;

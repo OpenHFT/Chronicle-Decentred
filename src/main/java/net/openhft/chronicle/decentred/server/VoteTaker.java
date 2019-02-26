@@ -1,6 +1,6 @@
 package net.openhft.chronicle.decentred.server;
 
-import net.openhft.chronicle.decentred.dto.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
 
 public interface VoteTaker {
     void transactionBlockVoteEvent(TransactionBlockVoteEvent transactionBlockVoteEvent);

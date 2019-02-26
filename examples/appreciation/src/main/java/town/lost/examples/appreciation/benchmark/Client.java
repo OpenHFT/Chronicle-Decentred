@@ -1,9 +1,9 @@
 package town.lost.examples.appreciation.benchmark;
 
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
-import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
-import net.openhft.chronicle.decentred.dto.InvalidationEvent;
-import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.util.DtoRegistry;

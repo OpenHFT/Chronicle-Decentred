@@ -1,4 +1,6 @@
-package net.openhft.chronicle.decentred.dto;
+package net.openhft.chronicle.decentred.dto.error;
+
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 
 public class ApplicationErrorResponse extends VanillaSignedMessage<ApplicationErrorResponse> {
     private VanillaSignedMessage origMessage;

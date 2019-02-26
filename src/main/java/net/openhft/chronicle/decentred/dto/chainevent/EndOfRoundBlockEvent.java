@@ -1,19 +1,36 @@
-package net.openhft.chronicle.decentred.dto;
+package net.openhft.chronicle.decentred.dto.chainevent;
 
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.io.IORuntimeException;
-import net.openhft.chronicle.decentred.util.AddressLongConverter;
-import net.openhft.chronicle.decentred.util.DecentredUtil;
-import net.openhft.chronicle.decentred.util.LongLongMap;
-import net.openhft.chronicle.decentred.util.LongU32Writer;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.trait.HasAddressToBlockNumberMap;
+import net.openhft.chronicle.decentred.dto.base.trait.HasBlockNumber;
+import net.openhft.chronicle.decentred.dto.base.trait.HasChainAddress;
+import net.openhft.chronicle.decentred.dto.base.trait.HasWeekNumber;
+import net.openhft.chronicle.decentred.util.*;
 import net.openhft.chronicle.wire.*;
 import org.jetbrains.annotations.NotNull;
 
 import static net.openhft.chronicle.decentred.util.DecentredUtil.MASK_16;
 import static net.openhft.chronicle.decentred.util.DecentredUtil.MASK_32;
 
-public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEvent> {
+/**
+ * An EndOfRoundBlockEvent is a <em>chain event</em> that notifies which block numbers are in the next round.
+ *
+ * Pointers for each address are included in this message with an association between an address and
+ * the block number that particular address is currently at. Basically, these block numbers are like
+ * a cursor which points to transactions.
+ *
+ * The cursors are monotonic pointers, usually in the order 0, 1, 2, ...
+ */
+// Add validation
+public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEvent> implements
+    HasWeekNumber<EndOfRoundBlockEvent>,
+    HasChainAddress<EndOfRoundBlockEvent>,
+    HasBlockNumber<EndOfRoundBlockEvent>,
+    HasAddressToBlockNumberMap<EndOfRoundBlockEvent>
+{
     @LongConversion(AddressLongConverter.class)
     private long chainAddress;
     @IntConversion(UnsignedIntConverter.class)
@@ -22,33 +39,42 @@ public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEv
     private int blockNumber;
     private transient LongLongMap addressToBlockNumberMap;
 
-    public long chainAddress() {
+    @Override
+    public long chainAddress () {
         return chainAddress;
     }
 
+    @Override
     public EndOfRoundBlockEvent chainAddress(long chainAddress) {
         this.chainAddress = chainAddress;
         return this;
     }
 
+    @Override
     public int weekNumber() {
         return weekNumber & MASK_16;
     }
 
+    @Override
     public EndOfRoundBlockEvent weekNumber(int weekNumber) {
-        this.weekNumber = (short) weekNumber;
+        assert !signed();
+        this.weekNumber = ShortUtil.toShortExact(weekNumber);
         return this;
     }
 
+    @Override
     public long blockNumber() {
         return blockNumber & MASK_32;
     }
 
+    @Override
     public EndOfRoundBlockEvent blockNumber(long blockNumber) {
-        this.blockNumber = (int) blockNumber;
+        assert !signed();
+        this.blockNumber = Math.toIntExact(blockNumber);
         return this;
     }
 
+    @Override
     public LongLongMap addressToBlockNumberMap() {
         if (addressToBlockNumberMap == null)
             addressToBlockNumberMap = LongLongMap.withExpectedSize(16);

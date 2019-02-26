@@ -3,8 +3,8 @@ package net.openhft.chronicle.decentred.dto;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
+import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
 import net.openhft.chronicle.decentred.util.KeyPair;
-import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.TextMethodTester;
 import org.junit.Test;
 

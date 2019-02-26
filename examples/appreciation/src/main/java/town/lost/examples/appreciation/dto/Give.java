@@ -1,6 +1,6 @@
 package town.lost.examples.appreciation.dto;
 
-import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.wire.LongConversion;
 

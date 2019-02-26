@@ -1,7 +1,7 @@
 package net.openhft.chronicle.decentred.api;
 
 import net.openhft.chronicle.bytes.MethodId;
-import net.openhft.chronicle.decentred.dto.InvalidationEvent;
+import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
 
 public interface Verifier {

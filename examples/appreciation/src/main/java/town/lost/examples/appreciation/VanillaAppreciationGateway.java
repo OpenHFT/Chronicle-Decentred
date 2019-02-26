@@ -1,9 +1,9 @@
 package town.lost.examples.appreciation;
 
 import net.openhft.chronicle.decentred.api.MessageRouter;
-import net.openhft.chronicle.decentred.dto.ApplicationErrorResponse;
-import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
-import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.server.BlockEngine;
 import net.openhft.chronicle.decentred.server.VanillaGateway;
 import town.lost.examples.appreciation.api.AppreciationGateway;

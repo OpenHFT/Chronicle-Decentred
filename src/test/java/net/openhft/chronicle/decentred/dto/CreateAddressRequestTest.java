@@ -2,6 +2,9 @@ package net.openhft.chronicle.decentred.dto;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.time.SetTimeProvider;
+import net.openhft.chronicle.decentred.dto.base.DtoAliases;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.salt.Ed25519;
 import org.junit.Test;
 

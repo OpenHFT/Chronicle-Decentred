@@ -2,16 +2,14 @@ package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
-import net.openhft.chronicle.decentred.dto.CreateAddressEvent;
-import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
-import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.salt.Ed25519;
 
-import javax.imageio.event.IIOWriteProgressListener;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.LinkedHashSet;

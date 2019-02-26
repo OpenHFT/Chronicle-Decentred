@@ -1,14 +1,16 @@
-package net.openhft.chronicle.decentred.dto;
+package net.openhft.chronicle.decentred.dto.chainevent;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IORuntimeException;
-import net.openhft.chronicle.decentred.util.AddressLongConverter;
-import net.openhft.chronicle.decentred.util.DecentredUtil;
-import net.openhft.chronicle.decentred.util.DtoParser;
-import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.dto.base.SignedMessage;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.trait.HasBlockNumber;
+import net.openhft.chronicle.decentred.dto.base.trait.HasChainAddress;
+import net.openhft.chronicle.decentred.dto.base.trait.HasWeekNumber;
+import net.openhft.chronicle.decentred.util.*;
 import net.openhft.chronicle.wire.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +21,15 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> {
+/**
+ * An TransactionBlockEvent is a <em>chain event</em> that holds the transactions that is in a block.
+ *
+ */
+public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> implements
+    HasChainAddress<TransactionBlockEvent<T>>,
+    HasWeekNumber<TransactionBlockEvent<T>>,
+    HasBlockNumber<TransactionBlockEvent<T>>
+{
     private transient DtoParser<T> dtoParser;
 
     // for writing to a new set of bytes
@@ -28,7 +38,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     // where to read transactions from
     private transient long messagesStart;
     private transient Bytes transactions;
-    private transient List<SignedMessage> transactionsList;
+    private transient List<SignedMessage> transactionsList;  // TODO: CHECK if this can be removed.
 
     @LongConversion(AddressLongConverter.class)
     private long chainAddress;
@@ -166,26 +176,39 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
         return (T) tbe;
     }
 
+    @Override
     public long chainAddress() {
         return chainAddress;
     }
 
-    public TransactionBlockEvent chainAddress(long chainAddress) {
+    @Override
+    public TransactionBlockEvent<T> chainAddress(long chainAddress) {
+        assert !signed();
         this.chainAddress = chainAddress;
         return this;
     }
 
+    @Override
     public int weekNumber() {
         return weekNumber & DecentredUtil.MASK_16;
     }
 
+    @Override
+    public TransactionBlockEvent<T> weekNumber(int weekNumber) {
+        assert !signed();
+        this.weekNumber = ShortUtil.toShortExact(weekNumber);
+        return this;
+    }
+
+    @Override
     public long blockNumber() {
         return blockNumber & DecentredUtil.MASK_32;
     }
 
-    public TransactionBlockEvent blockNumber(long blockNumber) {
+    @Override
+    public TransactionBlockEvent<T> blockNumber(long blockNumber) {
         assert !signed();
-        this.blockNumber = (int) blockNumber;
+        this.blockNumber = Math.toIntExact(blockNumber);
         return this;
     }
 }

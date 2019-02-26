@@ -2,6 +2,7 @@ package net.openhft.chronicle.decentred.dto;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.decentred.dto.base.SelfSignedMessage;
 import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
@@ -10,7 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This message states this node verifies a given public key after connecting to it successfully.
+ *
  */
+@Deprecated
 public class VerificationEvent extends SelfSignedMessage<VerificationEvent> {
     @LongConversion(AddressLongConverter.class)
     private long addressVerified;

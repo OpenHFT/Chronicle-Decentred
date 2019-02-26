@@ -4,7 +4,7 @@ import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.api.ConnectionStatusListener;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.Verifier;
-import net.openhft.chronicle.decentred.dto.InvalidationEvent;
+import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 

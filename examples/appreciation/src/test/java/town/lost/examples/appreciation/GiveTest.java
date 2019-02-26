@@ -3,7 +3,7 @@ package town.lost.examples.appreciation;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
-import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.TextWire;

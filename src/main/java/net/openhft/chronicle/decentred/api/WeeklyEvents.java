@@ -1,10 +1,10 @@
 package net.openhft.chronicle.decentred.api;
 
 import net.openhft.chronicle.bytes.MethodId;
-import net.openhft.chronicle.decentred.dto.EndOfRoundBlockEvent;
-import net.openhft.chronicle.decentred.dto.TransactionBlockEvent;
-import net.openhft.chronicle.decentred.dto.TransactionBlockGossipEvent;
-import net.openhft.chronicle.decentred.dto.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
 
 public interface WeeklyEvents {
     // weekly events

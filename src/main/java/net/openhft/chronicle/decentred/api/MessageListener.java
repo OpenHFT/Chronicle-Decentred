@@ -1,6 +1,6 @@
 package net.openhft.chronicle.decentred.api;
 
-import net.openhft.chronicle.decentred.dto.SignedMessage;
+import net.openhft.chronicle.decentred.dto.base.SignedMessage;
 
 public interface MessageListener {
 

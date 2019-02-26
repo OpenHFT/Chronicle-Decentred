@@ -4,20 +4,18 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
-import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.server.RPCBuilder;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import town.lost.examples.appreciation.api.AppreciationMessages;
-import town.lost.examples.appreciation.api.AppreciationRequests;
 import town.lost.examples.appreciation.api.AppreciationResponses;
 import town.lost.examples.appreciation.benchmark.Peer;
 import town.lost.examples.appreciation.dto.OpeningBalance;
 
 import java.net.InetSocketAddress;
 import java.util.stream.LongStream;
-import java.util.stream.Stream;
 
 public class Traffic {
     private static final double START_AMOUNT = 2_000_000d;

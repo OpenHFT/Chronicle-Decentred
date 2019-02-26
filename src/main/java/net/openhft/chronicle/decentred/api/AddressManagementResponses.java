@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.api;
 
 import net.openhft.chronicle.bytes.MethodId;
 import net.openhft.chronicle.core.Jvm;
-import net.openhft.chronicle.decentred.dto.CreateAddressEvent;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
 
 /**
  * Allows messages to be passed without needing to be self signing i.e. using just an account.

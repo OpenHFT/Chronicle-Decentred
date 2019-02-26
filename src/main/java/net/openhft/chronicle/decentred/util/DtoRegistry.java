@@ -1,6 +1,6 @@
 package net.openhft.chronicle.decentred.util;
 
-import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 
 import java.util.function.Supplier;
 

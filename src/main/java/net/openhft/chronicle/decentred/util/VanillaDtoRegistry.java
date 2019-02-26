@@ -5,8 +5,8 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.Maths;
 import net.openhft.chronicle.core.util.ObjectUtils;
 import net.openhft.chronicle.decentred.api.SystemMessages;
-import net.openhft.chronicle.decentred.dto.DtoAliases;
-import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.DtoAliases;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;

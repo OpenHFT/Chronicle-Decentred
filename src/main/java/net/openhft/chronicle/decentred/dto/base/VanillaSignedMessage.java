@@ -1,4 +1,4 @@
-package net.openhft.chronicle.decentred.dto;
+package net.openhft.chronicle.decentred.dto.base;
 
 import net.openhft.chronicle.bytes.*;
 import net.openhft.chronicle.core.Jvm;
@@ -6,6 +6,7 @@ import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.util.AddressLongConverter;
+import net.openhft.chronicle.decentred.util.ShortUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.AbstractBytesMarshallable;
 import net.openhft.chronicle.wire.LongConversion;
@@ -58,8 +59,8 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     public void readMarshallable(BytesIn bytes) throws IORuntimeException {
         long capacity = bytes.readRemaining();
         readPointer.set(bytes.addressForRead(bytes.readPosition()), capacity);
-        messageType = readPointer.readShort(MESSAGE_TYPE);
-        protocol = readPointer.readShort(PROTOCOL);
+        messageType = readPointer.readUnsignedShort(MESSAGE_TYPE);
+        protocol = readPointer.readUnsignedShort(PROTOCOL);
 
         this.bytes.clear();
         this.bytes.readPositionRemaining(MESSAGE_START, capacity - MESSAGE_START);
@@ -147,7 +148,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         timestampUS = timeProvider.currentTimeMicros();
 
         tempBytes.clear();
-        tempBytes.writeInt(0);
+        tempBytes.writeInt(0); // Provisional length
         long signatureStart = tempBytes.writePosition();
         tempBytes.writeSkip(Ed25519.SIGNATURE_LENGTH);
         tempBytes.writeUnsignedShort(messageType);
@@ -178,10 +179,10 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return text;
     }
 
-    public boolean verify(LongFunction<BytesStore> addressToPublickKey) {
+    public boolean verify(LongFunction<BytesStore> addressToPublicKey) {
         BytesStore publicKey = hasPublicKey()
                 ? publicKey()
-                : addressToPublickKey.apply(address());
+                : addressToPublicKey.apply(address());
         if (publicKey == null || publicKey.readRemaining() != Ed25519.PUBLIC_KEY_LENGTH)
             return false;
 
@@ -190,31 +191,33 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return Ed25519.verify(bytes, publicKey);
     }
 
+    @Override
     public int protocol() {
         return protocol;
     }
 
     public T protocol(int protocol) {
-        this.protocol = protocol;
+        this.protocol = ShortUtil.requireUnsignedShort(protocol);
         return (T) this;
     }
 
-    public String protocolString() {
+    /*public String protocolString() {
         return getClass().getPackage().getName();
-    }
+    }*/
 
+    @Override
     public int messageType() {
         return messageType;
     }
 
     public T messageType(int messageType) {
-        this.messageType = messageType;
+        this.messageType = ShortUtil.requireUnsignedShort(messageType);
         return (T) this;
     }
 
-    public String messageTypeString() {
+/*    public String messageTypeString() {
         return getClass().getSimpleName();
-    }
+    }*/
 
     public BytesStore bytes() {
         return readPointer;

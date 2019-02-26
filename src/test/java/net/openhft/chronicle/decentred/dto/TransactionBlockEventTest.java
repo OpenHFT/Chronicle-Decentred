@@ -7,6 +7,11 @@ import net.openhft.chronicle.decentred.api.AddressManagementRequests;
 import net.openhft.chronicle.decentred.api.ConnectionStatusListener;
 import net.openhft.chronicle.decentred.api.SystemMessageListener;
 import net.openhft.chronicle.decentred.api.SystemMessages;
+import net.openhft.chronicle.decentred.dto.base.DtoAliases;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.KeyPair;
@@ -89,7 +94,7 @@ public class TransactionBlockEventTest {
                         "0156 93 ea\n", tbe.toHexString());
 
         TransactionBlockGossipEvent gossip = registry.create(TransactionBlockGossipEvent.class)
-                .blockNumber(1)
+                //.blockNumber(1)
                 .chainAddress(DecentredUtil.parseAddress("local"));
         LongLongMap map = gossip.addressToBlockNumberMap();
         map.justPut(DecentredUtil.parseAddress("xxx"), 123);

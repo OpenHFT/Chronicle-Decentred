@@ -1,7 +1,14 @@
-package net.openhft.chronicle.decentred.dto;
+package net.openhft.chronicle.decentred.dto.chainlifecycle;
 
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.util.OffsetIntConverter;
 import net.openhft.chronicle.wire.IntConversion;
+
+// Dynamic lifecycle of a chain
+// One chain per address
+//     private int cycleOffset; private int roundsPerDay; ignored as of now
+
+//Create address -> CreateChain -> Delegate Chain
 
 public class CreateChainRequest extends VanillaSignedMessage<CreateChainRequest> {
     @IntConversion(OffsetIntConverter.class)
@@ -13,6 +20,7 @@ public class CreateChainRequest extends VanillaSignedMessage<CreateChainRequest>
     }
 
     public CreateChainRequest cycleOffset(int cycleOffset) {
+        assert !signed();
         this.cycleOffset = cycleOffset;
         return this;
     }
@@ -22,6 +30,7 @@ public class CreateChainRequest extends VanillaSignedMessage<CreateChainRequest>
     }
 
     public CreateChainRequest roundsPerDay(int roundsPerDay) {
+        assert !signed();
         this.roundsPerDay = roundsPerDay;
         return this;
     }

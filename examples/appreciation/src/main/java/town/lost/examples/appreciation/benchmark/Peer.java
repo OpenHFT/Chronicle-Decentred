@@ -1,13 +1,14 @@
 package town.lost.examples.appreciation.benchmark;
 
-import net.openhft.chronicle.bytes.Bytes;
-import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.Jvm;
-import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.*;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
+import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
@@ -16,7 +17,6 @@ import net.openhft.chronicle.decentred.server.GatewayConfiguration;
 import net.openhft.chronicle.decentred.server.VanillaBlockEngine;
 import net.openhft.chronicle.decentred.server.VanillaGateway;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
-import net.openhft.chronicle.salt.Ed25519;
 import town.lost.examples.appreciation.VanillaAppreciationGateway;
 import town.lost.examples.appreciation.VanillaAppreciationTransactions;
 import town.lost.examples.appreciation.api.AppreciationMessages;
@@ -30,13 +30,10 @@ import town.lost.examples.appreciation.util.VanillaBalanceStore;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 

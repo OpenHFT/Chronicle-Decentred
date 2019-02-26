@@ -1,14 +1,31 @@
-package net.openhft.chronicle.decentred.dto;
+package net.openhft.chronicle.decentred.dto.base;
 
 import net.openhft.chronicle.bytes.BytesMarshallable;
 import net.openhft.chronicle.bytes.BytesStore;
 
 public interface SignedMessage extends BytesMarshallable {
+
+    /**
+     * Returns the protocol for this message.
+     * <p>
+     * The protocol is stored as an unsigned short (0-65,536)
+     *
+     * @return the protocol for this message
+     */
     int protocol();
 
+    /**
+     * Returns the message type for this message.
+     * <p>
+     * The message type is stored as an unsigned short (0-65,536)
+     *
+     * @return the message type for this message
+     */
     int messageType();
 
     /**
+     * Returns if this message is signed.
+     *
      * Once a message is signed it can't be modified, only read.
      * <p>
      * It cannot be sent until it is signed.
@@ -18,14 +35,14 @@ public interface SignedMessage extends BytesMarshallable {
     boolean signed();
 
     /**
-     * Unique address for the sender. This should be the last 8 bytes of the public key.
+     * Returns a unique address for the sender. This should be the last 8 bytes of the public key.
      *
      * @return a unique id for this server.
      */
     long address();
 
     /**
-     * A microsecond precision, unique timestamp
+     * Returns a microsecond precision, unique monotonically increasing timestamp
      * <p>
      * NOTE: If the writing system doesn't have a micro-second accurate clock,
      * the most accurate clock should be used and increment the timestamp in the cause of any collision
@@ -35,7 +52,10 @@ public interface SignedMessage extends BytesMarshallable {
     long timestampUS();
 
     /**
-     * @return the public key if it is embedded in the message, otherwise it will need to be implied from the address.
+     * Returns the public key if it is embedded in the message. If no such public key is embedded, returns a ByteStore
+     * of length zero.
+     *
+     * @return the public key if it is embedded in the message.
      */
     BytesStore publicKey();
 

@@ -5,7 +5,7 @@ import net.openhft.chronicle.decentred.api.AddressManagementRequests;
 import town.lost.examples.appreciation.dto.QueryBalance;
 
 /**
- * Transactions passed through the block chain
+ * Transactions passed through the block chainevent
  */
 public interface AppreciationRequests extends
         AddressManagementRequests,

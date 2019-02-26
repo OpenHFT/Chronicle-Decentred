@@ -1,8 +1,8 @@
 package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.decentred.api.MessageToListener;
-import net.openhft.chronicle.decentred.dto.TransactionBlockGossipEvent;
-import net.openhft.chronicle.decentred.dto.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
 
 public class VanillaVoter implements Voter {
     private final long address;

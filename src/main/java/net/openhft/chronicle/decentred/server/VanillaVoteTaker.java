@@ -1,8 +1,8 @@
 package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.decentred.api.MessageToListener;
-import net.openhft.chronicle.decentred.dto.EndOfRoundBlockEvent;
-import net.openhft.chronicle.decentred.dto.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
 import net.openhft.chronicle.decentred.util.LongLongMap;
 
 import java.util.stream.LongStream;

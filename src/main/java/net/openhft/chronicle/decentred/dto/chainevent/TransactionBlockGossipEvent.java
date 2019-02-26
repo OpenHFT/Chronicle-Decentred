@@ -1,8 +1,11 @@
-package net.openhft.chronicle.decentred.dto;
+package net.openhft.chronicle.decentred.dto.chainevent;
 
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.io.IORuntimeException;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.trait.HasAddressToBlockNumberMap;
+import net.openhft.chronicle.decentred.dto.base.trait.HasChainAddress;
 import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.LongLongMap;
@@ -10,20 +13,18 @@ import net.openhft.chronicle.decentred.util.LongU32Writer;
 import net.openhft.chronicle.wire.*;
 import org.jetbrains.annotations.NotNull;
 
-public class TransactionBlockGossipEvent extends VanillaSignedMessage<TransactionBlockGossipEvent> {
+// Block number is N:th round in a week for the round.
+/**
+ * An TransactionBlockGossipEvent is a <em>chain event</em> that ...
+ *
+ */
+public class TransactionBlockGossipEvent extends VanillaSignedMessage<TransactionBlockGossipEvent> implements
+    HasChainAddress<TransactionBlockGossipEvent>,
+    HasAddressToBlockNumberMap<TransactionBlockGossipEvent>
+{
     @LongConversion(AddressLongConverter.class)
     private long chainAddress;
-    @IntConversion(UnsignedIntConverter.class)
-    private short weekNumber; // up to 1256 years
-    @IntConversion(UnsignedIntConverter.class)
-    private int blockNumber; // up to 7k/s on average
     private transient LongLongMap addressToBlockNumberMap;
-
-
-    public TransactionBlockGossipEvent blockNumber(long blockNumber) {
-        this.blockNumber = (int) blockNumber;
-        return this;
-    }
 
     @Override
     public void readMarshallable(@NotNull WireIn wire) throws IORuntimeException {
@@ -57,8 +58,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
     public void readMarshallable(BytesIn incomingBytes) throws IORuntimeException {
         super.readMarshallable(incomingBytes);
         chainAddress = bytes.readLong();
-        weekNumber = bytes.readShort();
-        blockNumber = bytes.readInt();
+
         int entries = (int) bytes.readStopBit();
         System.out.println("read gossip table entries = " + entries + " chain address " + DecentredUtil.toAddressString(chainAddress));
         if (addressToBlockNumberMap == null)
@@ -72,23 +72,25 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
     public void writeMarshallable0(BytesOut bytes) {  // was writeMarshallable
         super.writeMarshallable0(bytes);
         bytes.writeLong(chainAddress);
-        bytes.writeShort(weekNumber);
-        bytes.writeInt(blockNumber);
         int size = addressToBlockNumberMap.size();
         System.out.println("write gossip table entries = " + size + " chain address " + DecentredUtil.toAddressString(chainAddress));
         bytes.writeStopBit(size);
         addressToBlockNumberMap.forEach(new LongU32Writer(bytes));
     }
 
+    @Override
     public long chainAddress() {
         return chainAddress;
     }
 
+    @Override
     public TransactionBlockGossipEvent chainAddress(long chainAddress) {
+        assert !signed();
         this.chainAddress = chainAddress;
         return this;
     }
 
+    @Override
     public LongLongMap addressToBlockNumberMap() {
         if (addressToBlockNumberMap == null)
             addressToBlockNumberMap = LongLongMap.withExpectedSize(16);

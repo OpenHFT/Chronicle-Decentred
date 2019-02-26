@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.util;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.util.ObjectUtils;
-import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
