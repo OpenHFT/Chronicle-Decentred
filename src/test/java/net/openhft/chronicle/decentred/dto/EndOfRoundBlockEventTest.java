@@ -1,13 +1,10 @@
 package net.openhft.chronicle.decentred.dto;
 
-import com.koloboke.collect.impl.Scaler;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
-import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.TextMethodTester;
-import net.openhft.chronicle.wire.TextWire;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -65,7 +62,7 @@ public class EndOfRoundBlockEventTest {
 
         expected.writeMarshallable(bytes);
 
-        bytes.clear();
+        //bytes.clear();
         EndOfRoundBlockEvent actual = new EndOfRoundBlockEvent();
         actual.readMarshallable(bytes);
 
