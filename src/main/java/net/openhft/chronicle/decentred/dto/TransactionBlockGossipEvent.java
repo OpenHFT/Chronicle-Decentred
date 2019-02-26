@@ -54,7 +54,8 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
     }
 
     @Override
-    public void readMarshallable(BytesIn bytes) throws IORuntimeException {
+    public void readMarshallable(BytesIn incomingBytes) throws IORuntimeException {
+        super.readMarshallable(incomingBytes);
         chainAddress = bytes.readLong();
         weekNumber = bytes.readShort();
         blockNumber = bytes.readInt();
@@ -68,7 +69,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
     }
 
     @Override
-    public void writeMarshallable(BytesOut bytes) {
+    public void writeMarshallable0(BytesOut bytes) {  // was writeMarshallable
         bytes.writeLong(chainAddress);
         bytes.writeShort(weekNumber);
         bytes.writeInt(blockNumber);
