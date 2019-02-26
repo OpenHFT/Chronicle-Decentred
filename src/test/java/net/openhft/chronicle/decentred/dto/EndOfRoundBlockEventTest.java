@@ -3,6 +3,7 @@ package net.openhft.chronicle.decentred.dto;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.TextMethodTester;
 import org.junit.Test;
@@ -34,14 +35,12 @@ public class EndOfRoundBlockEventTest {
 
     @Test
     public void testVerifyOne() {
-        test("gateway/endOfRoundBlockEvent");
+        test("raw/endOfRoundBlockEvent");
     }
 
     @Test
     public void test() {
-        Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-        Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
-        Ed25519.generatePublicAndSecretKey(publicKey, secretKey);
+        final KeyPair kp = new KeyPair(1);
 
         final Bytes bytes = Bytes.allocateElasticDirect(1000);
 
@@ -56,7 +55,7 @@ public class EndOfRoundBlockEventTest {
 
         expected.addressToBlockNumberMap().justPut(0, 16);
         expected.addressToBlockNumberMap().justPut((192L << 56) + (168L << 48) + (1L << 40) + (147L << 32)+ (10000L << 16), 17); // 192.168.1.147:10000
-        expected.sign(secretKey);
+        expected.sign(kp.secretKey);
         System.out.println("expected = " + expected);
 
         System.out.println(expected.toHexString());

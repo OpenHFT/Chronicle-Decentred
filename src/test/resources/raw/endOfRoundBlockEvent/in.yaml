@@ -1,0 +1,15 @@
+endOfRoundBlockEvent: {
+  timestampUS: 2018-08-20T12:53:04.076123,
+  address: phccofmpy6ci,
+  chainAddress: local,
+  weekNumber: 0,
+  blockNumber: 0,
+  addressToBlockNumberMap: {
+    yyy: 109,
+    zzz: 195,
+    xxx: 123
+  }
+}
+---
+processOneBlock: ""
+---
