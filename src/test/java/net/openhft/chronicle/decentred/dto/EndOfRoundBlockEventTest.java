@@ -56,13 +56,13 @@ public class EndOfRoundBlockEventTest {
         expected.addressToBlockNumberMap().justPut(0, 16);
         expected.addressToBlockNumberMap().justPut((192L << 56) + (168L << 48) + (1L << 40) + (147L << 32)+ (10000L << 16), 17); // 192.168.1.147:10000
         expected.sign(kp.secretKey);
-        System.out.println("expected = " + expected);
 
-        System.out.println(expected.toHexString());
+/*        System.out.println("expected = " + expected);
+        System.out.println(expected.toHexString());*/
 
         expected.writeMarshallable(bytes);
 
-        bytes.readPosition(0);
+        //bytes.readPosition(0);
         EndOfRoundBlockEvent actual = new EndOfRoundBlockEvent();
         actual.readMarshallable(bytes);
 
