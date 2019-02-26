@@ -1,13 +1,9 @@
 package net.openhft.chronicle.decentred.dto;
 
 import net.openhft.chronicle.bytes.Bytes;
-import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.util.KeyPair;
-import net.openhft.chronicle.wire.TextMethodTester;
 import org.junit.Test;
-
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -29,7 +25,7 @@ public class TransactionBlockGossipEventTest {
             .chainAddress(43)
             ;
 
-        expected.addressToBlockNumberMap().justPut(0, 16);
+        expected.addressToBlockNumberMap().justPut(1, 16);
         expected.addressToBlockNumberMap().justPut((192L << 56) + (168L << 48) + (1L << 40) + (147L << 32)+ (10000L << 16), 17); // 192.168.1.147:10000
         expected.sign(kp.secretKey);
 
@@ -42,14 +38,14 @@ public class TransactionBlockGossipEventTest {
         TransactionBlockGossipEvent actual = new TransactionBlockGossipEvent();
         actual.readMarshallable(bytes);
 
-        final String expectedString = actual.toString();
+        final String actualString = actual.toString();
 
-        int length = expectedString.indexOf("addressToBlockNumberMap: {");
+        int length = actualString.indexOf("addressToBlockNumberMap: {");
 
-        assertEquals(expected.toString().substring(0, length), actual.toString().substring(0, length));
+        assertEquals(expected.toString().substring(0, length), actualString.substring(0, length));
 
-        assertTrue(actual.toString().contains("\"192.168.1.147:10000\": 17"));
-        assertTrue(actual.toString().contains("\"0.0.0.0:0\": 16"));
+        assertTrue(actualString.contains("\"192.168.1.147:10000\": 17"));
+        assertTrue(actualString.contains("\"0.0.0.0:0:1\": 16"));
 
     }
 
