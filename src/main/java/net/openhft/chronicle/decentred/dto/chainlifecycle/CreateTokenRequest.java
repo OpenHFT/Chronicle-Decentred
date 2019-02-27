@@ -19,6 +19,7 @@ public class CreateTokenRequest extends VanillaSignedMessage<CreateTokenRequest>
 
     // At least X characters, where X is perhaps 1
     public CreateTokenRequest symbol(long symbol) {
+        assertNotSigned();
         this.symbol = symbol;
         return this;
     }

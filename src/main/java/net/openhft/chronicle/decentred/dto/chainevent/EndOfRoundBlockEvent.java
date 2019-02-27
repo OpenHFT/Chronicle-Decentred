@@ -50,6 +50,7 @@ public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEv
 
     @Override
     public EndOfRoundBlockEvent chainAddress(long chainAddress) {
+        assertNotSigned();
         this.chainAddress = chainAddress;
         return this;
     }
