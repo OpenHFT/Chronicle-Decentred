@@ -6,17 +6,17 @@ import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.dto.base.DtoAliases;
 import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
 import net.openhft.chronicle.salt.Ed25519;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ApplicationErrorResponseTest {
+final class ApplicationErrorResponseTest {
     static {
         DtoAliases.addAliases();
     }
 
     @Test
-    public void publicKey() {
+    void publicKey() {
         Bytes<Void> privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
         privateKey.zeroOut(0, privateKey.writeLimit());
         privateKey.writeSkip(privateKey.writeLimit());

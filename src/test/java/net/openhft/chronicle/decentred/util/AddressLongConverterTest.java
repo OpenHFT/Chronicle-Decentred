@@ -1,12 +1,14 @@
 package net.openhft.chronicle.decentred.util;
 
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
-public class AddressLongConverterTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+final class AddressLongConverterTest {
+
     @Test
-    public void parseAppend() {
+    void parseAppend() {
         AddressLongConverter ac = new AddressLongConverter();
         StringBuilder sb = new StringBuilder();
         for (String s : ("abcdefghiklm," +

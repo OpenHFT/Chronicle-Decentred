@@ -10,15 +10,16 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class ApplicationErrorResponseFundamentalTest extends AbstractFundamentalDtoTest<ApplicationErrorResponse> {
+final class ApplicationErrorResponseFundamentalTest extends AbstractFundamentalDtoTest<ApplicationErrorResponse> {
 
     private static final String REASON = "CreateAddressRequest failed due to some reason";
-    private static final CreateAddressRequest ORIGINAL_MESSAGE = createChild(CreateAddressRequest::new);
+    private final CreateAddressRequest ORIGINAL_MESSAGE = createChild(CreateAddressRequest::new);
 
-    public ApplicationErrorResponseFundamentalTest() {
+    ApplicationErrorResponseFundamentalTest() {
         super(ApplicationErrorResponseFundamentalTest::create);
+
     }
 
     private static ApplicationErrorResponse create() {

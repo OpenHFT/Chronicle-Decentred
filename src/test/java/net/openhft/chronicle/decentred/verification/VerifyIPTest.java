@@ -8,13 +8,14 @@ import net.openhft.chronicle.decentred.server.VanillaVerifyIP;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.TextMethodTester;
 import net.openhft.chronicle.wire.TextWire;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class VerifyIPTest {
+
+final class VerifyIPTest {
     static void test(String basename) {
         TextMethodTester<VerifyIPTester> tester = new TextMethodTester<>(
                 basename + "/in.yaml",
@@ -60,7 +61,7 @@ public class VerifyIPTest {
     }
 
     @Test
-    public void testVerifyOne() {
+    void testVerifyOne() {
         test("verification/one");
     }
 }

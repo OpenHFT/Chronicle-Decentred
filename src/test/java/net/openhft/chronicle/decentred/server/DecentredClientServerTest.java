@@ -10,7 +10,7 @@ import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.KeyPair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -18,16 +18,17 @@ import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DecentredClientServerTest {
+
+final class DecentredClientServerTest {
     static {
         DtoAliases.addAliases();
     }
 
     @Test
-    public void test() throws IOException {
+    void test() throws IOException {
         KeyPair kp = new KeyPair(7);
         StringWriter out = new StringWriter();
         SystemMessages logging = Mocker.logging(SystemMessages.class, "", out);

@@ -8,15 +8,16 @@ import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.wire.TextMethodTester;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class VanillaTransactionProcessorTest {
+
+final class VanillaTransactionProcessorTest {
     static {
         DtoAliases.addAliases();
     }
@@ -75,7 +76,7 @@ public class VanillaTransactionProcessorTest {
     }
 
     @Test
-    public void genesisOne() {
+    void genesisOne() {
         test("genesis/one");
     }
 }

@@ -10,6 +10,7 @@ import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.chainlifecycle.AssignDelegatesRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateChainRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateTokenRequest;
 import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
@@ -199,6 +200,10 @@ public class GatewayStarter {
             return new UnsupportedOperationException("Not supported on a " + getClass().getSimpleName());
         }
 
+        @Override
+        public void assignDelegatesRequest(AssignDelegatesRequest assignDelegatesRequest) {
+            throw unsupportedOperationException();
+        }
     }
 
 

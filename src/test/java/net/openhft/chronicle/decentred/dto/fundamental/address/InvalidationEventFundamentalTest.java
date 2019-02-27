@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public final class InvalidationEventFundamentalTest extends AbstractFundamentalDtoTest<InvalidationEvent> {
+final class InvalidationEventFundamentalTest extends AbstractFundamentalDtoTest<InvalidationEvent> {
 
-    public InvalidationEventFundamentalTest() {
+    InvalidationEventFundamentalTest() {
         super(InvalidationEvent::new);
     }
 

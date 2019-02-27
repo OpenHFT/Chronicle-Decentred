@@ -9,17 +9,20 @@ import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.wire.TextMethodTester;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.assertEquals;
+import static java.time.Duration.ofSeconds;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
 
-@Ignore("TODO FIX")
-public class VanillaGatewayTest {
+
+@Disabled("TODO FIX")
+final class VanillaGatewayTest {
     static {
         DtoAliases.addAliases();
     }
@@ -92,37 +95,39 @@ public class VanillaGatewayTest {
     }
 
     @Test
-    public void createAddressRequest() {
+    void createAddressRequest() {
         test("gateway/createAddressRequest");
     }
 
-    @Test(timeout = 5000)
-    public void verificationEvent() {
-        test("gateway/verificationEvent");
+    @Test
+    void verificationEvent() {
+        assertTimeout(ofSeconds(5), () -> {
+            test("gateway/verificationEvent");
+        });
     }
 
     @Test
-    public void invalidationEvent() {
+    void invalidationEvent() {
         test("gateway/invalidationEvent");
     }
 
     @Test
-    public void transactionBlockEvent() {
+    void transactionBlockEvent() {
         test("gateway/transactionBlockEvent");
     }
 
     @Test
-    public void transactionBlockGossipEvent() {
+    void transactionBlockGossipEvent() {
         test("gateway/transactionBlockGossipEvent");
     }
 
     @Test
-    public void transactionBlockVoteEvent() {
+    void transactionBlockVoteEvent() {
         test("gateway/transactionBlockVoteEvent");
     }
 
     @Test
-    public void endOfRoundBlockEvent() {
+    void endOfRoundBlockEvent() {
         test("gateway/endOfRoundBlockEvent");
     }
 

@@ -6,7 +6,7 @@ import town.lost.examples.appreciation.util.VanillaBalanceStore;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public enum TestUtils {
     ;

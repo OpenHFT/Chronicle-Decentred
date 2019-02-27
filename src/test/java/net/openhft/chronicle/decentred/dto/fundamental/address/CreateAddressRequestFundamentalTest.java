@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public final class CreateAddressRequestFundamentalTest extends AbstractFundamentalDtoTest<CreateAddressRequest> {
+final class CreateAddressRequestFundamentalTest extends AbstractFundamentalDtoTest<CreateAddressRequest> {
 
-    public CreateAddressRequestFundamentalTest() {
+    CreateAddressRequestFundamentalTest() {
         super(CreateAddressRequest::new);
     }
 

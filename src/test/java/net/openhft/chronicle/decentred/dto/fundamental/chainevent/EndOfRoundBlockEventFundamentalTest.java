@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class EndOfRoundBlockEventFundamentalTest extends AbstractFundamentalDtoTest<EndOfRoundBlockEvent> {
+final class EndOfRoundBlockEventFundamentalTest extends AbstractFundamentalDtoTest<EndOfRoundBlockEvent> {
 
     private static final long CHAIN_ADDRESS = 23424;
     private static final int WEEK_NUMBER = 87;
@@ -23,7 +23,7 @@ public final class EndOfRoundBlockEventFundamentalTest extends AbstractFundament
     private static final long BLOCK0 = 927634241L;
     private static final long BLOCK1 = 294572682L;
 
-    public EndOfRoundBlockEventFundamentalTest() {
+    EndOfRoundBlockEventFundamentalTest() {
         super(EndOfRoundBlockEvent::new);
     }
 

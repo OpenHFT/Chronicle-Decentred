@@ -1,9 +1,9 @@
 package town.lost.examples.appreciation;
 
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import town.lost.examples.appreciation.benchmark.Client;
 import town.lost.examples.appreciation.benchmark.Server;
 import town.lost.examples.appreciation.dto.Give;
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 import static java.lang.Math.abs;
 
-public class SingleMessageRoundtripTest {
+final class SingleMessageRoundtripTest {
 
     private static final int CLIENT_SEED = 1;
     private static final int OTHER_CLIENT_SEED = 2;
@@ -36,8 +36,8 @@ public class SingleMessageRoundtripTest {
     private Server server;
     private Client client;
 
-    @Before
-    public void setup() throws IOException, InterruptedException {
+    @BeforeEach
+    void setup() throws IOException, InterruptedException {
         balanceStore = new VanillaBalanceStore();
         server = new Server(42, 0, balanceStore);
         client = new Client(CLIENT_SEED, "0.0.0.0", server.getPort());
@@ -48,11 +48,11 @@ public class SingleMessageRoundtripTest {
     }
 
     @Test
-    public void testConnect() {
+    void testConnect() {
     }
 
     @Test
-    public void testGive() throws InterruptedException {
+    void testGive() throws InterruptedException {
         Thread.sleep(1000);  // TODO - needed for account to be available for give
 
         final Give give = new Give()
@@ -67,8 +67,8 @@ public class SingleMessageRoundtripTest {
     }
 
 
-    @After
-    public void cleanup() {
+    @AfterEach
+    void cleanup() {
         client.close();
         server.close();
     }

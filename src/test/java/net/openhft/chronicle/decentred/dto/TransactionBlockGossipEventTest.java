@@ -5,15 +5,15 @@ import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 import net.openhft.chronicle.decentred.util.KeyPair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TransactionBlockGossipEventTest {
+final class TransactionBlockGossipEventTest {
 
 
     @Test
-    public void marshalUnmarshal() {
+    void marshalUnmarshal() {
         final KeyPair kp = new KeyPair(1);
 
         final Bytes bytes = Bytes.allocateElasticDirect(1000);

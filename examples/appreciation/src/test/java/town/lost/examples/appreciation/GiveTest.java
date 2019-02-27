@@ -7,14 +7,14 @@ import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.TextWire;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import town.lost.examples.appreciation.dto.Give;
 import town.lost.examples.appreciation.dto.OpeningBalance;
 
 import static town.lost.examples.appreciation.TestUtils.test;
 
 
-public class GiveTest {
+final class GiveTest {
     public static void main(String[] args) {
         BytesStore privateKey1 = DecentredUtil.testPrivateKey(7);
         Bytes publicKey1 = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
@@ -55,7 +55,7 @@ public class GiveTest {
     }
 
     @Test
-    public void testGiveOne() {
+    void testGiveOne() {
         test("give/one");
     }
 }

@@ -5,18 +5,18 @@ import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
 import net.openhft.chronicle.decentred.dto.base.DtoAliases;
 import net.openhft.chronicle.salt.Ed25519;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class VerificationEventTest {
+final class VerificationEventTest {
     static {
         DtoAliases.addAliases();
     }
 
     @Test
-    public void publicKey() {
+    void publicKey() {
         Bytes<Void> privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
         privateKey.zeroOut(0, privateKey.writeLimit());
         privateKey.writeSkip(privateKey.writeLimit());

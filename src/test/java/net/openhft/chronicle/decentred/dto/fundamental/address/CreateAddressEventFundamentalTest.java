@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class CreateAddressEventFundamentalTest extends AbstractFundamentalDtoTest<CreateAddressEvent> {
+final class CreateAddressEventFundamentalTest extends AbstractFundamentalDtoTest<CreateAddressEvent> {
 
     private static final CreateAddressRequest CREATE_ADDRESS_REQUEST = createChild(CreateAddressRequest::new);
 
-    public CreateAddressEventFundamentalTest() {
+    CreateAddressEventFundamentalTest() {
         super(CreateAddressEvent::new);
     }
 

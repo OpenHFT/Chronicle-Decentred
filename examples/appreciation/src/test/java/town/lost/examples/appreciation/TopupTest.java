@@ -1,10 +1,12 @@
 package town.lost.examples.appreciation;
 
-import org.junit.Test;
 
-public class TopupTest {
+import org.junit.jupiter.api.Test;
+
+final class TopupTest {
+
     @Test
-    public void testTopup(){
+    void testTopup(){
         TestUtils.test("topup/one");
     }
 }

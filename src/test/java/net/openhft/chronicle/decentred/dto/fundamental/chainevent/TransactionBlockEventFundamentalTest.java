@@ -12,10 +12,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public final class TransactionBlockEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockEvent<TransactionBlockEventFundamentalTest.TestMessages>> {
+
+final class TransactionBlockEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockEvent<TransactionBlockEventFundamentalTest.TestMessages>> {
 
     private static final long CHAIN_ADDRESS = 23424;
     private static final int WEEK_NUMBER = 87;
@@ -24,7 +25,7 @@ public final class TransactionBlockEventFundamentalTest extends AbstractFundamen
     private static final CreateAddressRequest CREATE_ADDRESS_REQUEST0 = createChild(CreateAddressRequest::new);
     private static final CreateAddressRequest CREATE_ADDRESS_REQUEST1 = createChild(CreateAddressRequest::new);
 
-    public TransactionBlockEventFundamentalTest() {
+    TransactionBlockEventFundamentalTest() {
         super(TransactionBlockEvent::new);
     }
 

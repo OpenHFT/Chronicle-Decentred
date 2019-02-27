@@ -9,8 +9,8 @@ import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 import net.openhft.chronicle.wire.TextWire;
 import net.openhft.chronicle.wire.Wire;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;
 import java.util.AbstractMap;
@@ -22,12 +22,12 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests fundamental properties of a single VanillaSignedMessage.
  *
- * @param <T>
+ * @param <T> message type
  */
 public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<T>> {
 
@@ -51,14 +51,8 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         this.timeMS = UniqueMicroTimeProvider.INSTANCE.currentTimeMicros();
     }
 
-    public static void assertContains(String s, String find) {
-/*
-        assertTrue(s.contains(find));
-    }
-    public static void assertContains2(String s, String find) {
-*/
-        assertTrue("\"" + s + "\" doesn't contain \"" + find + "\"",
-                s.contains(find));
+    public static void assertContains(String original, String find) {
+        assertTrue(original.contains(find), "\"" + original + "\" doesn't contain \"" + find + "\"");
     }
 
     final void initialize(T message) {
@@ -84,18 +78,18 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
      */
     protected abstract Stream<Map.Entry<String, Consumer<T>>> forbiddenAfterSign();
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         instance = constructor.get();
     }
 
     @Test
-    public void testConstructor() {
+    void testConstructor() {
         assertNotNull(instance);
     }
 
     @Test
-    public void testInitialized() {
+    void testInitialized() {
         initialize(instance);
         assertEquals(DEFAULT_PROTOCOL, instance.protocol());
         assertEquals(DEFAULT_MESSAGE_TYPE, instance.messageType());
@@ -105,7 +99,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     }
 
     @Test
-    public void testInitialAddress() {
+    void testInitialAddress() {
         assertEquals(0L, instance.address());
     }
 
@@ -115,50 +109,52 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     }
 
     @Test
-    public void testIntialTimestampUS() {
+    void testIntialTimestampUS() {
         assertEquals(0L, instance.address());
     }
 
     @Test
-    public void testTimestampUS() {
+    void testTimestampUS() {
         instance.timestampUS(DEFAULT_LONG);
         assertEquals(DEFAULT_LONG, instance.timestampUS());
     }
 
-    @Test(expected = Throwable.class)
-    public void testInitialThrowers() {
-        instance.toHexString();
+    @Test
+    void testInitialThrowers() {
+        assertThrows(Throwable.class, () -> {
+            instance.toHexString();
+        });
     }
 
     @Test
-    public void testInitialProtocol() {
+    void testInitialProtocol() {
         assertEquals(0L, instance.protocol());
     }
 
     @Test
-    public void testProtocol() {
+    void testProtocol() {
         instance.protocol(DEFAULT_PROTOCOL);
         assertEquals(DEFAULT_PROTOCOL, instance.protocol());
     }
 
     @Test
-    public void testInitialMessageType() {
+    void testInitialMessageType() {
         assertEquals(0L, instance.messageType());
     }
 
     @Test
-    public void testMessageType() {
+    void testMessageType() {
         instance.messageType(DEFAULT_MESSAGE_TYPE);
         assertEquals(DEFAULT_MESSAGE_TYPE, instance.messageType());
     }
 
     @Test
-    public void testInitialSign() {
+    void testInitialSign() {
         assertFalse(instance.signed());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         initialize(instance);
         final StringBuilder sb = new StringBuilder();
         new MicroTimestampLongConverter().append(sb, timeMS);
@@ -171,27 +167,27 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     }
 
     @Test
-    public void testEqualsUninitialized() {
+    void testEqualsUninitialized() {
         testEquals(NO_OP);
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         testEquals(this::initialize);
     }
 
     @Test
-    public void testHashCodeUninitialized() {
+    void testHashCodeUninitialized() {
         testHashcode(NO_OP);
     }
 
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         testHashcode(this::initialize);
     }
 
     @Test
-    public void testMarshallUnMarshallBytes() {
+    void testMarshallUnMarshallBytes() {
         final long offset = 147; // Cover the case of mid Byte serialization
 
         final Bytes bytes = Bytes.allocateElasticDirect(1000);
@@ -212,7 +208,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     }
 
     @Test
-    public void testMarshallUnMarshallWire() {
+    void testMarshallUnMarshallWire() {
         final Wire wire = new TextWire(Bytes.allocateElasticDirect(1000));
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
@@ -226,14 +222,14 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     }
 
     @Test
-    public void testVerify() {
+    void testVerify() {
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
         assertTrue(instance.verify(a -> KEY_PAIR.publicKey));
     }
 
     @Test
-    public void testForbiddenOperators() {
+    void testForbiddenOperators() {
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
         final List<String> failed = new ArrayList<>();
@@ -252,7 +248,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     }
 
     @Test
-    public void testPublicKey() {
+    void testPublicKey() {
         final boolean hasPublicKey = instance.hasPublicKey();
         final BytesStore b = instance.publicKey();
         if (hasPublicKey) {
@@ -264,7 +260,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     }
 
     @Test
-    public void testReset() {
+    void testReset() {
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
         instance.reset();
@@ -274,13 +270,15 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEquals(other, instance);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testByteBufferUnsigned() {
-        instance.byteBuffer();
+    @Test
+    void testByteBufferUnsigned() {
+        assertThrows(IllegalStateException.class, () -> {
+            instance.byteBuffer();
+        });
     }
 
     @Test
-    public void testByteBuffer() {
+    void testByteBuffer() {
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
         final ByteBuffer bb = instance.byteBuffer();

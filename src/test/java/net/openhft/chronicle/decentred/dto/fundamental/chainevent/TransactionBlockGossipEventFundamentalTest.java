@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class TransactionBlockGossipEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockGossipEvent> {
+final class TransactionBlockGossipEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockGossipEvent> {
 
     private static final long CHAIN_ADDRESS = 23424;
 
@@ -21,7 +21,7 @@ public final class TransactionBlockGossipEventFundamentalTest extends AbstractFu
     private static final long BLOCK0 = 927634241L;
     private static final long BLOCK1 = 294572682L;
 
-    public TransactionBlockGossipEventFundamentalTest() {
+    TransactionBlockGossipEventFundamentalTest() {
         super(TransactionBlockGossipEvent::new);
     }
 

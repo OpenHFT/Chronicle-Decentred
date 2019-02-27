@@ -4,11 +4,11 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.salt.Ed25519;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DecentredUtilTest {
+final class DecentredUtilTest {
 /*
 -982	127.178.122.86:22851:61d2
 -898	127.153.96.30:2296:7e10
@@ -82,7 +82,7 @@ public class DecentredUtilTest {
     }
 
     @Test
-    public void testPrivateKey() {
+    void testPrivateKey() {
         BytesStore privateKey = DecentredUtil.testPrivateKey(0);
         Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
         Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);

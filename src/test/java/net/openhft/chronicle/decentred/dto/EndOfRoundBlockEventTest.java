@@ -9,13 +9,14 @@ import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalD
 import net.openhft.chronicle.decentred.server.BlockReplayer;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.wire.TextMethodTester;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EndOfRoundBlockEventTest {
+
+final class EndOfRoundBlockEventTest {
     static void test(String basename) {
         TextMethodTester<BlockReplayer> tester = new TextMethodTester<>(
                 basename + "/in.yaml",
@@ -51,12 +52,12 @@ public class EndOfRoundBlockEventTest {
     }
 
     @Test
-    public void testVerifyOne() {
+    void testVerifyOne() {
         test("raw/endOfRoundBlockEvent");
     }
 
     @Test
-    public void test() {
+    void test() {
         final KeyPair kp = new KeyPair(1);
 
         final Bytes bytes = Bytes.allocateElasticDirect(1000);

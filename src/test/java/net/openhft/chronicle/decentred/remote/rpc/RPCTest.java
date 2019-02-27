@@ -6,15 +6,16 @@ import net.openhft.chronicle.decentred.dto.VerificationEvent;
 import net.openhft.chronicle.decentred.server.VanillaVerifyIP;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.KeyPair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class RPCTest {
+final class RPCTest {
+
     @Test
-    public void testVerify() throws IOException, InterruptedException {
+    void testVerify() throws IOException, InterruptedException {
         KeyPair zero = new KeyPair(0);
         KeyPair one = new KeyPair(1);
 

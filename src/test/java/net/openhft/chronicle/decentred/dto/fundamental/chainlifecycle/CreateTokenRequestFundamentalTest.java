@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class CreateTokenRequestFundamentalTest extends AbstractFundamentalDtoTest<CreateTokenRequest> {
 
@@ -15,7 +15,7 @@ public final class CreateTokenRequestFundamentalTest extends AbstractFundamental
     private static final double AMOUNT = 100.0d;
     private static final double GRANULARITY = 1.0d;
 
-    public CreateTokenRequestFundamentalTest() {
+    CreateTokenRequestFundamentalTest() {
         super(CreateTokenRequest::new);
     }
 

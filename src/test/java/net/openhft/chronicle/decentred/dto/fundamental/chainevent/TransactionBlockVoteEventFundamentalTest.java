@@ -8,13 +8,14 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class TransactionBlockVoteEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockVoteEvent> {
+
+final class TransactionBlockVoteEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockVoteEvent> {
 
     private static final TransactionBlockGossipEvent TRANSACTION_BLOCK_GOSSIP_EVENT = createChild(TransactionBlockGossipEvent::new, TransactionBlockGossipEvent::addressToBlockNumberMap);
 
-    public TransactionBlockVoteEventFundamentalTest() {
+    TransactionBlockVoteEventFundamentalTest() {
         super(TransactionBlockVoteEvent::new);
     }
 

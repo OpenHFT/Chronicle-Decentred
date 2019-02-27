@@ -6,17 +6,17 @@ import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.Marshallable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class NewOrderRequestTest {
+final class NewOrderRequestTest {
     static {
         DtoAliases.addAliases();
     }
 
     @Test
-    public void marshallable() {
+    void marshallable() {
         BytesStore privateKey1 = DecentredUtil.testPrivateKey(7);
         Bytes publicKey1 = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
         Bytes secretKey1 = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);

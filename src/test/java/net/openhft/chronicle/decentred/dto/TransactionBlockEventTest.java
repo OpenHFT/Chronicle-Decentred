@@ -19,18 +19,18 @@ import net.openhft.chronicle.decentred.util.LongLongMap;
 import net.openhft.chronicle.wire.BinaryWire;
 import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.Wire;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TransactionBlockEventTest {
+final class TransactionBlockEventTest {
     static {
         DtoAliases.addAliases();
     }
 
     @Test
-    public void writeMarshallable() {
+    final void writeMarshallable() {
         KeyPair kp = new KeyPair(7);
         KeyPair kp2 = new KeyPair(17);
 
@@ -146,9 +146,9 @@ public class TransactionBlockEventTest {
 
     }
 
-    @Ignore("TODO: Marshalling to BinaryWire fails")
+    @Disabled("TODO: Marshalling to BinaryWire fails")
     @Test
-    public void testTbeMarshall() {
+    void testTbeMarshall() {
         KeyPair kp = new KeyPair(7);
         KeyPair kp2 = new KeyPair(17);
 
@@ -184,7 +184,7 @@ public class TransactionBlockEventTest {
     }
 
     @Test
-    public void testBytesMarshall() {
+    void testBytesMarshall() {
         KeyPair kp = new KeyPair(7);
         KeyPair kp2 = new KeyPair(17);
 

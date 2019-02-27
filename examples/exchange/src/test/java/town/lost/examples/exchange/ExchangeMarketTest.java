@@ -2,7 +2,7 @@ package town.lost.examples.exchange;
 
 
 import net.openhft.chronicle.core.Mocker;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import town.lost.examples.exchange.ExchangeMarket.OrderClosedListener;
 import town.lost.examples.exchange.ExchangeMarket.TradeListener;
 import town.lost.examples.exchange.dto.*;
@@ -10,15 +10,15 @@ import town.lost.examples.exchange.dto.*;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static town.lost.examples.exchange.dto.Side.BUY;
 import static town.lost.examples.exchange.dto.Side.SELL;
 
-public class ExchangeMarketTest {
+final class ExchangeMarketTest {
 
 
     @Test
-    public void simpleOrdersMatch() {
+    void simpleOrdersMatch() {
         CurrencyPair currencyPair = CurrencyPair.USDXCL;
         Queue<MethodCall> resultsQueue = new ArrayDeque<>();
         TradeListener tradeListener = Mocker.intercepting(TradeListener.class,
@@ -88,12 +88,12 @@ public class ExchangeMarketTest {
     }
 
     @Test
-    public void simpleOrdersMatch2() {
+    void simpleOrdersMatch2() {
         TestUtils.test("orders/simpleMatch");
     }
 
     @Test
-    public void orderWitZeroTtl() {
+    void orderWitZeroTtl() {
         CurrencyPair currencyPair = CurrencyPair.EURXCL;
         Queue<MethodCall> resultsQueue = new ArrayDeque<>();
         TradeListener tradeListener = Mocker.intercepting(TradeListener.class,
@@ -141,7 +141,7 @@ public class ExchangeMarketTest {
 
 
     @Test
-    public void userCancel() {
+    void userCancel() {
         CurrencyPair currencyPair = CurrencyPair.EURXCL;
         TradeListener tradeListener = Mocker.ignored(TradeListener.class);
         Queue<MethodCall> resultsQueue = new ArrayDeque<>();
@@ -180,7 +180,7 @@ public class ExchangeMarketTest {
     }
 
     @Test
-    public void cancelUnexistingOrder() {
+    void cancelUnexistingOrder() {
         CurrencyPair currencyPair = CurrencyPair.EURXCL;
         TradeListener tradeListener = Mocker.ignored(TradeListener.class);
         Queue<MethodCall> resultsQueue = new ArrayDeque<>();
@@ -204,7 +204,7 @@ public class ExchangeMarketTest {
     }
 
     @Test
-    public void timeoutCancel() {
+    void timeoutCancel() {
         CurrencyPair currencyPair = CurrencyPair.EURXCL;
         TradeListener tradeListener = Mocker.ignored(TradeListener.class);
         Queue<MethodCall> resultsQueue = new ArrayDeque<>();
@@ -236,7 +236,7 @@ public class ExchangeMarketTest {
     }
 
     @Test
-    public void timeoutCancelTopWhileMatch() {
+    void timeoutCancelTopWhileMatch() {
         CurrencyPair currencyPair = CurrencyPair.EURXCL;
         TradeListener tradeListener = Mocker.ignored(TradeListener.class);
         Queue<MethodCall> resultsQueue = new ArrayDeque<>();
@@ -263,7 +263,7 @@ public class ExchangeMarketTest {
     }
 
     @Test
-    public void checkClose() {
+    void checkClose() {
         CurrencyPair currencyPair = CurrencyPair.EURXCL;
         TradeListener tradeListener = Mocker.ignored(TradeListener.class);
         Queue<MethodCall> resultsQueue = new ArrayDeque<>();

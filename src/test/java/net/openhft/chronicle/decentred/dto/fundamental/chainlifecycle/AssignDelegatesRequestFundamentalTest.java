@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class AssignDelegatesRequestFundamentalTest extends AbstractFundamentalDtoTest<AssignDelegatesRequest> {
+final class AssignDelegatesRequestFundamentalTest extends AbstractFundamentalDtoTest<AssignDelegatesRequest> {
 
     private static final KeyPair KP0 = new KeyPair(3834323423423L);
     private static final KeyPair KP1 = new KeyPair(-2348723834423L);
@@ -24,7 +24,7 @@ public final class AssignDelegatesRequestFundamentalTest extends AbstractFundame
         KP1.publicKey
     );
 
-    public AssignDelegatesRequestFundamentalTest() {
+    AssignDelegatesRequestFundamentalTest() {
         super(AssignDelegatesRequest::new);
     }
 

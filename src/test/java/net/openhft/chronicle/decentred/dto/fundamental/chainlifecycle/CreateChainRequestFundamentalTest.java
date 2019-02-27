@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class CreateChainRequestFundamentalTest extends AbstractFundamentalDtoTest<CreateChainRequest> {
+final class CreateChainRequestFundamentalTest extends AbstractFundamentalDtoTest<CreateChainRequest> {
 
     private static final int CYCLE_OFFSET = 2;
     private static final int ROUNDS_PER_DAY = 24;
 
-    public CreateChainRequestFundamentalTest() {
+    CreateChainRequestFundamentalTest() {
         super(CreateChainRequest::new);
     }
 
