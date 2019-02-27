@@ -54,7 +54,6 @@ public class VanillaVoteTaker implements VoteTaker {
             }
             endOfRoundBlockEvent.addressToBlockNumberMap().putAll(addressToBlockNumberMap);
         }
-        endOfRoundBlockEvent.blockNumber(blockNumber);
         for (long clusterAddress : clusterAddresses) {
             if (clusterAddress == address)
                 replayer.endOfRoundBlockEvent(endOfRoundBlockEvent);

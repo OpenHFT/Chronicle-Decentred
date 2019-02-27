@@ -50,6 +50,16 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         this.timeMS = UniqueMicroTimeProvider.INSTANCE.currentTimeMicros();
     }
 
+    public static void assertContains(String s, String find) {
+/*
+        assertTrue(s.contains(find));
+    }
+    public static void assertContains2(String s, String find) {
+*/
+        assertTrue("\"" + s + "\" doesn't contain \"" + find + "\"",
+                s.contains(find));
+    }
+
     final void initialize(T message) {
         message.protocol(DEFAULT_PROTOCOL);
         message.messageType(DEFAULT_MESSAGE_TYPE);
@@ -159,8 +169,8 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         final String expectedTimeString = sb.toString();
         final String s = instance.toString();
         // System.out.println(s);
-        assertTrue(s.contains("timestampUS: " + expectedTimeString));
-        assertTrue(s.contains("address: "+ DecentredUtil.toAddressString(instance.address())));
+        assertContains(s, "timestampUS: " + expectedTimeString);
+        assertContains(s, "address: " + DecentredUtil.toAddressString(instance.address()));
         assertInitializedToString(s);
     }
 
@@ -205,7 +215,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
         instance.writeMarshallable(wire);
-
+        System.out.println(wire);
         final T actual = constructor.get();
         actual.readMarshallable(wire);
 

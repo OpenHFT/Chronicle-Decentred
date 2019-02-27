@@ -3,7 +3,7 @@ package net.openhft.chronicle.decentred.server;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.annotation.UsedViaReflection;
 import net.openhft.chronicle.decentred.api.Verifier;
-import net.openhft.chronicle.decentred.dto.*;
+import net.openhft.chronicle.decentred.dto.VerificationEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
@@ -13,7 +13,9 @@ import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
-import net.openhft.chronicle.decentred.dto.chainlifecycle.*;
+import net.openhft.chronicle.decentred.dto.chainlifecycle.AssignDelegatesRequest;
+import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateChainRequest;
+import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateTokenRequest;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
@@ -88,6 +90,11 @@ public class VanillaGateway implements Gateway {
     @Override
     public void createChainRequest(CreateChainRequest createChainRequest) {
         main.createChainRequest(createChainRequest);
+    }
+
+    @Override
+    public void assignDelegatesRequest(AssignDelegatesRequest assignDelegatesRequest) {
+        main.assignDelegatesRequest(assignDelegatesRequest);
     }
 
     @Override

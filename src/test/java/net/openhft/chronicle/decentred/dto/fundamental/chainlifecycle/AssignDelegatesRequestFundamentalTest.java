@@ -13,7 +13,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public final class AssignDelegatesRequestFundamentalTest extends AbstractFundamentalDtoTest<AssignDelegatesRequest> {
 
@@ -41,8 +40,8 @@ public final class AssignDelegatesRequestFundamentalTest extends AbstractFundame
 
     @Override
     protected void assertInitializedToString(String s) {
-        assertTrue(s.contains("!!binary hhlyUOyBenQovuHM04/Gj9kfCo0YVvpuUjlPIoJ11rs="));
-        assertTrue(s.contains("!!binary T/3gMgGySnXASPfIwAeW0xsNU3Qo3yL24BYs2fHIIPs="));
+        assertContains(s, "!!binary hhlyUOyBenQovuHM04/Gj9kfCo0YVvpuUjlPIoJ11rs=");
+        assertContains(s, "!!binary T/3gMgGySnXASPfIwAeW0xsNU3Qo3yL24BYs2fHIIPs=");
     }
 
     @Override

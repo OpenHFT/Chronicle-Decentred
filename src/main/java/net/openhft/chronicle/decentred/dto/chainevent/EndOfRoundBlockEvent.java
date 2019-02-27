@@ -5,72 +5,52 @@ import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.dto.base.trait.HasAddressToBlockNumberMap;
-import net.openhft.chronicle.decentred.dto.base.trait.HasBlockNumber;
 import net.openhft.chronicle.decentred.dto.base.trait.HasChainAddress;
-import net.openhft.chronicle.decentred.dto.base.trait.HasWeekNumber;
-import net.openhft.chronicle.decentred.util.*;
-import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
+import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.decentred.util.LongLongMap;
+import net.openhft.chronicle.decentred.util.LongU32Writer;
+import net.openhft.chronicle.wire.LongConversion;
+import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
 
-import static net.openhft.chronicle.decentred.util.DecentredUtil.MASK_16;
-import static net.openhft.chronicle.decentred.util.DecentredUtil.MASK_32;
+import java.util.Arrays;
 
 /**
  * An EndOfRoundBlockEvent is a <em>chain event</em> that notifies which block numbers are in the next round.
- *
+ * <p>
  * Pointers for each address are included in this message with an association between an address and
  * the block number that particular address is currently at. Basically, these block numbers are like
  * a cursor which points to transactions.
- *
+ * <p>
  * The cursors are monotonic pointers, usually in the order 0, 1, 2, ...
  */
 // Add validation
 public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEvent> implements
-    HasWeekNumber<EndOfRoundBlockEvent>,
-    HasChainAddress<EndOfRoundBlockEvent>,
-    HasBlockNumber<EndOfRoundBlockEvent>,
-    HasAddressToBlockNumberMap<EndOfRoundBlockEvent>
-{
+        HasChainAddress<EndOfRoundBlockEvent>,
+        HasAddressToBlockNumberMap<EndOfRoundBlockEvent> {
     @LongConversion(AddressLongConverter.class)
     private long chainAddress;
-    @IntConversion(UnsignedIntConverter.class)
-    private short weekNumber;
-    @IntConversion(UnsignedIntConverter.class)
-    private int blockNumber;
     private transient LongLongMap addressToBlockNumberMap;
 
-    @Override
-    public long chainAddress () {
-        return chainAddress;
+    static void writeMap(@NotNull WireOut wire, String name, LongLongMap map) {
+        if (map == null || map.size() == 0)
+            return;
+        wire.write(name).marshallable(out -> {
+            long[] keys = map.keySet().toLongArray();
+            for (int i = 0; i < keys.length; i++) keys[i] -= Long.MIN_VALUE;
+            Arrays.sort(keys);
+            for (int i = 0; i < keys.length; i++) keys[i] += Long.MIN_VALUE;
+            for (long key : keys) {
+                out.write(DecentredUtil.toAddressString(key)).int64(map.get(key));
+            }
+        });
     }
 
     @Override
     public EndOfRoundBlockEvent chainAddress(long chainAddress) {
         this.chainAddress = chainAddress;
-        return this;
-    }
-
-    @Override
-    public int weekNumber() {
-        return weekNumber & MASK_16;
-    }
-
-    @Override
-    public EndOfRoundBlockEvent weekNumber(int weekNumber) {
-        assert !signed();
-        this.weekNumber = ShortUtil.toShortExact(weekNumber);
-        return this;
-    }
-
-    @Override
-    public long blockNumber() {
-        return blockNumber & MASK_32;
-    }
-
-    @Override
-    public EndOfRoundBlockEvent blockNumber(long blockNumber) {
-        assert !signed();
-        this.blockNumber = Math.toIntExact(blockNumber);
         return this;
     }
 
@@ -112,11 +92,14 @@ public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEv
     }
 
     @Override
+    public long chainAddress() {
+        return chainAddress;
+    }
+
+    @Override
     public void writeMarshallable(@NotNull WireOut wire) {
         super.writeMarshallable(wire);
-        wire.write("addressToBlockNumberMap").marshallable(out -> {
-            addressToBlockNumberMap.forEach((k, v) -> out.write(DecentredUtil.toAddressString(k)).int64(v));
-        });
+        writeMap(wire, "addressToBlockNumberMap", addressToBlockNumberMap);
     }
 
     @NotNull

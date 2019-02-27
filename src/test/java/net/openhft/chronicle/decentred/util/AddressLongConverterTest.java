@@ -9,9 +9,7 @@ public class AddressLongConverterTest {
     public void parseAppend() {
         AddressLongConverter ac = new AddressLongConverter();
         StringBuilder sb = new StringBuilder();
-        for (String s : ("1.1.1.1:1111," +
-                "2.2.2.2:2222:deaf," +
-                "abcdefghiklm," +
+        for (String s : ("abcdefghiklm," +
                 "ol234s67bq," +
                 "peter.lawrey," +
                 "abcdefghik2").split(",")) {

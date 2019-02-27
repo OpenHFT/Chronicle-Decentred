@@ -1,16 +1,19 @@
 package net.openhft.chronicle.decentred.dto.fundamental.chainevent;
 
+import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public final class TransactionBlockEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockEvent<TransactionBlockEventFundamentalTest.TestMessages>> {
 
@@ -28,27 +31,22 @@ public final class TransactionBlockEventFundamentalTest extends AbstractFundamen
     @Override
     protected void initializeSpecifics(TransactionBlockEvent message) {
         message.chainAddress(CHAIN_ADDRESS);
-        message.weekNumber(WEEK_NUMBER);
-        message.blockNumber(BLOCK_NUMBER);
         message.addTransaction(CREATE_ADDRESS_REQUEST0);
         message.addTransaction(CREATE_ADDRESS_REQUEST1);
+        message.dtoParser(DtoRegistry.newRegistry(SystemMessages.class).get());
     }
 
     @Override
     protected void assertInitializedSpecifics(TransactionBlockEvent message) {
         assertEquals(CHAIN_ADDRESS, message.chainAddress());
-        assertEquals(WEEK_NUMBER, message.weekNumber(), EPSILON);
-        assertEquals(BLOCK_NUMBER, message.blockNumber(), EPSILON);
         assertFalse(message.isEmpty());
     }
 
     @Override
     protected void assertInitializedToString(String s) {
         System.out.println(s);
-        assertTrue(s.contains("chainAddress: " + DecentredUtil.toAddressString(CHAIN_ADDRESS)));
-        assertTrue(s.contains("weekNumber: " + WEEK_NUMBER));
-        assertTrue(s.contains("blockNumber: " + BLOCK_NUMBER));
-        assertTrue(s.contains("createAddressRequest"));
+        assertContains(s, "chainAddress: " + DecentredUtil.toAddressString(CHAIN_ADDRESS));
+        assertContains(s, "transactions:");
         /*assertTrue(s.contains("\"" + DecentredUtil.toAddressString(ADDRESS0) + "\": " + BLOCK0));
         assertTrue(s.contains("\"" + DecentredUtil.toAddressString(ADDRESS1) + "\": " + BLOCK1));*/
     }
@@ -56,9 +54,7 @@ public final class TransactionBlockEventFundamentalTest extends AbstractFundamen
     @Override
     protected Stream<Map.Entry<String, Consumer<TransactionBlockEvent<TestMessages>>>> forbiddenAfterSign() {
         return Stream.of(
-            entry("chainAddress", m -> m.chainAddress(1)),
-            entry("weekNumber", m -> m.weekNumber(1)),
-            entry("blockNumber", m -> m.blockNumber(1))
+                entry("chainAddress", m -> m.chainAddress(1))
         );
     }
 

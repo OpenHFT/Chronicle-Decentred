@@ -1,5 +1,6 @@
 package net.openhft.chronicle.decentred.util;
 
+import com.koloboke.collect.set.LongSet;
 import com.koloboke.compile.KolobokeMap;
 import com.koloboke.function.LongLongConsumer;
 import net.openhft.chronicle.core.io.IORuntimeException;
@@ -55,4 +56,6 @@ public abstract class LongLongMap extends AbstractMarshallable {
     public void writeMarshallable(@NotNull WireOut wire) {
         forEach((k, v) -> wire.writeEvent(Long.class, k).int64(v));
     }
+
+    public abstract LongSet keySet();
 }

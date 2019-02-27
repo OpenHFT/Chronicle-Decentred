@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public final class TransactionBlockVoteEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockVoteEvent> {
 
@@ -31,7 +30,7 @@ public final class TransactionBlockVoteEventFundamentalTest extends AbstractFund
 
     @Override
     protected void assertInitializedToString(String s) {
-        assertTrue(s.contains("gossipEvent"));
+        assertContains(s, "gossipEvent");
     }
 
     @Override

@@ -10,8 +10,12 @@ import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.LongLongMap;
 import net.openhft.chronicle.decentred.util.LongU32Writer;
-import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.wire.LongConversion;
+import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
+
+import static net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent.writeMap;
 
 // Block number is N:th round in a week for the round.
 /**
@@ -43,15 +47,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
     @Override
     public void writeMarshallable(@NotNull WireOut wire) {
         super.writeMarshallable(wire);
-        if (addressToBlockNumberMap != null && addressToBlockNumberMap.size() > 0)
-            wire.write("addressToBlockNumberMap").marshallable(out -> {
-                addressToBlockNumberMap.forEach((k, v) -> {
-                    String key = DecentredUtil.toAddressString(k);
-                    System.out.println(">GE " + key + " = " + v);
-                    out.write(key);
-                    out.getValueOut().int64(v);
-                });
-            });
+        writeMap(wire, "addressToBlockNumberMap", addressToBlockNumberMap);
     }
 
     @Override

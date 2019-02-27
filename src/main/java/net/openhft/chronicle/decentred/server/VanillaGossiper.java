@@ -34,7 +34,7 @@ public class VanillaGossiper implements Gossiper {
             return;
         }
         long lastBlockNumber = lastBlockMap.getOrDefault(sourceAddress, NO_BLOCK);
-        long blockNumber = transactionBlockEvent.blockNumber();
+        long blockNumber = transactionBlockEvent.timestampUS();
         if (lastBlockNumber < blockNumber)
             lastBlockMap.justPut(sourceAddress, blockNumber);
     }

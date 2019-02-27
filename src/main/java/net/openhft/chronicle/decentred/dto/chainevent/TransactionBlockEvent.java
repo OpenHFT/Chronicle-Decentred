@@ -7,11 +7,14 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
-import net.openhft.chronicle.decentred.dto.base.trait.HasBlockNumber;
 import net.openhft.chronicle.decentred.dto.base.trait.HasChainAddress;
-import net.openhft.chronicle.decentred.dto.base.trait.HasWeekNumber;
-import net.openhft.chronicle.decentred.util.*;
-import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
+import net.openhft.chronicle.decentred.util.DtoParser;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.wire.AbstractMethodWriterInvocationHandler;
+import net.openhft.chronicle.wire.LongConversion;
+import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
@@ -26,9 +29,7 @@ import static java.util.Objects.requireNonNull;
  *
  */
 public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> implements
-    HasChainAddress<TransactionBlockEvent<T>>,
-    HasWeekNumber<TransactionBlockEvent<T>>,
-    HasBlockNumber<TransactionBlockEvent<T>>
+        HasChainAddress<TransactionBlockEvent<T>>
 {
     private transient DtoParser<T> dtoParser;
 
@@ -42,12 +43,6 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
 
     @LongConversion(AddressLongConverter.class)
     private long chainAddress;
-
-    @IntConversion(UnsignedIntConverter.class)
-    private short weekNumber; // up to 1256 years
-
-    @IntConversion(UnsignedIntConverter.class)
-    private int blockNumber; // up to 7k/s on average
 
     public TransactionBlockEvent() {
         transactions = writeTransactions.clear();
@@ -185,30 +180,6 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     public TransactionBlockEvent<T> chainAddress(long chainAddress) {
         assert !signed();
         this.chainAddress = chainAddress;
-        return this;
-    }
-
-    @Override
-    public int weekNumber() {
-        return weekNumber & DecentredUtil.MASK_16;
-    }
-
-    @Override
-    public TransactionBlockEvent<T> weekNumber(int weekNumber) {
-        assert !signed();
-        this.weekNumber = ShortUtil.toShortExact(weekNumber);
-        return this;
-    }
-
-    @Override
-    public long blockNumber() {
-        return blockNumber & DecentredUtil.MASK_32;
-    }
-
-    @Override
-    public TransactionBlockEvent<T> blockNumber(long blockNumber) {
-        assert !signed();
-        this.blockNumber = Math.toIntExact(blockNumber);
         return this;
     }
 }

@@ -3,16 +3,17 @@ package net.openhft.chronicle.decentred.server;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.decentred.api.MessageToListener;
-import net.openhft.chronicle.decentred.dto.*;
+import net.openhft.chronicle.decentred.dto.VerificationEvent;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
 import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
-import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.chainlifecycle.AssignDelegatesRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateChainRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateTokenRequest;
-import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.threads.NamedThreadFactory;
@@ -135,6 +136,11 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     @Override
+    public void assignDelegatesRequest(AssignDelegatesRequest assignDelegatesRequest) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void createTokenRequest(CreateTokenRequest createTokenRequest) {
         chainer.onMessage(createTokenRequest);
     }
@@ -209,7 +215,6 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         // tg System.out.println("TBE "+tbe);
         if (tbe != null) {
             tbe.address(address);
-            tbe.blockNumber(blockNumber);
             for (long clusterAddress : clusterAddresses) {
                 if (clusterAddress == address) {
                     transactionBlockEvent(tbe);

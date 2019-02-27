@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public final class EndOfRoundBlockEventFundamentalTest extends AbstractFundamentalDtoTest<EndOfRoundBlockEvent> {
 
@@ -31,8 +30,6 @@ public final class EndOfRoundBlockEventFundamentalTest extends AbstractFundament
     @Override
     protected void initializeSpecifics(EndOfRoundBlockEvent message) {
         message.chainAddress(CHAIN_ADDRESS);
-        message.weekNumber(WEEK_NUMBER);
-        message.blockNumber(BLOCK_NUMBER);
         final LongLongMap map = message.addressToBlockNumberMap();
         map.justPut(ADDRESS0, BLOCK0);
         map.justPut(ADDRESS1, BLOCK1);
@@ -41,26 +38,20 @@ public final class EndOfRoundBlockEventFundamentalTest extends AbstractFundament
     @Override
     protected void assertInitializedSpecifics(EndOfRoundBlockEvent message) {
         assertEquals(CHAIN_ADDRESS, message.chainAddress());
-        assertEquals(WEEK_NUMBER, message.weekNumber(), EPSILON);
-        assertEquals(BLOCK_NUMBER, message.blockNumber(), EPSILON);
     }
 
     @Override
     protected void assertInitializedToString(String s) {
-        assertTrue(s.contains("chainAddress: " + DecentredUtil.toAddressString(CHAIN_ADDRESS)));
-        assertTrue(s.contains("weekNumber: " + WEEK_NUMBER));
-        assertTrue(s.contains("blockNumber: " + BLOCK_NUMBER));
-        assertTrue(s.contains("addressToBlockNumberMap"));
-        assertTrue(s.contains("\"" + DecentredUtil.toAddressString(ADDRESS0) + "\": " + BLOCK0));
-        assertTrue(s.contains("\"" + DecentredUtil.toAddressString(ADDRESS1) + "\": " + BLOCK1));
+        assertContains(s, "chainAddress: " + DecentredUtil.toAddressString(CHAIN_ADDRESS));
+        assertContains(s, "addressToBlockNumberMap");
+        assertContains(s, DecentredUtil.toAddressString(ADDRESS0) + ": " + BLOCK0);
+        assertContains(s, DecentredUtil.toAddressString(ADDRESS1) + ": " + BLOCK1);
     }
 
     @Override
     protected Stream<Map.Entry<String, Consumer<EndOfRoundBlockEvent>>> forbiddenAfterSign() {
         return Stream.of(
-            entry("chainAddress", m -> m.chainAddress(1)),
-            entry("weekNumber", m -> m.weekNumber(1)),
-            entry("blockNumber", m -> m.blockNumber(1))
+                entry("chainAddress", m -> m.chainAddress(1))
         );
     }
 }

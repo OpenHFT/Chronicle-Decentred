@@ -1,15 +1,16 @@
 package net.openhft.chronicle.decentred.dto.fundamental.error;
 
-import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
+import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
+import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
 import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
 
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public final class ApplicationErrorResponseFundamentalTest extends AbstractFundamentalDtoTest<ApplicationErrorResponse> {
 
@@ -17,7 +18,12 @@ public final class ApplicationErrorResponseFundamentalTest extends AbstractFunda
     private static final CreateAddressRequest ORIGINAL_MESSAGE = createChild(CreateAddressRequest::new);
 
     public ApplicationErrorResponseFundamentalTest() {
-        super(ApplicationErrorResponse::new);
+        super(ApplicationErrorResponseFundamentalTest::create);
+    }
+
+    private static ApplicationErrorResponse create() {
+        return new ApplicationErrorResponse()
+                .dtoParser(DtoRegistry.newRegistry(SystemMessages.class).get());
     }
 
     @Override
@@ -33,8 +39,7 @@ public final class ApplicationErrorResponseFundamentalTest extends AbstractFunda
 
     @Override
     protected void assertInitializedToString(String s) {
-        assertTrue(s.contains(REASON));
-
+        assertContains(s, REASON);
     }
 
     @Override

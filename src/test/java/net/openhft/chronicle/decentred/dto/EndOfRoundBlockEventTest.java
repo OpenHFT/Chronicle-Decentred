@@ -4,6 +4,9 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
+import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
+import net.openhft.chronicle.decentred.server.BlockReplayer;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.wire.TextMethodTester;
 import org.junit.Test;
@@ -11,14 +14,13 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class EndOfRoundBlockEventTest {
     static void test(String basename) {
-        TextMethodTester<EndOfRoundBlockEventTester> tester = new TextMethodTester<>(
+        TextMethodTester<BlockReplayer> tester = new TextMethodTester<>(
                 basename + "/in.yaml",
                 EndOfRoundBlockEventTest::createGateway,
-            EndOfRoundBlockEventTester.class,
+                BlockReplayer.class,
                 basename + "/out.yaml");
         tester.setup(basename + "/setup.yaml");
         try {
@@ -29,8 +31,23 @@ public class EndOfRoundBlockEventTest {
         assertEquals(tester.expected(), tester.actual());
     }
 
-    private static EndOfRoundBlockEvent createGateway(EndOfRoundBlockEventTester tester) {
-        return new EndOfRoundBlockEvent();
+    private static BlockReplayer createGateway(BlockReplayer tester) {
+        return new BlockReplayer() {
+            @Override
+            public void transactionBlockEvent(TransactionBlockEvent transactionBlockEvent) {
+                tester.transactionBlockEvent(transactionBlockEvent);
+            }
+
+            @Override
+            public void endOfRoundBlockEvent(EndOfRoundBlockEvent endOfRoundBlockEvent) {
+                tester.endOfRoundBlockEvent(endOfRoundBlockEvent);
+            }
+
+            @Override
+            public void replayBlocks() {
+                tester.replayBlocks();
+            }
+        };
     }
 
     @Test
@@ -45,18 +62,18 @@ public class EndOfRoundBlockEventTest {
         final Bytes bytes = Bytes.allocateElasticDirect(1000);
 
         final EndOfRoundBlockEvent expected = new EndOfRoundBlockEvent()
-            .weekNumber(1)
             .messageType(0xFFF3)
             .protocol(17)
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
-            .blockNumber(42)
             .chainAddress(43)
             ;
 
-        expected.addressToBlockNumberMap().justPut(0, 16);
-        expected.addressToBlockNumberMap().justPut((192L << 56) + (168L << 48) + (1L << 40) + (147L << 32)+ (10000L << 16), 17); // 192.168.1.147:10000
+        expected.addressToBlockNumberMap().justPut(+1, 1);
+        expected.addressToBlockNumberMap().justPut(Long.MAX_VALUE, 2);
+        expected.addressToBlockNumberMap().justPut(Long.MIN_VALUE, 3);
+        expected.addressToBlockNumberMap().justPut(~0, 4);
         expected.sign(kp.secretKey);
-
+        System.out.println(expected);
 /*        System.out.println("expected = " + expected);
         System.out.println(expected.toHexString());*/
 
@@ -66,16 +83,17 @@ public class EndOfRoundBlockEventTest {
         EndOfRoundBlockEvent actual = new EndOfRoundBlockEvent();
         actual.readMarshallable(bytes);
 
-        final String expectedString = actual.toString();
+        final String actualString = actual.toString();
 
-        int length = expectedString.indexOf("addressToBlockNumberMap: {");
+        String expectedString = expected.toString();
+        assertEquals(expectedString, actualString);
 
-        assertEquals(expected.toString().substring(0, length), actual.toString().substring(0, length));
-
-        assertTrue(actual.toString().contains("\"192.168.1.147:10000\": 17"));
-        assertTrue(actual.toString().contains("\"0.0.0.0:0\": 16"));
+        AbstractFundamentalDtoTest.assertContains(actualString, "  addressToBlockNumberMap: {\n" +
+                "    a: 1,\n" +
+                "    g777777777777: 2,\n" +
+                "    h............: 3,\n" +
+                "    o777777777777: 4\n" +
+                "  }");
 
     }
-
-
 }

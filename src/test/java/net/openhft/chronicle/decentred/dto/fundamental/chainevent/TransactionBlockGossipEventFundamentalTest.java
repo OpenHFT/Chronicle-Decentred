@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public final class TransactionBlockGossipEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockGossipEvent> {
 
@@ -41,10 +41,10 @@ public final class TransactionBlockGossipEventFundamentalTest extends AbstractFu
     @Override
     protected void assertInitializedToString(String s) {
         System.out.println(s);
-        assertTrue(s.contains("chainAddress: " + DecentredUtil.toAddressString(CHAIN_ADDRESS)));
-        assertTrue(s.contains("addressToBlockNumberMap"));
-        assertTrue(s.contains("\"" + DecentredUtil.toAddressString(ADDRESS0) + "\": " + BLOCK0));
-        assertTrue(s.contains("\"" + DecentredUtil.toAddressString(ADDRESS1) + "\": " + BLOCK1));
+        assertContains(s, "chainAddress: " + DecentredUtil.toAddressString(CHAIN_ADDRESS));
+        assertContains(s, "addressToBlockNumberMap");
+        assertContains(s, DecentredUtil.toAddressString(ADDRESS0) + ": " + BLOCK0);
+        assertContains(s, DecentredUtil.toAddressString(ADDRESS1) + ": " + BLOCK1);
     }
 
     @Override

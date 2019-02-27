@@ -3,11 +3,11 @@ package net.openhft.chronicle.decentred.dto;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class TransactionBlockGossipEventTest {
 
@@ -26,8 +26,10 @@ public class TransactionBlockGossipEventTest {
             .chainAddress(43)
             ;
 
-        expected.addressToBlockNumberMap().justPut(1, 16);
-        expected.addressToBlockNumberMap().justPut((192L << 56) + (168L << 48) + (1L << 40) + (147L << 32)+ (10000L << 16), 17); // 192.168.1.147:10000
+        expected.addressToBlockNumberMap().justPut(+1, 1);
+        expected.addressToBlockNumberMap().justPut(Long.MAX_VALUE, 2);
+        expected.addressToBlockNumberMap().justPut(Long.MIN_VALUE, 3);
+        expected.addressToBlockNumberMap().justPut(~0, 4);
         expected.sign(kp.secretKey);
 
         System.out.println("expected = " + expected);
@@ -41,12 +43,15 @@ public class TransactionBlockGossipEventTest {
 
         final String actualString = actual.toString();
 
-        int length = actualString.indexOf("addressToBlockNumberMap: {");
+        String expectedString = expected.toString();
+        assertEquals(expectedString, actualString);
 
-        assertEquals(expected.toString().substring(0, length), actualString.substring(0, length));
-
-        assertTrue(actualString.contains("\"192.168.1.147:10000\": 17"));
-        assertTrue(actualString.contains("\"0.0.0.0:0:1\": 16"));
+        AbstractFundamentalDtoTest.assertContains(actualString, "  addressToBlockNumberMap: {\n" +
+                "    a: 1,\n" +
+                "    g777777777777: 2,\n" +
+                "    h............: 3,\n" +
+                "    o777777777777: 4\n" +
+                "  }");
 
     }
 

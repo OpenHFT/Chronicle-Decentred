@@ -1,8 +1,8 @@
 package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.core.Jvm;
-import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
+import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
@@ -105,20 +105,8 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
     static class TransactionLog {
         private final List<SignedMessage> messages = new ArrayList<>();
 
-        public void add(TransactionBlockEvent transactionBlockEvent) {
-            add(transactionBlockEvent, (int) transactionBlockEvent.blockNumber());
-        }
-
-        public void add(EndOfRoundBlockEvent endOfRoundBlockEvent) {
-            add(endOfRoundBlockEvent, (int) endOfRoundBlockEvent.blockNumber());
-        }
-
-        synchronized void add(SignedMessage msg, int blockNumber) {
-            if (blockNumber < messages.size()) {
-                System.out.println("Duplicate message id: " + blockNumber + " size: " + messages.size() + " was " + msg.getClass());
-            } else if (blockNumber > messages.size()) {
-                System.out.println("Missing message id: " + blockNumber);
-            } else if (msg instanceof TransactionBlockEvent) {
+        public synchronized void add(SignedMessage msg) {
+            if (msg instanceof TransactionBlockEvent) {
                 messages.add(((TransactionBlockEvent<?>) msg).deepCopy());
             } else if (msg instanceof EndOfRoundBlockEvent) {
                 messages.add(((EndOfRoundBlockEvent) msg).deepCopy());

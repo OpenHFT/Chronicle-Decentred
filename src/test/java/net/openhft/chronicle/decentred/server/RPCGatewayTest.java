@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 
 public class RPCGatewayTest {
-    @Test
+    @Test(timeout = 5000)
     public void endToEnd() throws IOException, InterruptedException {
         KeyPair kp = new KeyPair(7);
         RPCBuilder<SystemMessages, SystemMessages> rpcBuilder = RPCBuilder.of(SystemMessages.class, SystemMessages.class)

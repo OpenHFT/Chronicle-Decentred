@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public final class CreateTokenRequestFundamentalTest extends AbstractFundamentalDtoTest<CreateTokenRequest> {
 
@@ -36,9 +35,9 @@ public final class CreateTokenRequestFundamentalTest extends AbstractFundamental
 
     @Override
     protected void assertInitializedToString(String s) {
-        assertTrue(s.contains("symbol: " + SYMBOL));
-        assertTrue(s.contains("amount: " + AMOUNT));
-        assertTrue(s.contains("granularity: " + GRANULARITY));
+        assertContains(s, "symbol: " + SYMBOL);
+        assertContains(s, "amount: " + AMOUNT);
+        assertContains(s, "granularity: " + GRANULARITY);
     }
 
     @Override

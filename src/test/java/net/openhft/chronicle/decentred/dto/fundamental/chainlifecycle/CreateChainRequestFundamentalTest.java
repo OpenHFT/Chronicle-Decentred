@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public final class CreateChainRequestFundamentalTest extends AbstractFundamentalDtoTest<CreateChainRequest> {
 
@@ -33,8 +32,8 @@ public final class CreateChainRequestFundamentalTest extends AbstractFundamental
 
     @Override
     protected void assertInitializedToString(String s) {
-        assertTrue(s.contains("cycleOffset: +00:00:02"));
-        assertTrue(s.contains("roundsPerDay: 24"));
+        assertContains(s, "cycleOffset: +00:00:02");
+        assertContains(s, "roundsPerDay: 24");
     }
 
     @Override

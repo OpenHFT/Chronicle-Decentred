@@ -67,7 +67,7 @@ public class DecentredClientServerTest {
         assertEquals(
                 "createAddressRequest[!CreateAddressRequest {\n" +
                         "  timestampUS: 2018-08-25T09:45:04.18,\n" +
-                        "  address: phccofmpy6ci,\n" +
+                        "  address: nphccofmpy6ci,\n" +
                         "  publicKey: !!binary 9M9t8hyt2kEJmL46Fs+si0VigLTMQt9OafgMm3ljIOg=\n" +
                         "}\n" +
                         "]\n",

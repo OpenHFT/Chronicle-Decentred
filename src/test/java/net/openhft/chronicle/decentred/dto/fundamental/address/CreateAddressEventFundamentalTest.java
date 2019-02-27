@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public final class CreateAddressEventFundamentalTest extends AbstractFundamentalDtoTest<CreateAddressEvent> {
 
@@ -31,7 +30,7 @@ public final class CreateAddressEventFundamentalTest extends AbstractFundamental
 
     @Override
     protected  void assertInitializedToString(String s) {
-        assertTrue(s.contains("createAddressRequest"));
+        assertContains(s, "createAddressRequest");
     }
 
     @Override
