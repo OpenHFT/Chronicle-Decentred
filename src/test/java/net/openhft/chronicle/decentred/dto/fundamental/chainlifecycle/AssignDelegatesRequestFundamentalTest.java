@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.dto.fundamental.chainlifecycle;
 
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.AssignDelegatesRequest;
-import net.openhft.chronicle.decentred.dto.fundamental.AbstractFundamentalDtoTest;
+import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 import net.openhft.chronicle.decentred.util.KeyPair;
 
 import java.util.Arrays;

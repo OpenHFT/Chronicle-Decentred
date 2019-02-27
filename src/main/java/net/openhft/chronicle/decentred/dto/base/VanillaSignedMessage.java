@@ -68,8 +68,14 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         signed = true;
     }
 
+    /**
+     * Resets all properties of this message to their default values. This sets
+     * the message in the same state as if it was just created.
+     */
     public void reset() {
         signed = false;
+        messageType = 0;
+        protocol = 0;
         // address = timestampUS = 0; set by super.reset();
         super.reset();
     }
@@ -111,11 +117,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return (T) this;
     }
 
-    /**
-     * Signifies this message contains it's own public key.
-     *
-     * @return the public key for this address.
-     */
+     // Signifies this message contains it's own public key.
     @Override
     public BytesStore publicKey() {
         return NoBytesStore.noBytesStore();
@@ -196,6 +198,14 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return protocol;
     }
 
+    /**
+     * Sets the protocol for this message.
+     *
+     * @param protocol to use
+     * @return this instance
+     * @throws ArithmeticException if the provided protocol is not
+     * in the range [0, 65536]
+     */
     public T protocol(int protocol) {
         this.protocol = ShortUtil.requireUnsignedShort(protocol);
         return (T) this;
@@ -210,6 +220,14 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return messageType;
     }
 
+    /**
+     * Sets the message type for this message.
+     *
+     * @param messageType to use
+     * @return this instance
+     * @throws ArithmeticException if the provided message type is not
+     * in the range [0, 65536]
+     */
     public T messageType(int messageType) {
         this.messageType = ShortUtil.requireUnsignedShort(messageType);
         return (T) this;
@@ -219,11 +237,24 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return getClass().getSimpleName();
     }*/
 
+    /*
     public BytesStore bytes() {
         return readPointer;
-    }
+    }*/
 
+    /**
+     * Returns the ByteBuffer view of this message's binary content. As a
+     * side effect, resets the internal ByteBuffer view.
+     * <p>
+     * The message must be signed before this method is invoked
+     * <p>
+     * There is only a single view of this message's binary content.
+     *
+     * @return a ByteBuffer view of the signed content of this message
+     */
     public ByteBuffer byteBuffer() {
+        assert signed() : "not signed yet";
+
         if (byteBuffer == null)
             byteBuffer = ByteBuffer.allocateDirect(0);
         try {

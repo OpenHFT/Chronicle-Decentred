@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.dto.fundamental.chainevent;
 
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
-import net.openhft.chronicle.decentred.dto.fundamental.AbstractFundamentalDtoTest;
+import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 
 import java.util.Map;

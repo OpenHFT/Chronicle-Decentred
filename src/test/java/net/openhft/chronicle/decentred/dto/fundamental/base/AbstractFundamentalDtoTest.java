@@ -1,6 +1,7 @@
-package net.openhft.chronicle.decentred.dto.fundamental;
+package net.openhft.chronicle.decentred.dto.fundamental.base;
 
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
@@ -11,6 +12,7 @@ import net.openhft.chronicle.wire.Wire;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.ByteBuffer;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -28,7 +30,7 @@ import static org.junit.Assert.*;
  */
 public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<T>> {
 
-    public static final double EPSILON = 1e-7;
+    protected static final double EPSILON = 1e-7;
 
     private final long SEED = 1;
     private final KeyPair KEY_PAIR = new KeyPair(SEED);
@@ -234,9 +236,54 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         });
     }
 
+    @Test
+    public void testPublicKey() {
+        final boolean hasPublicKey = instance.hasPublicKey();
+        final BytesStore b = instance.publicKey();
+        if (hasPublicKey) {
+            instance.publicKey(KEY_PAIR.publicKey);
+            assertEquals(KEY_PAIR.publicKey, instance.publicKey());
+        } else {
+            assertTrue(b.isEmpty());
+        }
+    }
+
+    @Test
+    public void testReset() {
+        initialize(instance);
+        instance.sign(KEY_PAIR.secretKey);
+        instance.reset();
+        assertFalse(instance.signed());
+
+        final T other = constructor.get();
+        assertEquals(other, instance);
+    }
+
+    @Test
+    public void testByteBufferUnsigned() {
+        try {
+            instance.byteBuffer();
+            fail("unsigned message was not captured");
+        } catch (Error ignore) {
+            // ignore
+        }
+    }
+
+    @Test
+    public void testByteBuffer() {
+        initialize(instance);
+        instance.sign(KEY_PAIR.secretKey);
+        final ByteBuffer bb = instance.byteBuffer();
+        assertEquals(0, bb.position());
+        assertTrue(bb.capacity() > 0);
+    }
+
+
     // Todo: copyTo
 
     // Todo: Other super methods like copyTo
+
+    // Check Bytes after serializer
 
 
     protected Map.Entry<String, Consumer<T>> entry(String s, Consumer<T> c) {

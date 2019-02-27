@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.dto.fundamental.error;
 
 import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
-import net.openhft.chronicle.decentred.dto.fundamental.AbstractFundamentalDtoTest;
+import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 
 import java.util.Map;
 import java.util.function.Consumer;

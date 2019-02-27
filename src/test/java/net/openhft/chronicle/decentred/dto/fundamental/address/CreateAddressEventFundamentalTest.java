@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.dto.fundamental.address;
 
 import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
-import net.openhft.chronicle.decentred.dto.fundamental.AbstractFundamentalDtoTest;
+import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -31,7 +31,7 @@ public final class CreateAddressEventFundamentalTest extends AbstractFundamental
 
     @Override
     protected  void assertInitializedToString(String s) {
-        assertTrue(s.contains("CreateAddressRequest"));
+        assertTrue(s.contains("createAddressRequest"));
     }
 
     @Override

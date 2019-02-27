@@ -1,7 +1,7 @@
 package net.openhft.chronicle.decentred.dto.fundamental.chainlifecycle;
 
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateTokenRequest;
-import net.openhft.chronicle.decentred.dto.fundamental.AbstractFundamentalDtoTest;
+import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 
 import java.util.Map;
 import java.util.function.Consumer;

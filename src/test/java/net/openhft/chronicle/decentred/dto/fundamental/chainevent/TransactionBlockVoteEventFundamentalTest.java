@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.dto.fundamental.chainevent;
 
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
-import net.openhft.chronicle.decentred.dto.fundamental.AbstractFundamentalDtoTest;
+import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 
 import java.util.Map;
 import java.util.function.Consumer;
