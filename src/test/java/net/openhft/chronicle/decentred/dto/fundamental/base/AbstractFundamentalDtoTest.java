@@ -264,7 +264,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEquals(other, instance);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test(expected = IllegalStateException.class)
     public void testByteBufferUnsigned() {
         instance.byteBuffer();
     }
@@ -277,6 +277,8 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEquals(0, bb.position());
         assertTrue(bb.capacity() > 0);
     }
+
+
 
 
     // Todo: copyTo

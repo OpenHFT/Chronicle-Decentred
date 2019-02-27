@@ -20,7 +20,7 @@ public class SelfSignedMessage<M extends SelfSignedMessage<M>> extends VanillaSi
 
     @Override
     public M publicKey(BytesStore key) {
-        assert !signed();
+        assertNotSigned();
         long offset = key.readLimit() - Ed25519.PUBLIC_KEY_LENGTH;
         this.publicKey.clear().write(key, offset, Ed25519.PUBLIC_KEY_LENGTH);
         return (M) this;

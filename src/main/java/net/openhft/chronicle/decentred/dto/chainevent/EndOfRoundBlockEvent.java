@@ -57,7 +57,7 @@ public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEv
 
     @Override
     public EndOfRoundBlockEvent weekNumber(int weekNumber) {
-        assert !signed();
+        assertNotSigned();
         this.weekNumber = ShortUtil.toShortExact(weekNumber);
         return this;
     }
@@ -69,7 +69,7 @@ public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEv
 
     @Override
     public EndOfRoundBlockEvent blockNumber(long blockNumber) {
-        assert !signed();
+        assertNotSigned();
         this.blockNumber = Math.toIntExact(blockNumber);
         return this;
     }

@@ -13,7 +13,7 @@ public class CreateAddressEvent extends VanillaSignedMessage<CreateAddressEvent>
     }
 
     public CreateAddressEvent createAddressRequest(CreateAddressRequest createAddressRequest) {
-        assert !signed();
+        assertNotSigned();
         this.createAddressRequest = createAddressRequest;
         return this;
     }

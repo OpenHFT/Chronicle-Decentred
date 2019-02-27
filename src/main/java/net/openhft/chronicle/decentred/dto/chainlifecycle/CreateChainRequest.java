@@ -20,7 +20,7 @@ public class CreateChainRequest extends VanillaSignedMessage<CreateChainRequest>
     }
 
     public CreateChainRequest cycleOffset(int cycleOffset) {
-        assert !signed();
+        assertNotSigned();
         this.cycleOffset = cycleOffset;
         return this;
     }
@@ -30,7 +30,7 @@ public class CreateChainRequest extends VanillaSignedMessage<CreateChainRequest>
     }
 
     public CreateChainRequest roundsPerDay(int roundsPerDay) {
-        assert !signed();
+        assertNotSigned();
         this.roundsPerDay = roundsPerDay;
         return this;
     }

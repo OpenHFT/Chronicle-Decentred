@@ -19,7 +19,7 @@ public class AssignDelegatesRequest extends VanillaSignedMessage<AssignDelegates
     }
 
     public AssignDelegatesRequest delegates(List<BytesStore> delegates) {
-        assert !signed();
+        assertNotSigned();
         this.delegates = new ArrayList<>(requireNonNull(delegates));
         return this;
     }

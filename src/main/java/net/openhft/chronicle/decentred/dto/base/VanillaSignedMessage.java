@@ -18,6 +18,8 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.function.LongFunction;
 
+import static java.util.Objects.requireNonNull;
+
 public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends AbstractBytesMarshallable implements SignedMessage {
     private static final int LENGTH = 0;
     private static final int LENGTH_END = LENGTH + Integer.BYTES;
@@ -87,7 +89,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
 
     @Override
     public void writeMarshallable(BytesOut bytes) {
-        assert signed();
+        assertSigned();
         bytes.write(this.bytes, 0, this.bytes.readLimit());
     }
 
@@ -100,8 +102,16 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return address;
     }
 
+    /**
+     * Sets the address of this message.
+     *
+     * @param address to use
+     * @return this message.
+     *
+     * @throws IllegalStateException if the message was already signed
+     */
     public T address(long address) {
-        assert !signed();
+        assertNotSigned();
         this.address = address;
         return (T) this;
     }
@@ -111,8 +121,16 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return timestampUS;
     }
 
+    /**
+     * Sets the timestamp in ms of this message.
+     *
+     * @param timestampUS to use
+     * @return this message.
+     *
+     * @throws IllegalStateException if the message was already signed
+     */
     public T timestampUS(long timestampUS) {
-        assert !signed();
+        assertNotSigned();
         this.timestampUS = timestampUS;
         return (T) this;
     }
@@ -128,8 +146,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     }
 
     public T publicKey(BytesStore key) {
-        assert false;
-        return (T) this;
+        throw new UnsupportedOperationException("This method is not supported for this message type. Only for " + SelfSignedMessage.class.getSimpleName());
     }
 
     @Override
@@ -138,10 +155,33 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
         return sign(secretKey, timeProvider);
     }
 
+    /**
+     * Signs this message with the provided {@code secretKey} and provided
+     * {@code timeProvider}.
+     * <p>
+     * After a message has been signed, its properties cannot be changed any more.
+     *
+     * @param secretKey to use for signing
+     * @param timeProvider to use for generating a timestamp
+     * @return this message
+
+     * @throws IllegalStateException if this message has already been signed
+     * or if the protocol has not been set or if the message type has
+     * not been set.
+     *
+     * @throws NullPointerException if any of the provided parameters
+     * are {@code null}
+     */
     public T sign(BytesStore secretKey, TimeProvider timeProvider) {
-        assert !signed() : "Already signed";
-        assert protocol != 0 : "protocol must be set";
-        assert messageType != 0 : "messageType must be set";
+        requireNonNull(secretKey);
+        requireNonNull(timeProvider);
+        assertNotSigned();
+        if (protocol == 0) {
+            throw new IllegalStateException("The protocol must be set before signing");
+        }
+        if (messageType == 0) {
+            throw new IllegalStateException("The message type must be set before signing");
+        }
 
         if (hasPublicKey())
             publicKey(secretKey);
@@ -204,16 +244,14 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
      * @param protocol to use
      * @return this instance
      * @throws ArithmeticException if the provided protocol is not
-     * in the range [0, 65536]
+     * in the range [1, 65536]
+     * @throws IllegalStateException if the messages has been signed
      */
     public T protocol(int protocol) {
-        this.protocol = ShortUtil.requireUnsignedShort(protocol);
+        assertNotSigned();
+        this.protocol = ShortUtil.requirePositiveUnsignedShort(protocol);
         return (T) this;
     }
-
-    /*public String protocolString() {
-        return getClass().getPackage().getName();
-    }*/
 
     @Override
     public int messageType() {
@@ -226,21 +264,12 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
      * @param messageType to use
      * @return this instance
      * @throws ArithmeticException if the provided message type is not
-     * in the range [0, 65536]
+     * in the range [1, 65536]
      */
     public T messageType(int messageType) {
-        this.messageType = ShortUtil.requireUnsignedShort(messageType);
+        this.messageType = ShortUtil.requirePositiveUnsignedShort(messageType);
         return (T) this;
     }
-
-/*    public String messageTypeString() {
-        return getClass().getSimpleName();
-    }*/
-
-    /*
-    public BytesStore bytes() {
-        return readPointer;
-    }*/
 
     /**
      * Returns the ByteBuffer view of this message's binary content. As a
@@ -251,9 +280,10 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
      * There is only a single view of this message's binary content.
      *
      * @return a ByteBuffer view of the signed content of this message
+     * @throws IllegalStateException if the message has not been signed.
      */
     public ByteBuffer byteBuffer() {
-        assert signed() : "not signed yet";
+        assertSigned();
 
         if (byteBuffer == null)
             byteBuffer = ByteBuffer.allocateDirect(0);
@@ -266,4 +296,17 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
             throw new AssertionError(e);
         }
     }
+
+    protected void assertSigned() {
+        if (!signed()) {
+            throw new IllegalStateException("The message has not been signed");
+        }
+    }
+
+    protected void assertNotSigned() {
+        if (signed()) {
+            throw new IllegalStateException("The message has already been signed");
+        }
+    }
+
 }

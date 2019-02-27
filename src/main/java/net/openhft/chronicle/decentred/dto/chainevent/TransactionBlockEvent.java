@@ -183,7 +183,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
 
     @Override
     public TransactionBlockEvent<T> chainAddress(long chainAddress) {
-        assert !signed();
+        assertNotSigned();
         this.chainAddress = chainAddress;
         return this;
     }
@@ -195,7 +195,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
 
     @Override
     public TransactionBlockEvent<T> weekNumber(int weekNumber) {
-        assert !signed();
+        assertNotSigned();
         this.weekNumber = ShortUtil.toShortExact(weekNumber);
         return this;
     }
@@ -207,7 +207,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
 
     @Override
     public TransactionBlockEvent<T> blockNumber(long blockNumber) {
-        assert !signed();
+        assertNotSigned();
         this.blockNumber = Math.toIntExact(blockNumber);
         return this;
     }
