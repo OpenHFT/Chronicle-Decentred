@@ -81,7 +81,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
 
     @Override
     public TransactionBlockGossipEvent chainAddress(long chainAddress) {
-        assert !signed();
+        assertNotSigned();
         this.chainAddress = chainAddress;
         return this;
     }

@@ -1,6 +1,6 @@
 package town.lost.examples.exchange.dto;
 
-import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.wire.AbstractBytesMarshallable;
 
 import java.util.LinkedHashMap;

@@ -8,7 +8,7 @@ public interface SignedMessage extends BytesMarshallable {
     /**
      * Returns the protocol for this message.
      * <p>
-     * The protocol is stored as an unsigned short (0-65,536)
+     * The protocol is stored as an unsigned short 1-65,536)
      *
      * @return the protocol for this message
      */
@@ -17,7 +17,7 @@ public interface SignedMessage extends BytesMarshallable {
     /**
      * Returns the message type for this message.
      * <p>
-     * The message type is stored as an unsigned short (0-65,536)
+     * The message type is stored as an unsigned short (1-65,536)
      *
      * @return the message type for this message
      */

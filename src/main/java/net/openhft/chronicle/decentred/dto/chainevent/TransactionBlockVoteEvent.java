@@ -18,7 +18,7 @@ public class TransactionBlockVoteEvent extends VanillaSignedMessage<TransactionB
     }
 
     public TransactionBlockVoteEvent gossipEvent(TransactionBlockGossipEvent gossipEvent) {
-        assert !signed();
+        assertNotSigned();
         this.gossipEvent = gossipEvent;
         return this;
     }

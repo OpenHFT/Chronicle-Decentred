@@ -28,6 +28,7 @@ public class CreateTokenRequest extends VanillaSignedMessage<CreateTokenRequest>
     }
 
     public CreateTokenRequest amount(double amount) {
+        assertNotSigned();
         this.amount = amount;
         return this;
     }
@@ -38,6 +39,7 @@ public class CreateTokenRequest extends VanillaSignedMessage<CreateTokenRequest>
     }
 
     public CreateTokenRequest granularity(double granularity) {
+        assertNotSigned();
         this.granularity = granularity;
         return this;
     }

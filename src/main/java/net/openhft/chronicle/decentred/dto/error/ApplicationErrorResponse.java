@@ -19,13 +19,13 @@ public class ApplicationErrorResponse extends VanillaSignedMessage<ApplicationEr
     }
 
     public ApplicationErrorResponse reason(String reason) {
-        assert !signed();
+        assertNotSigned();
         this.reason = reason;
         return this;
     }
 
     public ApplicationErrorResponse init(VanillaSignedMessage origMessage, String reason) {
-        assert !signed();
+        assertNotSigned();
         this.origMessage = origMessage;
         this.reason = reason;
         return this;

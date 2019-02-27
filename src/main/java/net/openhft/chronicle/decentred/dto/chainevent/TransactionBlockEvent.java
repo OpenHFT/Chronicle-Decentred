@@ -178,7 +178,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
 
     @Override
     public TransactionBlockEvent<T> chainAddress(long chainAddress) {
-        assert !signed();
+        assertNotSigned();
         this.chainAddress = chainAddress;
         return this;
     }

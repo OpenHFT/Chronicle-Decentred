@@ -1,7 +1,7 @@
 package town.lost.examples.exchange.api;
 
 import net.openhft.chronicle.bytes.MethodId;
-import net.openhft.chronicle.decentred.dto.ApplicationErrorResponse;
+import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
 import town.lost.examples.exchange.dto.TradeClosedEvent;
 import town.lost.examples.exchange.dto.TradeEvent;
 
