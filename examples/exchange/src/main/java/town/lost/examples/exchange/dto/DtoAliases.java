@@ -16,6 +16,6 @@ public enum DtoAliases {
     }
 
     public static void addAliases() {
-        net.openhft.chronicle.decentred.dto.DtoAliases.addAliases();
+        net.openhft.chronicle.decentred.dto.base.DtoAliases.addAliases();
     }
 }

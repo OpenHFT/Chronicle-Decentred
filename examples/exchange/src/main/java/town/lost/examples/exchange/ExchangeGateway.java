@@ -1,7 +1,7 @@
 package town.lost.examples.exchange;
 
 import net.openhft.chronicle.decentred.api.MessageRouter;
-import net.openhft.chronicle.decentred.dto.ApplicationErrorResponse;
+import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
 import town.lost.examples.exchange.api.ExchangeRequests;
 import town.lost.examples.exchange.api.ExchangeResponses;
 import town.lost.examples.exchange.dto.*;

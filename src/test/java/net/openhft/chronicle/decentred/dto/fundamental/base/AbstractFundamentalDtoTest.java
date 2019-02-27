@@ -14,9 +14,10 @@ import org.junit.Test;
 
 import java.nio.ByteBuffer;
 import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -114,14 +115,9 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEquals(DEFAULT_LONG, instance.timestampUS());
     }
 
-/*    @Test
-    public void testIntialVerify() {
-        assertFalse(instance.verify(a -> KEY_PAIR.publicKey));
-    }*/
-
-    @Test
+    @Test(expected = Throwable.class)
     public void testInitialThrowers() {
-        assertThrowsBeforeSign(VanillaSignedMessage::toHexString);
+        instance.toHexString();
     }
 
     @Test
@@ -186,14 +182,20 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
 
     @Test
     public void testMarshallUnMarshallBytes() {
+        final long offset = 147; // Cover the case of mid Byte serialization
+
         final Bytes bytes = Bytes.allocateElasticDirect(1000);
+        bytes.writePosition(offset);
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
         instance.writeMarshallable(bytes);
+        final long writePosition = bytes.writePosition();
 
         final T actual = constructor.get();
-        bytes.readPosition(0);
+        bytes.readPosition(offset);
         actual.readMarshallable(bytes);
+
+        //Todo: Make sure that all bytes are consumed. How? readMarshallable does not modify bytes
 
         assertEquals(instance, actual);
         assertEquals(actual, instance);
@@ -217,23 +219,26 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     public void testVerify() {
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
-
         assertTrue(instance.verify(a -> KEY_PAIR.publicKey));
     }
-
 
     @Test
     public void testForbiddenOperators() {
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
+        final List<String> failed = new ArrayList<>();
         forbiddenAfterSign().forEach(e -> {
             try {
                 e.getValue().accept(instance);
-                fail("The operation " + e.getKey() + " was not disallowed.");
-            } catch (AssertionError ignored) {
+                failed.add(e.getKey());
+                //fail("The operation " + e.getKey() + " was not disallowed.");
+            } catch (Throwable ignored) {
                 // ignore
             }
         });
+        if (!failed.isEmpty()) {
+            fail("These operations " + failed + " was not disallowed.");
+        }
     }
 
     @Test
@@ -259,14 +264,9 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEquals(other, instance);
     }
 
-    @Test
+    @Test(expected = AssertionError.class)
     public void testByteBufferUnsigned() {
-        try {
-            instance.byteBuffer();
-            fail("unsigned message was not captured");
-        } catch (Error ignore) {
-            // ignore
-        }
+        instance.byteBuffer();
     }
 
     @Test
@@ -321,14 +321,14 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEquals(other, instance);
     }
 
-    private <R> void assertThrowsBeforeSign(Function<T, R> mapper) {
+/*    private <R> void assertThrowsBeforeSign(Function<T, R> mapper) {
         try {
             final R actual = mapper.apply(instance);
             fail("Calling this method before sign() is called should produce an Exception");
-        } catch (Exception ignored) {
+        } catch (Throwable ignored) {
             // Do nothing
         }
-    }
+    }*/
 
 
 
