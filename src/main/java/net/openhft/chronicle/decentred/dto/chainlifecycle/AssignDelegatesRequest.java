@@ -18,7 +18,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 // Support for this will be added later.
-public class AssignDelegatesRequest extends VanillaSignedMessage<AssignDelegatesRequest> {
+public final class AssignDelegatesRequest extends VanillaSignedMessage<AssignDelegatesRequest> {
 
     private transient List<BytesStore> delegates = new ArrayList<>();
 

@@ -23,7 +23,7 @@ import static net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEven
  * An TransactionBlockGossipEvent is a <em>chain event</em> that ...
  *
  */
-public class TransactionBlockGossipEvent extends VanillaSignedMessage<TransactionBlockGossipEvent> implements
+public final class TransactionBlockGossipEvent extends VanillaSignedMessage<TransactionBlockGossipEvent> implements
     HasChainAddress<TransactionBlockGossipEvent>,
     HasAddressToBlockNumberMap<TransactionBlockGossipEvent>
 {

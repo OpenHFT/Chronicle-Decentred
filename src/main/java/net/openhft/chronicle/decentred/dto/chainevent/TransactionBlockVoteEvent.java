@@ -9,7 +9,7 @@ import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
  * An TransactionBlockVoteEvent is a <em>chain event</em> that holds the gossip events that are in a block.
  *
  */
-public class TransactionBlockVoteEvent extends VanillaSignedMessage<TransactionBlockVoteEvent> {
+public final class TransactionBlockVoteEvent extends VanillaSignedMessage<TransactionBlockVoteEvent> {
     private TransactionBlockGossipEvent gossipEvent;
 
     public TransactionBlockGossipEvent gossipEvent() {

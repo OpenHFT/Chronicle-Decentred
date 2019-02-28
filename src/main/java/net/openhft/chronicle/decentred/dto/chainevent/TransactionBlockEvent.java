@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
  * An TransactionBlockEvent is a <em>chain event</em> that holds the transactions that is in a block.
  *
  */
-public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> implements
+public final class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> implements
         HasChainAddress<TransactionBlockEvent<T>>
 {
     private transient DtoParser<T> dtoParser;

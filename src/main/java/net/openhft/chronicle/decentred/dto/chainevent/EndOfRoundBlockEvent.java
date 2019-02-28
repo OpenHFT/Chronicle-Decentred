@@ -27,7 +27,7 @@ import java.util.Arrays;
  * The cursors are monotonic pointers, usually in the order 0, 1, 2, ...
  */
 // Add validation
-public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEvent> implements
+public final class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEvent> implements
         HasChainAddress<EndOfRoundBlockEvent>,
         HasAddressToBlockNumberMap<EndOfRoundBlockEvent> {
     @LongConversion(AddressLongConverter.class)

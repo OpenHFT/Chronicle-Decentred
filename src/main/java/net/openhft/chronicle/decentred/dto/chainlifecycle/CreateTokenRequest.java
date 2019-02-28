@@ -7,7 +7,7 @@ import net.openhft.chronicle.wire.LongConversion;
 // Once a chain then create a token associated to the chaine. Any number N
 // The "type" of the chain.
 // Shares, Permissions, Fixed value chains
-public class CreateTokenRequest extends VanillaSignedMessage<CreateTokenRequest> {
+public final class CreateTokenRequest extends VanillaSignedMessage<CreateTokenRequest> {
     @LongConversion(Base85LongConverter.class)
     private long symbol;   // 1..10 characters
     private double amount; // How much this chain can hold like 10M MyMoney

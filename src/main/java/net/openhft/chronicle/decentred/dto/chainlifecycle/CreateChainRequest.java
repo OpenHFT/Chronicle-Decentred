@@ -10,7 +10,7 @@ import net.openhft.chronicle.wire.IntConversion;
 
 //Create address -> CreateChain -> Delegate Chain
 
-public class CreateChainRequest extends VanillaSignedMessage<CreateChainRequest> {
+public final class CreateChainRequest extends VanillaSignedMessage<CreateChainRequest> {
     @IntConversion(OffsetIntConverter.class)
     private int cycleOffset;
     private int roundsPerDay;

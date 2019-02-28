@@ -9,7 +9,7 @@ import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
 
-public class ApplicationErrorResponse extends VanillaSignedMessage<ApplicationErrorResponse> {
+public final class ApplicationErrorResponse extends VanillaSignedMessage<ApplicationErrorResponse> {
     private String reason;
     private transient VanillaSignedMessage origMessage;
     private transient DtoParser dtoParser;
