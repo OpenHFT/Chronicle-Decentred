@@ -11,6 +11,7 @@ import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.LongLongMap;
 import net.openhft.chronicle.decentred.util.LongU32Writer;
 import net.openhft.chronicle.wire.LongConversion;
+import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
@@ -98,5 +99,17 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
             addressToBlockNumberMap.clear();
         if (addressToBlockNumberMap != null)
         super.reset();
+    }
+
+    @Override
+    public <T extends Marshallable> T copyTo(@NotNull T t) {
+        if (t instanceof TransactionBlockGossipEvent) {
+            TransactionBlockGossipEvent destination = (TransactionBlockGossipEvent) t;
+            destination.chainAddress = chainAddress;
+            destination.addressToBlockNumberMap = LongLongMap.withExpectedSize(addressToBlockNumberMap.size());
+            destination.addressToBlockNumberMap.putAll(addressToBlockNumberMap);
+            return (T) this;
+        }
+        throw new IllegalArgumentException();
     }
 }
