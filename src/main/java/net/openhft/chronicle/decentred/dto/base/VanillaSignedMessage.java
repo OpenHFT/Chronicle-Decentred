@@ -8,10 +8,7 @@ import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.ShortUtil;
 import net.openhft.chronicle.salt.Ed25519;
-import net.openhft.chronicle.wire.AbstractBytesMarshallable;
-import net.openhft.chronicle.wire.LongConversion;
-import net.openhft.chronicle.wire.MicroTimestampLongConverter;
-import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -294,6 +291,28 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
             return byteBuffer;
         } catch (IllegalAccessException e) {
             throw new AssertionError(e);
+        }
+    }
+
+    @Override
+    public <T extends Marshallable> T copyTo(@NotNull T t) {
+        assertSameClassAsThis(t);
+        return super.copyTo(t);
+    }
+
+    /**
+     * Asserts that the provided instance class is the same as this class and
+     * that the provided instance is not null.
+     *
+     * @param that instance to check
+     * @throws IllegalArgumentException if the provided instance class is not
+     *                                  the same as this class
+     *
+     * @throws NullPointerException     if the provided object is null
+     */
+    protected void assertSameClassAsThis(Object that) {
+        if (!this.getClass().equals(that.getClass())) {
+            throw new IllegalArgumentException("Class " + that.getClass().getName() + " is not of class " + this.getClass().getName());
         }
     }
 
