@@ -297,6 +297,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     @Override
     public <T extends Marshallable> T copyTo(@NotNull T t) {
         assertSameClassAsThis(t);
+        assertSigned();
         return super.copyTo(t);
     }
 

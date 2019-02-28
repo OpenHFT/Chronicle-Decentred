@@ -58,10 +58,12 @@ public final class TransactionBlockGossipEvent extends VanillaSignedMessage<Tran
 
         int entries = (int) bytes.readStopBit();
         System.out.println("read gossip table entries = " + entries + " chain address " + DecentredUtil.toAddressString(chainAddress));
-        if (addressToBlockNumberMap == null)
+        if (addressToBlockNumberMap == null) {
             addressToBlockNumberMap = LongLongMap.withExpectedSize(entries);
-        for (int i = 0; i < entries; i++)
+        }
+        for (int i = 0; i < entries; i++) {
             addressToBlockNumberMap.justPut(bytes.readLong(), bytes.readUnsignedInt());
+        }
         assert !addressToBlockNumberMap.containsKey(0L);
     }
 
@@ -89,27 +91,29 @@ public final class TransactionBlockGossipEvent extends VanillaSignedMessage<Tran
 
     @Override
     public LongLongMap addressToBlockNumberMap() {
-        if (addressToBlockNumberMap == null)
+        if (addressToBlockNumberMap == null) {
             addressToBlockNumberMap = LongLongMap.withExpectedSize(16);
+        }
         return addressToBlockNumberMap;
     }
 
     @Override
     public void reset() {
+        if (addressToBlockNumberMap != null) {
             addressToBlockNumberMap.clear();
-        if (addressToBlockNumberMap != null)
+        }
         super.reset();
     }
 
     @Override
     public <T extends Marshallable> T copyTo(@NotNull T t) {
-        if (t instanceof TransactionBlockGossipEvent) {
-            TransactionBlockGossipEvent destination = (TransactionBlockGossipEvent) t;
-            destination.chainAddress = chainAddress;
-            destination.addressToBlockNumberMap = LongLongMap.withExpectedSize(addressToBlockNumberMap.size());
-            destination.addressToBlockNumberMap.putAll(addressToBlockNumberMap);
-            return (T) this;
-        }
-        throw new IllegalArgumentException();
+        assertSameClassAsThis(t);
+        assertSigned();
+        super.copyTo(t);
+        TransactionBlockGossipEvent destination = (TransactionBlockGossipEvent) t;
+        //destination.chainAddress = chainAddress;
+        destination.addressToBlockNumberMap = LongLongMap.withExpectedSize(addressToBlockNumberMap.size());
+        destination.addressToBlockNumberMap.putAll(addressToBlockNumberMap);
+        return (T) this;
     }
 }

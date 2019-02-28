@@ -6,11 +6,14 @@ import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.KeyPair;
+import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 import net.openhft.chronicle.wire.TextWire;
 import net.openhft.chronicle.wire.Wire;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.nio.ByteBuffer;
 import java.util.AbstractMap;
@@ -186,10 +189,9 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         testHashcode(this::initialize);
     }
 
-    @Test
-    void testMarshallUnMarshallBytes() {
-        final long offset = 147; // Cover the case of mid Byte serialization
-
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 147, 63, 64, 65 }) // Cover the case of mid Byte serialization
+    void testMarshallUnMarshallBytes(int offset) {
         final Bytes bytes = Bytes.allocateElasticDirect(1000);
         bytes.writePosition(offset);
         initialize(instance);
@@ -203,22 +205,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
 
         //Todo: Make sure that all bytes are consumed. How? readMarshallable does not modify bytes
 
-        assertEquals(instance, actual);
-        assertEquals(actual, instance);
-    }
-
-    @Test
-    void testMarshallUnMarshallWire() {
-        final Wire wire = new TextWire(Bytes.allocateElasticDirect(1000));
-        initialize(instance);
-        instance.sign(KEY_PAIR.secretKey);
-        instance.writeMarshallable(wire);
-        System.out.println(wire);
-        final T actual = constructor.get();
-        actual.readMarshallable(wire);
-
-        assertEquals(instance, actual);
-        assertEquals(actual, instance);
+        assertEqualsDoubleSided(instance, actual);
     }
 
     @Test
@@ -287,14 +274,60 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     }
 
 
+     /// AbstractBytesMarshallable
+
+    @Test
+    void testMarshallUnMarshallWire() {
+        final Wire wire = new TextWire(Bytes.allocateElasticDirect(1000));
+        initialize(instance);
+        instance.sign(KEY_PAIR.secretKey);
+        instance.writeMarshallable(wire);
+        System.out.println(wire);
+        final T actual = constructor.get();
+        actual.readMarshallable(wire);
+
+        assertEqualsDoubleSided(instance, actual);
+    }
 
 
-    // Todo: copyTo
+    /// Marshallable
 
-    // Todo: Other super methods like copyTo
+    @Test
+    void testDeepCopy() {
+        initialize(instance);
+        instance.sign(KEY_PAIR.secretKey);
+        final T copy = instance.deepCopy();
+        assertEqualsDoubleSided(instance, copy);
+    }
 
-    // Check Bytes after serializer
+    @Test
+    void testCopyTo() {
+        initialize(instance);
+        instance.sign(KEY_PAIR.secretKey);
+        final T copy = constructor.get();
+        instance.copyTo(copy);
+        assertEqualsDoubleSided(instance, copy);
+    }
 
+    @Test
+    void testCopyToWithIllegalTargetClass() {
+        initialize(instance);
+        instance.sign(KEY_PAIR.secretKey);
+        final VanillaSignedMessage copy = new VanillaSignedMessage();
+        assertThrows(IllegalArgumentException.class, () -> {
+            instance.copyTo(copy);
+        });
+    }
+
+    @Test
+    void testCopyToWithNull() {
+        initialize(instance);
+        instance.sign(KEY_PAIR.secretKey);
+        final Marshallable m = null;
+        assertThrows(Exception.class, () -> {
+            instance.copyTo(m);
+        });
+    }
 
     protected Map.Entry<String, Consumer<T>> entry(String s, Consumer<T> c) {
         return new AbstractMap.SimpleImmutableEntry<>(s, c);
@@ -314,6 +347,10 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
             return result.sign(new KeyPair(933448745).secretKey);
     }
 
+    private void assertEqualsDoubleSided(T expected, T actual) {
+        assertEquals(expected, actual);
+        assertEquals(actual, expected);
+    }
 
     private void testEquals(Consumer<T> initializer) {
         final T other = constructor.get();
