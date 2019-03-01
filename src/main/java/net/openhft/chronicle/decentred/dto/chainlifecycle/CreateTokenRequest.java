@@ -8,6 +8,7 @@ import net.openhft.chronicle.wire.LongConversion;
 // The "type" of the chain.
 // Shares, Permissions, Fixed value chains
 public final class CreateTokenRequest extends VanillaSignedMessage<CreateTokenRequest> {
+
     @LongConversion(Base85LongConverter.class)
     private long symbol;   // 1..10 characters
     private double amount; // How much this chain can hold like 10M MyMoney
@@ -34,16 +35,18 @@ public final class CreateTokenRequest extends VanillaSignedMessage<CreateTokenRe
         return this;
     }
 
-    // positive
     public double granularity() {
         return granularity;
     }
 
     public CreateTokenRequest granularity(double granularity) {
         assertNotSigned();
+        if (granularity < 0.0) {
+            throw new IllegalArgumentException("Granularity must be positive: " + granularity);
+        }
+
         this.granularity = granularity;
         return this;
     }
-
 
 }

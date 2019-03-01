@@ -10,6 +10,7 @@ import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
  *
  */
 public final class TransactionBlockVoteEvent extends VanillaSignedMessage<TransactionBlockVoteEvent> {
+
     private TransactionBlockGossipEvent gossipEvent;
 
     public TransactionBlockGossipEvent gossipEvent() {
@@ -26,4 +27,5 @@ public final class TransactionBlockVoteEvent extends VanillaSignedMessage<Transa
     public long chainAddress() {
         return gossipEvent.chainAddress();
     }
+
 }

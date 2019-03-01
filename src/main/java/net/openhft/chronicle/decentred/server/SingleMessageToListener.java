@@ -4,6 +4,7 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
+import net.openhft.chronicle.decentred.dto.base.TransientFieldHandler;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.threads.LongPauser;
 import net.openhft.chronicle.threads.Pauser;
@@ -15,7 +16,12 @@ public class SingleMessageToListener implements RunningMessageToListener, Runnab
     private final Pauser pauser = new LongPauser(0, 10, 1, 20, TimeUnit.MILLISECONDS);
     private final MessageToListener xclServer;
     private final AtomicReference<Bytes> writeLock = new AtomicReference<>();
-    private final VanillaSignedMessage signedMessage = new VanillaSignedMessage();
+    private final VanillaSignedMessage signedMessage = new VanillaSignedMessage() {
+        @Override
+        public TransientFieldHandler transientFieldHandler() {
+            return TransientFieldHandler.empty();
+        }
+    };
     private final Bytes bytes1 = Bytes.allocateElasticDirect(32 << 20).unchecked(true);
     private final Bytes bytes2 = Bytes.allocateElasticDirect(32 << 20).unchecked(true);
 

@@ -5,8 +5,11 @@ import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.bytes.NativeBytesStore;
 import net.openhft.chronicle.core.io.IORuntimeException;
+import net.openhft.chronicle.decentred.dto.base.TransientFieldHandler;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
 import net.openhft.chronicle.salt.Ed25519;
+import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
@@ -32,46 +35,76 @@ public final class AssignDelegatesRequest extends VanillaSignedMessage<AssignDel
         return this;
     }
 
-    @Override
-    public void readMarshallable(@NotNull WireIn wire) throws IORuntimeException {
-        super.readMarshallable(wire);
-        wire.read("delegates").sequence(delegates, (d, v) -> {
-            while (v.hasNextSequenceItem()) {
-                byte[] bytes = v.bytes();
-                d.add(NativeBytesStore.from(bytes));
-            }
-        });
-    }
+
+    // Handling of transient fields
+
+    private static final TransientFieldHandler<AssignDelegatesRequest> TRANSIENT_FIELD_HANDLER = new CustomTransientFieldHandler();
 
     @Override
-    public void writeMarshallable(@NotNull WireOut wire) {
-        super.writeMarshallable(wire);
-        wire.write("delegates").sequence(delegates, (d, v) -> {
-            for (BytesStore bytesStore : d) {
-                v.bytes(bytesStore);
-            }
-        });
+    public TransientFieldHandler<AssignDelegatesRequest> transientFieldHandler() {
+        return TRANSIENT_FIELD_HANDLER;
     }
 
-    @Override
-    public void readMarshallable(BytesIn bytes) throws IORuntimeException {
-        super.readMarshallable(bytes);
-        int length = (int) bytes.readStopBit();
-        delegates.clear();
-        for (int i = 0; i < length; i++) {
-            int pklen = Ed25519.PUBLIC_KEY_LENGTH;
-            BytesStore bs = NativeBytesStore.nativeStoreWithFixedCapacity(pklen);
-            bytes.copyTo(bs);
-            delegates.add(bs);
+    private static final class CustomTransientFieldHandler implements TransientFieldHandler<AssignDelegatesRequest> {
+
+        @Override
+        public void reset(AssignDelegatesRequest original) {
+            original.delegates.clear();
+        }
+
+        @Override
+        public void copy(@NotNull AssignDelegatesRequest original, @NotNull AssignDelegatesRequest target) {
+            target.delegates = new ArrayList<>(original.delegates);
+        }
+
+        @Override
+        public void deepCopy(@NotNull AssignDelegatesRequest original, @NotNull AssignDelegatesRequest target) {
+            target.delegates = new ArrayList<>(original.delegates.size());
+            for (BytesStore bs: original.delegates) {
+                target.delegates.add(bs.copy());
+            }
+        }
+
+        @Override
+        public void writeMarshallable(@NotNull AssignDelegatesRequest original, @NotNull WireOut wire) {
+            wire.write("delegates").sequence(original.delegates, (d, v) -> {
+                for (BytesStore bytesStore : d) {
+                    v.bytes(bytesStore);
+                }
+            });
+        }
+
+        @Override
+        public void readMarshallable(AssignDelegatesRequest original, WireIn wire) {
+            wire.read("delegates").sequence(original.delegates, (d, v) -> {
+                while (v.hasNextSequenceItem()) {
+                    byte[] bytes = v.bytes();
+                    d.add(NativeBytesStore.from(bytes));
+                }
+            });
+        }
+
+
+        @Override
+        public void writeMarshallableInternal(AssignDelegatesRequest original, BytesOut bytes) {
+            bytes.writeStopBit(original.delegates.size());
+            for (BytesStore delegate : original.delegates) {
+                bytes.write(delegate);
+            }
+        }
+
+        @Override
+        public void readMarshallable(@NotNull AssignDelegatesRequest original, @NotNull BytesIn bytes) {
+            final int length = (int) bytes.readStopBit();
+            original.delegates.clear();
+            for (int i = 0; i < length; i++) {
+                final int pklen = Ed25519.PUBLIC_KEY_LENGTH;
+                final BytesStore bs = NativeBytesStore.nativeStoreWithFixedCapacity(pklen);
+                bytes.copyTo(bs);
+                original.delegates.add(bs);
+            }
         }
     }
 
-    @Override
-    protected void writeMarshallable0(BytesOut bytes) {
-        super.writeMarshallable0(bytes);
-        bytes.writeStopBit(delegates.size());
-        for (BytesStore delegate : delegates) {
-            bytes.write(delegate);
-        }
-    }
+
 }

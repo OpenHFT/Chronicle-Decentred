@@ -8,6 +8,4 @@ import net.openhft.chronicle.decentred.dto.base.SelfSignedMessage;
 // Invalidate an address previously acquired by CreateAddressRequest
 // Protect if the keys become known. Seal or archive an account.
 // Currently not used
-public final class InvalidationEvent extends SelfSignedMessage<InvalidationEvent> {
-
-}
+public final class InvalidationEvent extends SelfSignedMessage<InvalidationEvent> {}
