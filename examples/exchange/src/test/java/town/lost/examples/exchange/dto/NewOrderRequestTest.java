@@ -33,7 +33,7 @@ final class NewOrderRequestTest {
                 .sign(secretKey1, new SetTimeProvider("2018-03-04T18:03:05.364453"));
         assertEquals("!NewOrderRequest {\n" +
                 "  timestampUS: 2018-03-04T18:03:05.364453,\n" +
-                "  address: phccofmpy6ci,\n" +
+                "  address: nphccofmpy6ci,\n" +
                 "  side: BUY,\n" +
                 "  quantity: 1E3,\n" +
                 "  maxPrice: 1E3,\n" +

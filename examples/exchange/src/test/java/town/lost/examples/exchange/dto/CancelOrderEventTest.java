@@ -31,7 +31,7 @@ final class CancelOrderEventTest {
 
         assertEquals("!CancelOrderEvent {\n" +
                 "  timestampUS: 2018-03-04T18:03:05.644532,\n" +
-                "  address: phccofmpy6ci,\n" +
+                "  address: nphccofmpy6ci,\n" +
                 "  orderTimestampUS: 2018-03-04T18:03:03.311111,\n" +
                 "  orderAddress: bye.now\n" +
                 "}\n", cor.toString());

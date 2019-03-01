@@ -1,8 +1,8 @@
-to: phccofmpy6ci
+to: nphccofmpy6ci
 onBalance: {
   timestampUS: 2018-08-20T11:31:15.37901,
-  address: 0.0.0.0:0,
-  balanceAddress: phccofmpy6ci,
+  address: .,
+  balanceAddress: nphccofmpy6ci,
   amount: 100.0,
   freeAmount: 20.0
 }

@@ -16,12 +16,7 @@ public class SingleMessageToListener implements RunningMessageToListener, Runnab
     private final Pauser pauser = new LongPauser(0, 10, 1, 20, TimeUnit.MILLISECONDS);
     private final MessageToListener xclServer;
     private final AtomicReference<Bytes> writeLock = new AtomicReference<>();
-    private final VanillaSignedMessage signedMessage = new VanillaSignedMessage() {
-        @Override
-        public TransientFieldHandler transientFieldHandler() {
-            return TransientFieldHandler.empty();
-        }
-    };
+    private final VanillaSignedMessage signedMessage = new VanillaSignedMessage(){};
     private final Bytes bytes1 = Bytes.allocateElasticDirect(32 << 20).unchecked(true);
     private final Bytes bytes2 = Bytes.allocateElasticDirect(32 << 20).unchecked(true);
 

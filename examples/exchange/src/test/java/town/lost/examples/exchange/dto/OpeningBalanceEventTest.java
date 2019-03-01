@@ -32,8 +32,8 @@ final class OpeningBalanceEventTest {
 
         assertEquals("!OpeningBalanceEvent {\n" +
                 "  timestampUS: 2018-08-20T11:31:15.37901,\n" +
-                "  address: phccofmpy6ci,\n" +
-                "  balanceAddress: phccofmpy6ci,\n" +
+                "  address: nphccofmpy6ci,\n" +
+                "  balanceAddress: nphccofmpy6ci,\n" +
                 "  balances: {\n" +
                 "    ? XCL: 128.0,\n" +
                 "    ? USD: 10E3,\n" +

@@ -34,7 +34,7 @@ final class TradeEventTest {
                 .sign(secretKey1, new SetTimeProvider("2018-03-04T18:03:05.364453"));
         assertEquals("!TradeEvent {\n" +
                 "  timestampUS: 2018-03-04T18:03:05.364453,\n" +
-                "  address: phccofmpy6ci,\n" +
+                "  address: nphccofmpy6ci,\n" +
                 "  orderTimestampUS: 2018-03-04T18:03:04.264453,\n" +
                 "  orderAddress: abcdefghijk,\n" +
                 "  quantity: 1E3,\n" +

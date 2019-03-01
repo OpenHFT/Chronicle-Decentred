@@ -1,25 +1,25 @@
 createAccountRequest: {
   timestampUS: 2018-08-20T11:31:15.319,
-  address: 0.0.0.0:0,
+  address: .,
   publicKey: !!binary 9M9t8hyt2kEJmL46Fs+si0VigLTMQt9OafgMm3ljIOg=
 }
 ---
 createAccountRequest: {
   timestampUS: 2018-08-20T11:31:15.373,
-  address: 0.0.0.0:0,
+  address: .,
   publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o=
 }
 ---
 openingBalance: {
   timestampUS: 2018-08-20T11:31:15.373001,
-  address: 0.0.0.0:0,
-  balanceAddress: phccofmpy6ci,
+  address: .,
+  balanceAddress: nphccofmpy6ci,
   amount: 100.0
 }
 ---
 openingBalance: {
   timestampUS: 2018-08-20T11:31:15.379,
-  address: 0.0.0.0:0,
+  address: .,
   balanceAddress: ud6jbceicts2,
   amount: 20.0
 }

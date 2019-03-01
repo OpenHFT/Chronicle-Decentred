@@ -13,12 +13,15 @@ import net.openhft.chronicle.wire.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.util.Set;
 import java.util.function.LongFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 
 public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends AbstractBytesMarshallable
@@ -63,6 +66,19 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
 
 
     public VanillaSignedMessage() {
+
+/*        Set<String> objectM = Stream.of(Object.class.getMethods())
+            .map(Object::toString)
+            .collect(Collectors.toSet());
+
+        System.out.println( Stream.of(getClass().getMethods())
+            .sorted(comparing(m -> m .getDeclaringClass().getName()))
+            .map(Object::toString)
+            .filter(m -> !objectM.contains(m))
+            .collect(Collectors.joining("\n")));
+        System.exit(1);*/
+
+
         if (ENFORCE_TRANSIENT_OVERRIDE_INVARIANT) {
             final Set<String> newTransientFields = Stream.of(getClass().getDeclaredFields())
                 .filter(f -> Modifier.isTransient(f.getModifiers()))

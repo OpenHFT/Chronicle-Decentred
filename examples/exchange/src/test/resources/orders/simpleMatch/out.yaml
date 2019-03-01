@@ -8,7 +8,7 @@
 to: buyer
 tradeEvent: {
   timestampUS: 1970-01-01T00:00:00.115,
-  address: 0.0.0.0:0,
+  address: .,
   orderTimestampUS: 1970-01-01T00:00:00.12,
   orderAddress: buyer,
   quantity: 100.0,
@@ -19,7 +19,7 @@ tradeEvent: {
 to: seller
 tradeEvent: {
   timestampUS: 1970-01-01T00:00:00.115,
-  address: 0.0.0.0:0,
+  address: .,
   orderTimestampUS: 1970-01-01T00:00:00.102,
   orderAddress: seller,
   quantity: 100.0,
@@ -32,7 +32,7 @@ tradeEvent: {
 to: seller
 tradeEvent: {
   timestampUS: 1970-01-01T00:00:00.215,
-  address: 0.0.0.0:0,
+  address: .,
   orderTimestampUS: 1970-01-01T00:00:00.3,
   orderAddress: seller,
   quantity: 100.0,
@@ -43,7 +43,7 @@ tradeEvent: {
 to: buyer
 tradeEvent: {
   timestampUS: 1970-01-01T00:00:00.215,
-  address: 0.0.0.0:0,
+  address: .,
   orderTimestampUS: 1970-01-01T00:00:00.1,
   orderAddress: buyer,
   quantity: 100.0,
@@ -54,7 +54,7 @@ tradeEvent: {
 to: seller
 tradeEvent: {
   timestampUS: 1970-01-01T00:00:00.215,
-  address: 0.0.0.0:0,
+  address: .,
   orderTimestampUS: 1970-01-01T00:00:00.3,
   orderAddress: seller,
   quantity: 100.0,
@@ -65,7 +65,7 @@ tradeEvent: {
 to: buyer
 tradeEvent: {
   timestampUS: 1970-01-01T00:00:00.215,
-  address: 0.0.0.0:0,
+  address: .,
   orderTimestampUS: 1970-01-01T00:00:00.1,
   orderAddress: buyer,
   quantity: 100.0,
@@ -77,7 +77,7 @@ tradeEvent: {
 to: buyer
 tradeClosedEvent: {
   timestampUS: 1970-01-01T00:00:00.215,
-  address: 0.0.0.0:0,
+  address: .,
   orderTimestampUS: 1970-01-01T00:00:00.101,
   orderAddress: buyer,
   currencyPair: USDXCL,
@@ -87,7 +87,7 @@ tradeClosedEvent: {
 to: seller
 tradeClosedEvent: {
   timestampUS: 1970-01-01T00:00:00.215,
-  address: 0.0.0.0:0,
+  address: .,
   orderTimestampUS: 1970-01-01T00:00:00.3,
   orderAddress: seller,
   currencyPair: USDXCL,
@@ -97,7 +97,7 @@ tradeClosedEvent: {
 to: seller
 tradeClosedEvent: {
   timestampUS: 1970-01-01T00:00:00.215,
-  address: 0.0.0.0:0,
+  address: .,
   orderTimestampUS: 1970-01-01T00:00:00.103,
   orderAddress: seller,
   currencyPair: USDXCL,

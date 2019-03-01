@@ -32,7 +32,7 @@ final class CancelOrderRequestTest {
 
         assertEquals("!CancelOrderRequest {\n" +
                 "  timestampUS: 2018-03-04T18:03:05.644532,\n" +
-                "  address: phccofmpy6ci,\n" +
+                "  address: nphccofmpy6ci,\n" +
                 "  currencyPair: USDXCL,\n" +
                 "  orderTimestampUS: 2018-03-04T18:03:05.364453\n" +
                 "}\n", cor.toString());

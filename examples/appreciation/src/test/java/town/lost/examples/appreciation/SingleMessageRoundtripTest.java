@@ -1,6 +1,9 @@
 package town.lost.examples.appreciation;
 
+import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
+import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,11 +23,16 @@ import static java.lang.Math.abs;
 final class SingleMessageRoundtripTest {
 
     private static final int CLIENT_SEED = 1;
+    private static final KeyPair KEY_PAIR = new KeyPair(CLIENT_SEED);
+
     private static final int OTHER_CLIENT_SEED = 2;
+    private static final KeyPair OTHER_KEY_PAIR = new KeyPair(OTHER_CLIENT_SEED);
 
-    private static final long CLIENT_ADDRESS = Client.addressFromSeed(CLIENT_SEED);
-    private static final long OTHER_CLIENT_ADDRESS = Client.addressFromSeed(OTHER_CLIENT_SEED);
+    private static final long CLIENT_ADDRESS = DecentredUtil.toAddress(OTHER_KEY_PAIR.publicKey);
+    private static final long OTHER_CLIENT_ADDRESS = DecentredUtil.toAddress(OTHER_KEY_PAIR.publicKey);
 
+    private static final int MGMT_SEED = 3;
+    private static final KeyPair MGMT_KEY_PAIR = new KeyPair(MGMT_SEED);
 
     private static final double START_AMOUNT = 100.0;
     private static final double GIVE_AMOUNT = 25.0;
@@ -40,7 +48,9 @@ final class SingleMessageRoundtripTest {
     void setup() throws IOException, InterruptedException {
         balanceStore = new VanillaBalanceStore();
         server = new Server(42, 0, balanceStore);
+
         client = new Client(CLIENT_SEED, "0.0.0.0", server.getPort());
+        Jvm.pause(5000); // Wait for server to come up // Todo: Fix this
         client.connect();
 
         setupBalance(CLIENT_ADDRESS, START_AMOUNT);
@@ -58,7 +68,9 @@ final class SingleMessageRoundtripTest {
         final Give give = new Give()
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             .address(CLIENT_ADDRESS)
-            .init(OTHER_CLIENT_ADDRESS, GIVE_AMOUNT);
+            .init(OTHER_CLIENT_ADDRESS, GIVE_AMOUNT)
+            .sign(KEY_PAIR.secretKey)
+            ;
 
         client.sendMsg(give);
 
@@ -89,7 +101,9 @@ final class SingleMessageRoundtripTest {
     private void setupBalance(long address, double amount) throws InterruptedException {
         OpeningBalance openingBalance = new OpeningBalance()
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
-            .init(address, amount);
+            .init(address, amount)
+            .sign(MGMT_KEY_PAIR.secretKey)
+            ;
         client.sendMsg(openingBalance);
         waitFor(() -> assertBalance(CLIENT_ADDRESS, amount));
     }
