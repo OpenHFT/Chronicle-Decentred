@@ -195,8 +195,8 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
         @Override
         public void readMarshallable(@NotNull TransactionBlockEvent<T> original, @NotNull BytesIn bytes) {
             // Todo: Handle the other volatile parameters!!
-            messagesStart = original.bytes.readPosition();
-            transactions = original.bytes;
+            original.messagesStart = original.transactions.writePosition();
+            original.transactions.write(bytes.bytesForRead());
         }
     }
 
