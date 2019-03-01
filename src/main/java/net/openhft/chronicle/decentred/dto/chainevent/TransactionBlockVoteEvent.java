@@ -17,6 +17,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public final class TransactionBlockVoteEvent extends VanillaSignedMessage<TransactionBlockVoteEvent> {
 
+    private static final String GOSSIP_EVENT = "gossipEvent";
+
     private transient TransactionBlockGossipEvent gossipEvent;
 
     public TransactionBlockGossipEvent gossipEvent() {
@@ -61,12 +63,14 @@ public final class TransactionBlockVoteEvent extends VanillaSignedMessage<Transa
 
         @Override
         public void writeMarshallable(@NotNull TransactionBlockVoteEvent original, @NotNull WireOut wire) {
-            original.gossipEvent().writeMarshallable(wire);
+            wire.write(GOSSIP_EVENT).object(
+                original.gossipEvent()
+            );
         }
 
         @Override
         public void readMarshallable(@NotNull TransactionBlockVoteEvent original, @NotNull WireIn wire) {
-            original.gossipEvent().readMarshallable(wire);
+            original.gossipEvent(wire.read(GOSSIP_EVENT).object(TransactionBlockGossipEvent.class));
         }
 
         @Override
