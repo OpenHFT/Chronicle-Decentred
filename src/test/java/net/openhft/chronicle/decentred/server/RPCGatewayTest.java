@@ -39,8 +39,8 @@ final class RPCGatewayTest {
                         config.mainPeriodMS(),
                         config.localPeriodMS(),
                         vtp,
-                        vtp
-                    ))) {
+                        vtp,
+                        kp.secretKey))) {
                         System.out.println("Server address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp.publicKey)));
 
                         KeyPair kp2 = new KeyPair(17);

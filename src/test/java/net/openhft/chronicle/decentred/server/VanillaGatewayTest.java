@@ -78,6 +78,7 @@ final class VanillaGatewayTest {
     static SystemMessages createGateway(GatewayTester tester) {
         long address = DecentredUtil.parseAddress("server");
         DtoRegistry<SystemMessages> dtoRegistry = DtoRegistry.newRegistry(SystemMessages.class);
+        KeyPair kp = new KeyPair(17);
         VanillaGateway gateway = VanillaGateway.newGateway(
                 dtoRegistry,
                 address,
@@ -86,8 +87,8 @@ final class VanillaGatewayTest {
                 50,
                 50,
                 tester,
-                tester);
-        KeyPair kp = new KeyPair(17);
+                tester,
+                kp.secretKey);
         SetTimeProvider stp = new SetTimeProvider("2018-08-20T12:53:05.000001")
                 .autoIncrement(1, TimeUnit.MICROSECONDS);
         gateway.tcpMessageListener(tester);

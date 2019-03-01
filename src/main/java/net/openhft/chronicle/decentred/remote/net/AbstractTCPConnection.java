@@ -59,7 +59,6 @@ public abstract class AbstractTCPConnection implements TCPConnection {
         ByteBuffer[] headerBytes = headerBytesTL.get();
         headerBytes[0].clear();
         int length = HEADER_LENGTH + buffer.remaining();
-        System.out.println("ATCPC write length = " + length);
         headerBytes[0].putInt(0, length);
         headerBytes[1] = buffer;
 
@@ -75,8 +74,6 @@ public abstract class AbstractTCPConnection implements TCPConnection {
     public void write(ByteBuffer buffer) throws IOException {
         if (!running)
             throw new IOException("closed");
-
-        System.out.println("ATCPC write buffer");
 
         waitForReconnect();
 
@@ -98,7 +95,6 @@ public abstract class AbstractTCPConnection implements TCPConnection {
         if (bytes.readRemaining() >= HEADER_LENGTH) {
             // length includes the header itself.
             int length = bytes.readInt(bytes.readPosition());
-            System.out.println("incoming length = " + length);
             if (length < HEADER_LENGTH || length > MAX_MESSAGE_SIZE)
                 throw new StreamCorruptedException("length: " + length);
             if (bytes.readRemaining() >= length) {

@@ -8,11 +8,11 @@ import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.LongLongMap;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+// We assume that when we have received message with timestamp X,
+// we have also received all messages with timestamp X' such that X' < X
 public class VanillaBlockReplayer<T> implements BlockReplayer {
     private final long address;
     private final T postBlockChainProcessor;
@@ -62,18 +62,17 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
 
                     long last = replayedMap.getOrDefault(entry.getKey(), -1L);
 
-                    int size;
+                    TransactionLog log = entry.getValue();
                     while (true) {
-                        size = entry.getValue().messages.size();
-                        if (size >= upto) {
+                        if (log.getNewestTimestamp() >= upto) {
                             break;
                         }
-                        System.out.println(address + " Waiting ... " + size + " < " + upto);
+                        // System.out.println(address + " Waiting ... " + size + " < " + upto);
                         wait(100);
                     }
 
-                    if (last < size) {
-                        replayActions.add(() -> replay(entry.getValue(), last + 1, upto));
+                    if (last < upto) {
+                        replayActions.add(() -> replay(log, last + 1, upto + 1));
                         replayedMap.justPut(entry.getKey(), upto);
                     }
                 }
@@ -84,15 +83,12 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
             lastEndOfRoundBlockEvent = null;
         }
 //        postBlockChainProcessor.replayStarted();
-        for (Runnable replayAction : replayActions) {
-            replayAction.run();
-        }
+        replayActions.forEach(Runnable::run);
 //        postBlockChainProcessor.replayFinished();
     }
 
-    private void replay(TransactionLog messages, long fromIndex, long toIndex) {
-        for (long i = fromIndex; i <= toIndex; i++) {
-            SignedMessage message = messages.get((int) i);
+    private void replay(TransactionLog log, long fromTs, long toTs) {
+        for (SignedMessage message: log.get(fromTs, toTs)) {
             if (message instanceof TransactionBlockEvent) {
                 TransactionBlockEvent tbe = (TransactionBlockEvent) message;
                 tbe.dtoParser(dtoParser);
@@ -103,20 +99,27 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
     }
 
     static class TransactionLog {
-        private final List<SignedMessage> messages = new ArrayList<>();
+        // To be replaced by some other off-heap map
+        private final SortedMap<Long, SignedMessage> messages = new TreeMap<>();
 
         public synchronized void add(SignedMessage msg) {
             if (msg instanceof TransactionBlockEvent) {
-                messages.add(((TransactionBlockEvent<?>) msg).deepCopy());
+                messages.put(msg.timestampUS(), msg);
             } else if (msg instanceof EndOfRoundBlockEvent) {
-                messages.add(((EndOfRoundBlockEvent) msg).deepCopy());
+                messages.put(msg.timestampUS(), msg);
             } else {
                 Jvm.warn().on(getClass(), "Unknown " + msg.getClass());
             }
         }
 
-        synchronized SignedMessage get(int index) {
-            return messages.get(index);
+        public synchronized long getNewestTimestamp() {
+            return messages.lastKey();
+        }
+
+        public Iterable<? extends SignedMessage> get(long fromTs, long toTs) {
+            synchronized (this) {
+                return messages.tailMap(fromTs).headMap(toTs).values();
+            }
         }
     }
 }

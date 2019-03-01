@@ -1,10 +1,11 @@
 package town.lost.examples.appreciation.benchmark;
 
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
-import net.openhft.chronicle.decentred.dto.*;
+import net.openhft.chronicle.decentred.dto.VerificationEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
@@ -77,10 +78,11 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
 
         Function<GatewayConfiguration<AppreciationMessages>, VanillaGateway> gatewayConstructor = config -> {
             long region = DecentredUtil.parseAddress(config.regionStr());
+            Bytes secretKey = getRpcBuilder().secretKey();
             BlockEngine mainEngine = VanillaBlockEngine.newMain(config.dtoRegistry(), config.address(),
-                config.mainPeriodMS(), config.clusterAddresses(), mainProcessor);
+                config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, secretKey);
             BlockEngine localEngine = VanillaBlockEngine.newLocal(config.dtoRegistry(), config.address(), region,
-                config.localPeriodMS(), config.clusterAddresses(), localProcessor);
+                config.localPeriodMS(), config.clusterAddresses(), localProcessor, secretKey);
 
             AppreciationTransactions blockChain = new AppreciationTransactions() {
                 @Override
@@ -102,7 +104,7 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
             return new VanillaAppreciationGateway(
                 region, mainEngine, localEngine, messageRouter, blockChain, balanceStore);
         };
-        rpcServer = getRpcBuilder(). createServer(socketAddress.getHostName(), socketAddress.getPort(), mainProcessor, localProcessor, gatewayConstructor);
+        rpcServer = getRpcBuilder().createServer(socketAddress.getHostName(), socketAddress.getPort(), mainProcessor, localProcessor, gatewayConstructor);
         ((TransactionProcessor) mainProcessor).messageRouter(rpcServer);
         ((TransactionProcessor) localProcessor).messageRouter(rpcServer);
     }

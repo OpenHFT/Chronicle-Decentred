@@ -51,8 +51,8 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
         this.secretKey = secretKey;
         this.tClass = tClass;
         this.dtoRegistry = dtoRegistry;
-        tcpServer = new VanillaTCPServer(name, port, new XCLConnectionListener(dtoRegistry.get(tClass)));
         this.serverComponent = serverComponentBuilder.apply(this);
+        tcpServer = new VanillaTCPServer(name, port, new XCLConnectionListener(dtoRegistry.get(tClass)));
     }
 
     public int getPort() {
@@ -200,9 +200,7 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
             DEFAULT_CONNECTION_TL.set(channel);
             bytes.readSkip(-4);
             try {
-                // TODO - clarify whether this is a proper way to make sure responses find their way back
                 dtoParser.parseOne(bytes, serverComponent);
-                //setRoute(sourceAddress, channel);
             } catch (IORuntimeException iore) {
                 if (iore.getCause() instanceof IOException)
                     throw (IOException) iore.getCause();

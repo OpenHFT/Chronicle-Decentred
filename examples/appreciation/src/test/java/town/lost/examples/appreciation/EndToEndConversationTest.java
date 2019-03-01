@@ -7,11 +7,11 @@ import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
-import net.openhft.chronicle.decentred.dto.*;
-import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.VerificationEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
+import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.server.*;
@@ -129,10 +129,11 @@ public class EndToEndConversationTest {
 
             Function<GatewayConfiguration<AppreciationMessages>, VanillaGateway> gatewayConstructor = config -> {
                 long region = DecentredUtil.parseAddress(config.regionStr());
+                Bytes secretKey = getRpcBuilder().secretKey();
                 BlockEngine mainEngine = VanillaBlockEngine.newMain(config.dtoRegistry(), config.address(),
-                    config.mainPeriodMS(), config.clusterAddresses(), mainProcessor);
+                    config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, secretKey);
                 BlockEngine localEngine = VanillaBlockEngine.newLocal(config.dtoRegistry(), config.address(), region,
-                    config.localPeriodMS(), config.clusterAddresses(), localProcessor);
+                    config.localPeriodMS(), config.clusterAddresses(), localProcessor, secretKey);
 
                 AppreciationTransactions blockChain = new AppreciationTransactions() {
                     @Override

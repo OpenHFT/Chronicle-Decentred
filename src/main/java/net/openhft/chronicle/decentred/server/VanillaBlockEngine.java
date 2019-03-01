@@ -1,5 +1,6 @@
 package net.openhft.chronicle.decentred.server;
 
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.decentred.api.MessageToListener;
@@ -27,6 +28,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
 
     private final long address;
     private final long chainAddress;
+    private final BytesStore secretKey;
     private final int periodUS;
 
     private final QueuingChainer chainer;
@@ -45,23 +47,25 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     private MessageToListener tcpMessageListener;
 
     public <U extends T> VanillaBlockEngine(DtoRegistry<U> dtoRegistry,
-                              long address,
-                              long chainAddress,
-                              int periodMS,
-                              T postBlockChainProcessor,
-                              long[] clusterAddresses) {
+                                            long address,
+                                            long chainAddress,
+                                            int periodMS,
+                                            T postBlockChainProcessor,
+                                            long[] clusterAddresses,
+                                            BytesStore secretKey) {
         this.address = address;
         this.chainAddress = chainAddress;
+        this.secretKey = secretKey;
         this.periodUS = periodMS * 1000;
 
         nextSendUS = (SystemTimeProvider.INSTANCE.currentTimeMicros() / periodUS + 1) * periodUS;
         this.clusterAddresses = clusterAddresses;
         assert LongStream.of(clusterAddresses).anyMatch(a -> a == address);
-        chainer = new QueuingChainer(chainAddress, dtoRegistry);
+        chainer = new QueuingChainer<>(chainAddress, dtoRegistry);
         blockReplayer = new VanillaBlockReplayer<>(address, dtoRegistry, postBlockChainProcessor);
-        voteTaker = new VanillaVoteTaker(address, chainAddress, clusterAddresses, blockReplayer);
-        voter = new VanillaVoter(address, clusterAddresses, voteTaker);
-        gossiper = new VanillaGossiper(address, chainAddress, clusterAddresses, voter);
+        voteTaker = new VanillaVoteTaker(address, chainAddress, clusterAddresses, blockReplayer, secretKey, dtoRegistry);
+        voter = new VanillaVoter(address, clusterAddresses, voteTaker, secretKey, dtoRegistry);
+        gossiper = new VanillaGossiper(address, chainAddress, clusterAddresses, voter, secretKey, dtoRegistry);
         String regionStr = DecentredUtil.toAddressString(chainAddress);
         votingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-voter", true, Thread.MAX_PRIORITY));
         processingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-processor", true, Thread.MAX_PRIORITY));
@@ -69,26 +73,27 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     public static <T, U extends T> VanillaBlockEngine<T> newMain(DtoRegistry<U> dtoRegistry,
-                                                    long address,
-                                                    int periodMS,
-                                                    long[] clusterAddresses,
-                                                    T postBlockChainProcessor) {
+                                                                 long address,
+                                                                 int periodMS,
+                                                                 long[] clusterAddresses,
+                                                                 T postBlockChainProcessor,
+                                                                 BytesStore secretKey) {
         assert LongStream.of(clusterAddresses).distinct().count() == clusterAddresses.length;
 
         long main = DecentredUtil.parseAddress("main");
 
-        return new VanillaBlockEngine<>(dtoRegistry, address, main, periodMS, postBlockChainProcessor, clusterAddresses);
+        return new VanillaBlockEngine<>(dtoRegistry, address, main, periodMS, postBlockChainProcessor, clusterAddresses, secretKey);
     }
 
     public static <T, U extends T> VanillaBlockEngine<T> newLocal(DtoRegistry<U> dtoRegistry,
-                                                     long address,
-                                                     long chainAddress,
-                                                     int periodMS,
-                                                     long[] clusterAddresses,
-                                                     T postBlockChainProcessor) {
+                                                                  long address,
+                                                                  long chainAddress,
+                                                                  int periodMS,
+                                                                  long[] clusterAddresses,
+                                                                  T postBlockChainProcessor, BytesStore secretKey) {
         assert LongStream.of(clusterAddresses).distinct().count() == clusterAddresses.length;
 
-        return new VanillaBlockEngine<>(dtoRegistry, address, chainAddress, periodMS, postBlockChainProcessor, clusterAddresses);
+        return new VanillaBlockEngine<>(dtoRegistry, address, chainAddress, periodMS, postBlockChainProcessor, clusterAddresses, secretKey);
     }
 
     @Override
@@ -209,12 +214,13 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     private void doProcessOneBlock() throws InterruptedException {
-        TransactionBlockEvent tbe = chainer.nextTransactionBlockEvent();
+        TransactionBlockEvent tbe = chainer.createTransactionBlockEvent();
 //                sample.sample(System.nanoTime() - start);
 //                start = System.nanoTime();
         // tg System.out.println("TBE "+tbe);
         if (tbe != null) {
             tbe.address(address);
+            tbe.sign(secretKey);
             for (long clusterAddress : clusterAddresses) {
                 if (clusterAddress == address) {
                     transactionBlockEvent(tbe);

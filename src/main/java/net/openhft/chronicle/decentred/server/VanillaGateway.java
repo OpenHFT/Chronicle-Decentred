@@ -44,18 +44,19 @@ public class VanillaGateway implements Gateway {
     }
 
     public static <T> VanillaGateway newGateway(DtoRegistry<T> dtoRegistry,
-                                                long address,
-                                                String regionStr,
-                                                long[] clusterAddresses,
-                                                int mainPeriodMS,
-                                                int localPeriodMS,
-                                                T mainTransactionProcessor,
-                                                T localTransactionPrcoessor) {
+                                                                     long address,
+                                                                     String regionStr,
+                                                                     long[] clusterAddresses,
+                                                                     int mainPeriodMS,
+                                                                     int localPeriodMS,
+                                                                     T mainTransactionProcessor,
+                                                                     T localTransactionProcessor,
+                                                                     BytesStore secretKey) {
         long region = DecentredUtil.parseAddress(regionStr);
         return new VanillaGateway(address,
                 region,
-                VanillaBlockEngine.newMain(dtoRegistry, address, mainPeriodMS, clusterAddresses, mainTransactionProcessor),
-                VanillaBlockEngine.newLocal(dtoRegistry, address, region, localPeriodMS, clusterAddresses, localTransactionPrcoessor)
+                VanillaBlockEngine.newMain(dtoRegistry, address, mainPeriodMS, clusterAddresses, mainTransactionProcessor, secretKey),
+                VanillaBlockEngine.newLocal(dtoRegistry, address, region, localPeriodMS, clusterAddresses, localTransactionProcessor, secretKey)
         );
     }
 

@@ -3,39 +3,39 @@ package net.openhft.chronicle.decentred.server;
 import net.openhft.chronicle.decentred.api.MessageListener;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
-import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 
-public class QueuingChainer implements MessageListener {
-    private final Object transactionLock = new Object();
-    private TransactionBlockEvent tbe = new TransactionBlockEvent();
-    private TransactionBlockEvent tbe2 = new TransactionBlockEvent();
+import java.util.ArrayList;
+import java.util.List;
 
+public class QueuingChainer<T> implements MessageListener {
+    private final List<SignedMessage> messages = new ArrayList<>();
+    private final long chainAddress;
+    private final DtoRegistry<T> dtoRegistry;
 
-    public QueuingChainer(long chainAddress, DtoRegistry dtoRegistry) {
-        DtoParser dtoParser = dtoRegistry.get();
-        tbe.chainAddress(chainAddress).dtoParser(dtoParser);
-        tbe2.chainAddress(chainAddress).dtoParser(dtoParser);
+    public QueuingChainer(long chainAddress, DtoRegistry<T> dtoRegistry) {
+        this.dtoRegistry = dtoRegistry;
+        this.chainAddress = chainAddress;
     }
 
     @Override
     public void onMessage(SignedMessage message) {
-        synchronized (transactionLock) {
-            tbe.addTransaction(message);
+        synchronized (messages) {
+            messages.add(message);
         }
     }
 
-    public TransactionBlockEvent nextTransactionBlockEvent() {
-        TransactionBlockEvent tbeToSend;
-        synchronized (transactionLock) {
-//            System.out.println("tbe.isEmpty() " + tbe.isEmpty());
-            if (tbe.isEmpty())
+    public TransactionBlockEvent<T> createTransactionBlockEvent() {
+        synchronized (messages) {
+            if (messages.isEmpty())
                 return null;
-            tbeToSend = tbe;
-            tbe = tbe2;
-            tbe2 = tbeToSend;
-            tbe.reset();
+
+            TransactionBlockEvent<T> tbe = ((TransactionBlockEvent<T>)dtoRegistry.create(TransactionBlockEvent.class))
+                .chainAddress(chainAddress)
+                .dtoParser(dtoRegistry.get());
+            messages.forEach(tbe::addTransaction);
+            messages.clear();
+            return tbe;
         }
-        return tbeToSend;
     }
 }

@@ -31,7 +31,10 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
         requireNonNull(listener);
         final int protocolMessageType = bytes.readInt(bytes.readPosition() + VanillaSignedMessage.MESSAGE_TYPE);
         final DtoParselet parselet = parseletMap.get(protocolMessageType);
-        System.out.println("Incoming message for protocol " + (protocolMessageType >>> 16) + " messageType " + Integer.toHexString(protocolMessageType & 0xFFFF));
+        // System.out.println("Incoming message for protocol " + (protocolMessageType >>> 16) + " messageType " + Integer.toHexString(protocolMessageType & 0xFFFF));
+        if (bytes.readPosition() >= bytes.readLimit()) {
+            throw new IllegalStateException();
+        }
         if (parselet == null) {
             Jvm.warn().on(getClass(), "Unable to find a parselet for protocol " + (protocolMessageType >>> 16) + " messageType " + (protocolMessageType & 0xFFFF));
         } else {
@@ -44,7 +47,7 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
         requireNonNull(bytes);
         final int protocolMessageType = bytes.readInt(bytes.readPosition() + VanillaSignedMessage.MESSAGE_TYPE);
         final DtoParselet parselet = parseletMap.get(protocolMessageType);
-        System.out.println("Incoming message for protocol " + (protocolMessageType >>> 16) + " messageType " + Integer.toHexString(protocolMessageType & 0xFFFF));
+        System.out.println("Parsed message for protocol " + (protocolMessageType >>> 16) + " messageType " + Integer.toHexString(protocolMessageType & 0xFFFF));
         if (parselet == null) {
             Jvm.warn().on(getClass(), "Unable to find a parselet for protocol " + (protocolMessageType >>> 16) + " messageType " + (protocolMessageType & 0xFFFF));
             return null;

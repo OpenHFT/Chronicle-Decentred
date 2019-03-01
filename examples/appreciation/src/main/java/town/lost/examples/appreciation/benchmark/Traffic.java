@@ -6,12 +6,12 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
-import net.openhft.chronicle.decentred.server.*;
+import net.openhft.chronicle.decentred.server.RPCBuilder;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import town.lost.examples.appreciation.api.AppreciationMessages;
 import town.lost.examples.appreciation.api.AppreciationResponses;
-import town.lost.examples.appreciation.dto.*;
+import town.lost.examples.appreciation.dto.OpeningBalance;
 
 import java.net.InetSocketAddress;
 import java.util.stream.Stream;
@@ -37,9 +37,10 @@ public class Traffic  {
             final Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
             final Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
             Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
-            System.out.println("Seed " + accountSeed + " is " + DecentredUtil.toAddressString(accountSeed));
 
             long address = DecentredUtil.toAddress(publicKey); // Isn't this the address to use?
+            System.out.println("Account " + accountSeed + " is " + DecentredUtil.toAddressString(address));
+
             System.out.println("Setting RPC client");
             RPCClient<AppreciationMessages, AppreciationResponses> client =
                 RPCBuilder.of(17, AppreciationMessages.class, AppreciationResponses.class)

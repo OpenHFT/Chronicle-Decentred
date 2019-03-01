@@ -1,37 +1,44 @@
 package net.openhft.chronicle.decentred.server;
 
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.api.MessageToListener;
+import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
 
+// Currently votes on the last piece of gossip
 public class VanillaVoter implements Voter {
     private final long address;
     private final long[] clusterAddresses;
     private final VanillaVoteTaker voteTaker;
     private MessageToListener tcpMessageListener;
-    private TransactionBlockGossipEvent gossip = new TransactionBlockGossipEvent();
-    //private TransactionBlockVoteEvent vote = new TransactionBlockVoteEvent();
+    private TransactionBlockGossipEvent receivedGossip = new TransactionBlockGossipEvent();
+    private final DtoRegistry<SystemMessages> dtoRegistry;
+    private final BytesStore secretKey;
 
-    public VanillaVoter(long address, long[] clusterAddresses, VanillaVoteTaker voteTaker) {
+    public VanillaVoter(long address, long[] clusterAddresses, VanillaVoteTaker voteTaker, BytesStore secretKey, DtoRegistry dtoRegistry) {
         this.address = address;
         this.clusterAddresses = clusterAddresses;
         this.voteTaker = voteTaker;
+        this.secretKey = secretKey;
+        this.dtoRegistry = dtoRegistry;  // All registries can handle system messages
     }
 
     @Override
     public synchronized void transactionBlockGossipEvent(TransactionBlockGossipEvent transactionBlockGossipEvent) {
-        // System.out.println("Received " + transactionBlockGossipEvent);
-        transactionBlockGossipEvent.copyTo(this.gossip);
+        receivedGossip = transactionBlockGossipEvent;
     }
 
     @Override
     public synchronized void sendVote(long blockNumber) {
-        if (gossip.addressToBlockNumberMap().size() == 0) {
+        if (receivedGossip.addressToBlockNumberMap().size() == 0) {
 //            Jvm.warn().on(getClass(), "Nothing to vote on");
             return;
         }
-        TransactionBlockVoteEvent vote = new TransactionBlockVoteEvent();
-        gossip.copyTo(vote.gossipEvent());
+        TransactionBlockVoteEvent vote = dtoRegistry.create(TransactionBlockVoteEvent.class)
+            .gossipEvent(receivedGossip);
+        vote.sign(secretKey);
         for (long clusterAddress : clusterAddresses) {
             if (address == clusterAddress)
                 voteTaker.transactionBlockVoteEvent(vote);
