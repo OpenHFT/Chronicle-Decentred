@@ -4,13 +4,17 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.Jvm;
-import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
 import net.openhft.chronicle.decentred.dto.base.TransientFieldHandler;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.dto.base.trait.HasChainAddress;
-import net.openhft.chronicle.decentred.util.*;
-import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
+import net.openhft.chronicle.decentred.util.DtoParser;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.wire.AbstractMethodWriterInvocationHandler;
+import net.openhft.chronicle.wire.LongConversion;
+import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
@@ -19,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static net.openhft.chronicle.decentred.dto.chainevent.AddressToBlockNumberUtil.ADDRESS_TO_BLOCK_NUMBER_MAP_NAME;
 
 /**
  * An TransactionBlockEvent is a <em>chain event</em> that holds the transactions that is in a block.
@@ -46,7 +49,7 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
         messagesStart = 0;
     }
 
-    public TransactionBlockEvent dtoParser(DtoParser<T> dtoParser) {
+    public TransactionBlockEvent<T> dtoParser(DtoParser<T> dtoParser) {
         this.dtoParser = requireNonNull(dtoParser);
         return this;
     }

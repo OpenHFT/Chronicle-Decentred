@@ -4,7 +4,6 @@ import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.LongLongMap;
-import net.openhft.chronicle.decentred.util.LongU32Writer;
 import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +57,7 @@ enum AddressToBlockNumberUtil {;
             bytes.writeStopBit(0);
         } else {
             bytes.writeStopBit(map.size());
-            map.forEach(new LongU32Writer(bytes));
+            map.forEach((address, blockNumber) -> bytes.writeLong(address).writeLong(blockNumber));
         }
     }
 
@@ -66,7 +65,7 @@ enum AddressToBlockNumberUtil {;
         final int entries = (int) bytes.readStopBit();
         final LongLongMap map = LongLongMap.withExpectedSize(entries);
         for (int i = 0; i < entries; i++) {
-            map.justPut(bytes.readLong(), bytes.readUnsignedInt());
+            map.justPut(bytes.readLong(), bytes.readLong());
         }
         setter.accept(map);
     }
