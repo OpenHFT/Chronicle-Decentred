@@ -23,7 +23,10 @@ final class RPCGatewayTest {
 
     @Test
     void endToEnd() throws IOException, InterruptedException {
-        assertTimeout(ofSeconds(5), () -> {
+        // A totally unscientific number hinting at the fact that this test fails if the engine is designed to move slowly
+        final int extraWaitTime = VanillaBlockEngine.STEP_PAUSE_MILLIS / 10;
+
+        assertTimeout(ofSeconds(5 + extraWaitTime), () -> {
                 try {
                     KeyPair kp = new KeyPair(7);
                     RPCBuilder<SystemMessages, SystemMessages> rpcBuilder = RPCBuilder.of(SystemMessages.class, SystemMessages.class)
@@ -50,7 +53,7 @@ final class RPCGatewayTest {
                         try (RPCClient<SystemMessages, SystemMessages> client = new RPCClient<>("test", "localhost", 9009, kp2.secretKey, dtoRegistry, listener, SystemMessages.class)) {
                             System.out.println("Client address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp2.publicKey)));
                             client.toDefault().createAddressRequest(new CreateAddressRequest().address(42));
-                            String s = queue.poll(Jvm.isDebug() ? 100 : 10, TimeUnit.SECONDS);
+                            String s = queue.poll((Jvm.isDebug() ? 100 : 10) + extraWaitTime, TimeUnit.SECONDS);
                             assertEquals("createAddressEvent[!CreateAddressEvent {\n" +
                                 "  timestampUS: {deleted},\n" +
                                 "  address: nphccofmpy6ci,\n" +
