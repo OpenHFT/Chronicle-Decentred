@@ -2,11 +2,17 @@ package town.lost.examples.appreciation;
 
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
+import net.openhft.chronicle.decentred.api.AddressManagementRequests;
+import net.openhft.chronicle.decentred.api.ConnectionStatusListener;
+import net.openhft.chronicle.decentred.api.SystemMessageListener;
+import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import town.lost.examples.appreciation.api.AppreciationMessages;
 import town.lost.examples.appreciation.benchmark.Client;
 import town.lost.examples.appreciation.benchmark.Server;
 import town.lost.examples.appreciation.dto.Give;
@@ -39,10 +45,15 @@ final class SingleMessageRoundtripTest {
     public static final int MAX_WAIT_TIME = 10_000;
     private static final double EPSILON = 0.0001;
 
+    private final DtoRegistry<AppreciationMessages> registry;
 
     private BalanceStore balanceStore;
     private Server server;
     private Client client;
+
+    SingleMessageRoundtripTest() {
+        registry = DtoRegistry.newRegistry(17, AppreciationMessages.class);
+    }
 
     @BeforeEach
     void setup() throws IOException, InterruptedException {
@@ -65,7 +76,7 @@ final class SingleMessageRoundtripTest {
     void testGive() throws InterruptedException {
         Thread.sleep(1000);  // TODO - needed for account to be available for give
 
-        final Give give = new Give()
+        final Give give = registry.create(Give.class)
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             .address(CLIENT_ADDRESS)
             .init(OTHER_CLIENT_ADDRESS, GIVE_AMOUNT)
@@ -99,7 +110,7 @@ final class SingleMessageRoundtripTest {
     }
 
     private void setupBalance(long address, double amount) throws InterruptedException {
-        OpeningBalance openingBalance = new OpeningBalance()
+        OpeningBalance openingBalance = registry.create(OpeningBalance.class)
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             .init(address, amount)
             .sign(MGMT_KEY_PAIR.secretKey)
