@@ -12,20 +12,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class CreateAddressEventFundamentalTest extends AbstractFundamentalDtoTest<CreateAddressEvent> {
 
-    private static final CreateAddressRequest CREATE_ADDRESS_REQUEST = createChild(CreateAddressRequest::new);
+    private final CreateAddressRequest createAddressRequest = createChild(CreateAddressRequest.class);
 
     CreateAddressEventFundamentalTest() {
-        super(CreateAddressEvent::new);
+        super(CreateAddressEvent.class);
     }
 
     @Override
     protected void initializeSpecifics(CreateAddressEvent message) {
-        message.createAddressRequest(CREATE_ADDRESS_REQUEST);
+        message.createAddressRequest(createAddressRequest);
     }
 
     @Override
     protected  void assertInitializedSpecifics(CreateAddressEvent message) {
-        assertEquals(CREATE_ADDRESS_REQUEST, message.createAddressRequest());
+        assertEquals(createAddressRequest, message.createAddressRequest());
     }
 
     @Override
@@ -36,7 +36,7 @@ final class CreateAddressEventFundamentalTest extends AbstractFundamentalDtoTest
     @Override
     protected Stream<Map.Entry<String, Consumer<CreateAddressEvent>>> forbiddenAfterSign() {
         return Stream.of(
-            entry("createAddressRequest", m -> m.createAddressRequest(CREATE_ADDRESS_REQUEST))
+            entry("createAddressRequest", m -> m.createAddressRequest(createAddressRequest))
         );
     }
 }

@@ -4,78 +4,89 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.Jvm;
+import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
 import net.openhft.chronicle.decentred.dto.base.TransientFieldHandler;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.dto.base.trait.HasChainAddress;
+import net.openhft.chronicle.decentred.dto.base.trait.HasDtoParser;
 import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.DtoParser;
-import net.openhft.chronicle.decentred.util.DtoRegistry;
-import net.openhft.chronicle.wire.AbstractMethodWriterInvocationHandler;
+import net.openhft.chronicle.wire.AbstractBytesMarshallable;
 import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
+import java.util.function.Consumer;
 
 /**
  * An TransactionBlockEvent is a <em>chain event</em> that holds the transactions that is in a block.
  *
  */
 public final class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> implements
-        HasChainAddress<TransactionBlockEvent<T>> {
+        HasChainAddress<TransactionBlockEvent<T>>,
+        HasDtoParser<TransactionBlockEvent<T>, T> {
 
-    private transient DtoParser<T> dtoParser;
-
-    // for writing to a new set of bytes
-    private transient Bytes writeTransactions = Bytes.allocateElasticDirect(4L << 10);
-
-    // where to read transactions from
-    private transient long messagesStart;
-    private transient Bytes transactions;
-    private transient List<SignedMessage> transactionsList;  // TODO: CHECK if this can be removed.
+    private static long INITIAL_TRANSACTION_CAPACITY_BYTES = 4L << 10;
 
     @LongConversion(AddressLongConverter.class)
     private long chainAddress;
 
+    private transient DtoParser<T> dtoParser;
+    private transient final Bytes transactions;
+
     public TransactionBlockEvent() {
-        transactions = writeTransactions.clear();
-        messagesStart = 0;
+        transactions = Bytes.allocateElasticDirect(INITIAL_TRANSACTION_CAPACITY_BYTES);
     }
 
-    public TransactionBlockEvent<T> dtoParser(DtoParser<T> dtoParser) {
-        this.dtoParser = requireNonNull(dtoParser);
+    @Override
+    public DtoParser<T> dtoParser() {
+        return dtoParser;
+    }
+
+    @Override
+    public TransactionBlockEvent<T> dtoParser(@NotNull DtoParser<T> dtoParser) {
+        this.dtoParser = dtoParser;
         return this;
     }
 
-    public void replay(DtoRegistry<T> dtoRegistry, T allMessages) {
-        if (dtoParser == null)
-            dtoParser = dtoRegistry.get();
-        replay(allMessages);
+    /**
+     * Replays all transactions on the provided message handler.
+     * <p>
+     * Note: Messages used when invoking the provided message handler may be
+     * reused. If messages are saved by the message handler, internal
+     * copies must be made to ensure proper functionality.
+     *
+     * @param messageHandler message handler to replay messages on
+     *
+     * @throws IllegalStateException if this message has
+     * not been signed before this method is called.
+     */
+    public void replay(@NotNull T messageHandler) {
+        replay(b -> dtoParser.parseOne(b, messageHandler));
     }
 
-    public void replay(T allMessages) {
-        if (transactionsList != null) {
-            for (SignedMessage signedMessage : transactionsList) {
-                dtoParser.onMessage(allMessages, signedMessage);
-            }
-        }
-        long p0 = transactions.readPosition();
-        transactions.readPosition(messagesStart);
-        long limit = transactions.readLimit();
+    /**
+     * Replays all transactions on the provided consumer.
+     *
+     * @param consumer to invoke on each message
+     *
+     * @throws IllegalStateException if this message has
+     * not been signed before this method is called.
+     */
+    private void replay(@NotNull Consumer<Bytes> consumer) {
+        assertSigned();
+        transactions.readPosition(0);
+        final long limit = transactions.readLimit();
         try {
             while (!transactions.isEmpty()) {
-                long position = transactions.readPosition();
-                long length = transactions.readUnsignedInt(position);
+                final long position = transactions.readPosition();
+                final long length = transactions.readUnsignedInt(position);
                 transactions.readLimit(position + length);
                 try {
-                    dtoParser.parseOne(transactions, allMessages);
+                    consumer.accept(transactions);
+/*                    dtoParser.parseOne(transactions, messageHandler);*/
                 } catch (Exception e) {
                     Jvm.warn().on(getClass(), "Error processing transaction event ", e);
                 }
@@ -84,20 +95,33 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
             }
         } finally {
             transactions.readLimit(limit);
-            transactions.readPosition(p0);
         }
     }
 
-    public TransactionBlockEvent addTransaction(SignedMessage message) {
-        if (!message.signed())
-            throw new IllegalArgumentException(message + " must be already signed");
-        message.writeMarshallable(writeTransactions);
+    /**
+     * Adds a transaction to this message.
+     *
+     * @param message to add
+     * @return this instance
+     */
+    public TransactionBlockEvent addTransaction(@NotNull SignedMessage message) {
+        if (!message.signed()) {
+            throw new IllegalArgumentException(
+                String.format("The message of type %s, protocol %d, messageType %d has not been signed.", message.getClass().getSimpleName(), message.protocol(),  message.messageType())
+            );
+        }
+        message.writeMarshallable(transactions);
         return this;
     }
 
+    /**
+     * Returns if this message's transaction queue is empty (of un-replayed transactions).
+     * <p>
+     *  If all transactions are replayed, the method returns {@code true},
+     *  otherwise it returns {@code false}
+     */
     public boolean isEmpty() {
-        return transactions.readRemaining() == 0 ||
-                (transactionsList != null && !transactionsList.isEmpty());
+        return transactions.readRemaining() == 0;
     }
 
     @Override
@@ -128,75 +152,43 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
         @Override
         public void reset(TransactionBlockEvent<T> original) {
             original.dtoParser = null;
-            original.messagesStart = 0;
-            original.writeTransactions = writeTransactions.clear();
-            original.transactionsList = null;
+            original.transactions.clear();
         }
 
         @Override
-        public void copy(@NotNull TransactionBlockEvent<T> original, @NotNull TransactionBlockEvent<T> target) {
-            throw new UnsupportedOperationException("This method is unsafe and creates references to shared memory");
-/*            target.dtoParser = original.dtoParser;
-            target.messagesStart = original.messagesStart;
-            target.writeTransactions = original.writeTransactions;
-            target.transactionsList = new ArrayList<>(original.transactionsList);*/
-        }
-
-        @Override
-        public void deepCopy(@NotNull TransactionBlockEvent<T> original, @NotNull TransactionBlockEvent<T> target) {
-            target.dtoParser = original.dtoParser;
-            target.transactions = (original.transactions.readRemaining() == 0
-                ? Bytes.elasticHeapByteBuffer(1)
-                : original.transactions.copy().bytesForRead());
-
-            // Todo: Handle the other volatile parameters!!
+        public void copyNonMarshalled(@NotNull TransactionBlockEvent<T> original, @NotNull TransactionBlockEvent<T> target) {
+            target.dtoParser(original.dtoParser());
         }
 
         @Override
         public void writeMarshallable(@NotNull TransactionBlockEvent<T> original, @NotNull WireOut wire) {
-            // Todo: Handle the other volatile parameters!!
-            if (original.dtoParser == null && original.transactionsList != null) {
-                wire.write("transactions").sequence(original.transactionsList);
-            } else {
-                final Class<T> superInterface = original.dtoParser.superInterface();
-                //noinspection unchecked
-                wire.write("transactions").sequence(out -> replay(
-                    (T) Proxy.newProxyInstance(superInterface.getClassLoader(),
-                        new Class[]{superInterface},
-                        new AbstractMethodWriterInvocationHandler() {
-                            @Override
-                            protected void handleInvoke(Method method, Object[] args) {
-                                out.object(args[0]);
-                            }
-                        })));
-            }
+                wire.write("transactions").sequence(out ->
+                    original.replay(b -> out.object(original.dtoParser.parseOne(b)))
+                );
         }
 
         @Override
         public void readMarshallable(@NotNull TransactionBlockEvent<T> original, @NotNull WireIn wire) {
-            // Todo: Handle the other volatile parameters!!
-            if (original.transactionsList == null) {
-                original.transactionsList = new ArrayList<>();
-            }
             wire.read("transactions").sequence(original, (tbe, in) -> {
                 while (in.hasNextSequenceItem()) {
-                    tbe.transactionsList.add(in.object(VanillaSignedMessage.class));
+                    final WireIn wireIn = in.wireIn();
+                    final SignedMessage m = in.typedMarshallable();
+                    if (m instanceof AbstractBytesMarshallable) {
+                        ((AbstractBytesMarshallable) m).readMarshallable(wireIn);
+                    }
+                    original.addTransaction(m);
                 }
             });
-
         }
 
         @Override
         public void writeMarshallableInternal(@NotNull TransactionBlockEvent<T> original, @NotNull BytesOut bytes) {
-            // Todo: Handle the other volatile parameters!!
-            bytes.write(original.writeTransactions);
+            bytes.write(original.transactions);
         }
 
         @Override
         public void readMarshallable(@NotNull TransactionBlockEvent<T> original, @NotNull BytesIn bytes) {
-            // Todo: Handle the other volatile parameters!!
-            original.messagesStart = original.transactions.writePosition();
-            original.transactions.write(bytes.bytesForRead());
+            original.transactions.write(bytes);
         }
     }
 

@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 final class CreateAddressRequestFundamentalTest extends AbstractFundamentalDtoTest<CreateAddressRequest> {
 
     CreateAddressRequestFundamentalTest() {
-        super(CreateAddressRequest::new);
+        super(CreateAddressRequest.class);
     }
 
     @Override

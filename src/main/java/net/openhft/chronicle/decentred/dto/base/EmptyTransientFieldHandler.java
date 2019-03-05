@@ -27,10 +27,13 @@ class EmptyTransientFieldHandler<T extends VanillaSignedMessage<T>> implements T
     public void reset(T original) {}
 
     @Override
-    public void copy(@NotNull T original, @NotNull T target) {}
+    public void copyNonMarshalled(@NotNull T original, @NotNull T target) {}
+
+    /*    @Override
+    public void copyNonMarshalled(@NotNull T original, @NotNull T target) {}
 
     @Override
-    public void deepCopy(@NotNull T original, @NotNull T target) {}
+    public void deepCopy(@NotNull T original, @NotNull T target) {}*/
 
     @Override
     public void writeMarshallable(@NotNull T original, @NotNull WireOut wire) {}

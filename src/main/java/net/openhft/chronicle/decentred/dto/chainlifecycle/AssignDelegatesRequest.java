@@ -53,7 +53,12 @@ public final class AssignDelegatesRequest extends VanillaSignedMessage<AssignDel
         }
 
         @Override
-        public void copy(@NotNull AssignDelegatesRequest original, @NotNull AssignDelegatesRequest target) {
+        public void copyNonMarshalled(@NotNull AssignDelegatesRequest original, @NotNull AssignDelegatesRequest target) {
+            // All transient fields are marshalled
+        }
+
+        /*        @Override
+        public void copyNonMarshalled(@NotNull AssignDelegatesRequest original, @NotNull AssignDelegatesRequest target) {
             target.delegates = new ArrayList<>(original.delegates);
         }
 
@@ -61,9 +66,9 @@ public final class AssignDelegatesRequest extends VanillaSignedMessage<AssignDel
         public void deepCopy(@NotNull AssignDelegatesRequest original, @NotNull AssignDelegatesRequest target) {
             target.delegates = new ArrayList<>(original.delegates.size());
             for (BytesStore bs: original.delegates) {
-                target.delegates.add(bs.copy());
+                target.delegates.add(bs.copyNonMarshalled());
             }
-        }
+        }*/
 
         @Override
         public void writeMarshallable(@NotNull AssignDelegatesRequest original, @NotNull WireOut wire) {

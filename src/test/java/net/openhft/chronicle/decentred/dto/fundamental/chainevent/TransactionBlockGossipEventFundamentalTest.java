@@ -22,7 +22,7 @@ final class TransactionBlockGossipEventFundamentalTest extends AbstractFundament
     private static final long BLOCK1 = 294572682L;
 
     TransactionBlockGossipEventFundamentalTest() {
-        super(TransactionBlockGossipEvent::new);
+        super(TransactionBlockGossipEvent.class);
     }
 
     @Override

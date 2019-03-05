@@ -13,20 +13,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class TransactionBlockVoteEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockVoteEvent> {
 
-    private static final TransactionBlockGossipEvent TRANSACTION_BLOCK_GOSSIP_EVENT = createChild(TransactionBlockGossipEvent::new, TransactionBlockGossipEvent::addressToBlockNumberMap);
+    private final TransactionBlockGossipEvent transactionBlockGossipEvent = createChild(TransactionBlockGossipEvent.class, TransactionBlockGossipEvent::addressToBlockNumberMap, 37246L);
 
     TransactionBlockVoteEventFundamentalTest() {
-        super(TransactionBlockVoteEvent::new);
+        super(TransactionBlockVoteEvent.class);
     }
 
     @Override
     protected void initializeSpecifics(TransactionBlockVoteEvent message) {
-        message.gossipEvent(TRANSACTION_BLOCK_GOSSIP_EVENT);
+        message.gossipEvent(transactionBlockGossipEvent);
     }
 
     @Override
     protected void assertInitializedSpecifics(TransactionBlockVoteEvent message) {
-        assertEquals(TRANSACTION_BLOCK_GOSSIP_EVENT, message.gossipEvent());
+        assertEquals(transactionBlockGossipEvent, message.gossipEvent());
     }
 
     @Override

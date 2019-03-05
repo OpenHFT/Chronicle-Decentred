@@ -5,6 +5,7 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
+import net.openhft.chronicle.decentred.dto.base.trait.HasDtoParser;
 import net.openhft.chronicle.decentred.dto.base.trait.HasTransientFieldHandler;
 import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.ShortUtil;
@@ -13,20 +14,18 @@ import net.openhft.chronicle.wire.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.util.Set;
 import java.util.function.LongFunction;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 
 public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends AbstractBytesMarshallable
     implements SignedMessage, HasTransientFieldHandler<T> {
 
+    private static final long INITIAL_BYTES_CAPACITY = 4L << 10;
     private static final int LENGTH = 0;
     private static final int LENGTH_END = LENGTH + Integer.BYTES;
     private static final int SIGNATURE = LENGTH_END;
@@ -48,24 +47,21 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
 
     private static final boolean ENFORCE_TRANSIENT_OVERRIDE_INVARIANT = true;
 
-
-    // for writing to a new set of bytes
-    private transient Bytes tempBytes = Bytes.allocateElasticDirect(4L << 10);
-    // for reading an existing Bytes
-    private transient PointerBytesStore readPointer = BytesStore.nativePointer();
-    protected transient Bytes<Void> bytes = readPointer.bytesForRead();
-
-    private transient boolean signed = false;
-    private transient ByteBuffer byteBuffer;
-    // unsigned 16-bit
-    private transient int messageType, protocol;
     @LongConversion(MicroTimestampLongConverter.class)
     private long timestampUS;
     @LongConversion(AddressLongConverter.class)
     private long address;
 
+    // Byte area for storage of a complete signed message
+    private final transient Bytes internalBytes;
+
+    private transient boolean signed = false;
+    private transient ByteBuffer byteBuffer;
+    // unsigned 16-bit
+    private transient int messageType, protocol;
 
     public VanillaSignedMessage() {
+        internalBytes = Bytes.allocateElasticDirect(INITIAL_BYTES_CAPACITY);
 
 /*        Set<String> objectM = Stream.of(Object.class.getMethods())
             .map(Object::toString)
@@ -106,23 +102,25 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
     @Override
     public final void readMarshallable(@NotNull WireIn wire) throws IORuntimeException {
         // reset() ????
-        signed = false;
+        signed = false; // How do we know the state of the signed property?
         super.readMarshallable(wire);
         transientFieldHandler().readMarshallable(self(), wire);
     }
 
     @Override
     public final void readMarshallable(BytesIn bytes) throws IORuntimeException {
-        long capacity = bytes.readRemaining();
-        readPointer.set(bytes.addressForRead(bytes.readPosition()), capacity);
-        messageType = readPointer.readUnsignedShort(MESSAGE_TYPE);
-        protocol = readPointer.readUnsignedShort(PROTOCOL);
+        internalBytes.clear();
+        internalBytes.write(bytes);
+        // use internalBytes from here since we copied everything.
+        // Todo: In the future, we could just reference the incoming bytes, because it should be immutable
+        messageType = internalBytes.readUnsignedShort(MESSAGE_TYPE);
+        protocol = internalBytes.readUnsignedShort(PROTOCOL);
 
-        this.bytes.clear();
-        this.bytes.readPositionRemaining(MESSAGE_START, capacity - MESSAGE_START);
-        super.readMarshallable(this.bytes);
+        internalBytes.readSkip(MESSAGE_START);
+        super.readMarshallable(internalBytes);
         signed = true;
-        transientFieldHandler().readMarshallable(self(), this.bytes);
+        transientFieldHandler().readMarshallable(self(), internalBytes);
+        internalBytes.readPosition(0);
     }
 
     /**
@@ -152,7 +150,7 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
     @Override
     public final void writeMarshallable(BytesOut bytes) {
         assertSigned();
-        bytes.write(this.bytes, 0, this.bytes.readLimit());
+        bytes.write(internalBytes, 0, internalBytes.readLimit());
     }
 
     /**
@@ -256,29 +254,29 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
         address = secretKey.readLong(secretKey.readRemaining() - Long.BYTES);
         timestampUS = timeProvider.currentTimeMicros();
 
-        tempBytes.clear();
-        tempBytes.writeInt(0); // Provisional length
-        long signatureStart = tempBytes.writePosition();
-        tempBytes.writeSkip(Ed25519.SIGNATURE_LENGTH);
-        tempBytes.writeUnsignedShort(messageType);
-        tempBytes.writeUnsignedShort(protocol);
-        writeMarshallableInternal(tempBytes);
-        long length = tempBytes.readRemaining();
-        tempBytes.writeUnsignedInt(LENGTH, length);
-        tempBytes.readPosition(signatureStart);
-        Ed25519.sign(tempBytes, secretKey);
+        internalBytes.clear();
+        internalBytes.writeInt(0); // Provisional length
+        internalBytes.writeSkip(Ed25519.SIGNATURE_LENGTH);
+        internalBytes.writeUnsignedShort(messageType);
+        internalBytes.writeUnsignedShort(protocol);
+        writeMarshallableInternal(internalBytes);
+        long length = internalBytes.readRemaining();
+        internalBytes.writeUnsignedInt(LENGTH, length);
+        internalBytes.readPosition(SIGNATURE);
+        Ed25519.sign(internalBytes, secretKey);
         signed = true;
-        readPointer.set(tempBytes.addressForRead(0), length);
-        bytes.writeLimit(length)
-                .readPositionRemaining(0, length);
+        //readPointer.set(tempBytes.addressForRead(0), length);
+        internalBytes.writeLimit(length);
+        internalBytes.readPositionRemaining(0, length);
         return self();
     }
 
     public final String toHexString() {
+        assertSigned();
         HexDumpBytes dump = new HexDumpBytes()
                 .offsetFormat((o, b) -> b.appendBase16(o, 4));
-        dump.comment("length").writeUnsignedInt(bytes.readUnsignedInt(LENGTH));
-        dump.comment("signature start").write(bytes, (long) SIGNATURE, Ed25519.SIGNATURE_LENGTH);
+        dump.comment("length").writeUnsignedInt(internalBytes.readUnsignedInt(LENGTH));
+        dump.comment("signature start").write(internalBytes, (long) SIGNATURE, Ed25519.SIGNATURE_LENGTH);
         dump.comment("signature end");
         dump.comment("messageType").writeUnsignedShort(messageType);
         dump.comment("protocol").writeUnsignedShort(protocol);
@@ -289,15 +287,16 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
     }
 
     public final boolean verify(LongFunction<BytesStore> addressToPublicKey) {
-        BytesStore publicKey = hasPublicKey()
+        final BytesStore publicKey = hasPublicKey()
                 ? publicKey()
                 : addressToPublicKey.apply(address());
         if (publicKey == null || publicKey.readRemaining() != Ed25519.PUBLIC_KEY_LENGTH) {
             return false;
         }
-        bytes.readPosition(SIGNATURE);
-        bytes.readLimit(readPointer.readLimit());
-        return Ed25519.verify(bytes, publicKey);
+        final Bytes verifyBytes = internalBytes.bytesForRead();
+        verifyBytes.readPosition(SIGNATURE);
+        verifyBytes.readLimit(verifyBytes.readLimit());
+        return Ed25519.verify(verifyBytes, publicKey);
     }
 
     @Override
@@ -355,8 +354,8 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
         if (byteBuffer == null)
             byteBuffer = ByteBuffer.allocateDirect(0);
         try {
-            BB_ADDRESS.setLong(byteBuffer, readPointer.addressForRead(0));
-            BB_CAPACITY.setInt(byteBuffer, Math.toIntExact(readPointer.readRemaining()));
+            BB_ADDRESS.setLong(byteBuffer, internalBytes.addressForRead(0));
+            BB_CAPACITY.setInt(byteBuffer, Math.toIntExact(internalBytes.readRemaining()));
             byteBuffer.clear(); // position = 0, limit = capacity.
             return byteBuffer;
         } catch (IllegalAccessException e) {
@@ -369,17 +368,37 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
         assertSameClassAsThis(m);
         assertSigned();
         @SuppressWarnings("unchecked")
-        final T other = (T) super.copyTo(m);
-        transientFieldHandler().copy(self(), other);
+        final T other = (T) m;
+        // This volatile property gets magically copied
+        if (this instanceof HasDtoParser) {
+            ((HasDtoParser)m).dtoParser(((HasDtoParser)this).dtoParser());
+        }
+        final Bytes internalBytesView = internalBytes.bytesForRead();
+        internalBytesView.readPosition(0);
+        other.readMarshallable(internalBytesView);
+        other.transientFieldHandler().copyNonMarshalled((T) this, other);
         return m;
     }
 
     @NotNull
     @Override
     public final <U> U deepCopy() {
-        final T copy = super.deepCopy();
-        transientFieldHandler().deepCopy(self(), copy);
-        return (U) copy;
+        try {
+            @SuppressWarnings("unchecked")
+            // Create a new instance of the same type as this
+            final T copy = (T) getClass().newInstance();
+            // Perform a shallow copyNonMarshalled
+            copyTo(copy);
+            // Dereference shallow items
+            //transientFieldHandler().deepCopy(self(), copyNonMarshalled);
+            @SuppressWarnings("unchecked")
+            final U result = (U) copy;
+            return result;
+
+        } catch (ReflectiveOperationException e) {
+            Jvm.rethrow(e);
+        }
+        throw new IllegalStateException("We should never end up here");
     }
 
     /// Overloaded hash, toString etc.
@@ -403,13 +422,17 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
 
     protected final void assertSigned() {
         if (!signed()) {
-            throw new IllegalStateException("The message has not been signed");
+            throw new IllegalStateException(
+                String.format("The message of type %s, protocol %d, messageType %d has not been signed.", getClass().getSimpleName(), protocol(), messageType())
+            );
         }
     }
 
     protected final void assertNotSigned() {
         if (signed()) {
-            throw new IllegalStateException("The message has already been signed");
+            throw new IllegalStateException(
+                String.format("The message of type %s, protocol %d, messageType %d has already been signed.", getClass().getSimpleName(), protocol(), messageType())
+            );
         }
     }
 

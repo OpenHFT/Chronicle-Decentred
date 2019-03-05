@@ -15,7 +15,7 @@ final class CreateChainRequestFundamentalTest extends AbstractFundamentalDtoTest
     private static final int ROUNDS_PER_DAY = 24;
 
     CreateChainRequestFundamentalTest() {
-        super(CreateChainRequest::new);
+        super(CreateChainRequest.class);
     }
 
     @Override

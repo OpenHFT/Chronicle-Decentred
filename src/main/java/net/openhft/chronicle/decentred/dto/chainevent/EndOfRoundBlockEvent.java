@@ -78,14 +78,19 @@ public final class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundB
         }
 
         @Override
-        public void copy(@NotNull EndOfRoundBlockEvent original, @NotNull EndOfRoundBlockEvent target) {
-            AddressToBlockNumberUtil.copy(original.addressToBlockNumberMap, m -> target.addressToBlockNumberMap = m);
+        public void copyNonMarshalled(@NotNull EndOfRoundBlockEvent original, @NotNull EndOfRoundBlockEvent target) {
+            // All transient fields are marshalled
+        }
+
+/*        @Override
+        public void copyNonMarshalled(@NotNull EndOfRoundBlockEvent original, @NotNull EndOfRoundBlockEvent target) {
+            AddressToBlockNumberUtil.copyNonMarshalled(original.addressToBlockNumberMap, m -> target.addressToBlockNumberMap = m);
         }
 
         @Override
         public void deepCopy(@NotNull EndOfRoundBlockEvent original, @NotNull EndOfRoundBlockEvent target) {
-            copy(original, target);
-        }
+            copyNonMarshalled(original, target);
+        }*/
 
         @Override
         public void writeMarshallable(@NotNull EndOfRoundBlockEvent original, @NotNull WireOut wire) {

@@ -24,7 +24,7 @@ final class EndOfRoundBlockEventFundamentalTest extends AbstractFundamentalDtoTe
     private static final long BLOCK1 = 294572682L;
 
     EndOfRoundBlockEventFundamentalTest() {
-        super(EndOfRoundBlockEvent::new);
+        super(EndOfRoundBlockEvent.class);
     }
 
     @Override

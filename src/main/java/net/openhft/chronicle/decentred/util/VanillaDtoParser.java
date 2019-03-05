@@ -4,6 +4,7 @@ import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -16,17 +17,17 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
     private final IntObjMap<DtoParselet> parseletMap;
     private final Map<Class, Method> classConsumerMap;
 
-    VanillaDtoParser(Class<T> clazz, IntObjMap<DtoParselet> parseletMap, Map<Class, Method> classConsumerMap) {
-        this.clazz = requireNonNull(clazz);
-        this.parseletMap = requireNonNull(parseletMap);
-        this.classConsumerMap = requireNonNull(classConsumerMap);
+    VanillaDtoParser(@NotNull Class<T> clazz, @NotNull IntObjMap<DtoParselet> parseletMap, @NotNull Map<Class, Method> classConsumerMap) {
+        this.clazz = clazz;
+        this.parseletMap = parseletMap;
+        this.classConsumerMap = classConsumerMap;
         /*this.parseletMap = IntObjMap.withExpectedSize(DtoParselet.class, parseletMap.size() * 2);
         parseletMap.forEach((i, dp) -> this.parseletMap.justPut(i, new DtoParselet(dp)));
         this.classConsumerMap = new HashMap<>(classConsumerMap);*/
     }
 
     @Override
-    public void parseOne(BytesIn bytes, T listener) {
+    public void parseOne(@NotNull BytesIn bytes, @NotNull T listener) {
         requireNonNull(bytes);
         requireNonNull(listener);
         final int protocolMessageType = bytes.readInt(bytes.readPosition() + VanillaSignedMessage.MESSAGE_TYPE);
@@ -36,20 +37,20 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
             throw new IllegalStateException();
         }
         if (parselet == null) {
-            Jvm.warn().on(getClass(), "Unable to find a parselet for protocol " + (protocolMessageType >>> 16) + " messageType " + (protocolMessageType & 0xFFFF));
+            warnNotFound(protocolMessageType);
         } else {
             parselet.parse(bytes, listener);
         }
     }
 
     @Override
-    public SignedMessage parseOne(BytesIn bytes) {
+    public SignedMessage parseOne(@NotNull BytesIn bytes) {
         requireNonNull(bytes);
         final int protocolMessageType = bytes.readInt(bytes.readPosition() + VanillaSignedMessage.MESSAGE_TYPE);
         final DtoParselet parselet = parseletMap.get(protocolMessageType);
         System.out.println("Parsed message for protocol " + (protocolMessageType >>> 16) + " messageType " + Integer.toHexString(protocolMessageType & 0xFFFF));
         if (parselet == null) {
-            Jvm.warn().on(getClass(), "Unable to find a parselet for protocol " + (protocolMessageType >>> 16) + " messageType " + (protocolMessageType & 0xFFFF));
+            warnNotFound(protocolMessageType);
             return null;
         } else {
             return (SignedMessage) parselet.parse(bytes);
@@ -57,7 +58,7 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
     }
 
     @Override
-    public void onMessage(T component, Object message) {
+    public void onMessage(@NotNull T component, @NotNull Object message) {
         requireNonNull(component);
         requireNonNull(message);
         Method consumer = classConsumerMap.get(message.getClass());
@@ -76,4 +77,11 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
     public Class<T> superInterface() {
         return clazz;
     }
+
+    private void warnNotFound(int protocolMessageType) {
+        final int protocol = (protocolMessageType >>> 16);
+        final int messageType =  (protocolMessageType & 0xFFFF);
+        Jvm.warn().on(getClass(), String.format("Unable to find a parselet for protocol %d messageType %d (0x%04x)", protocol, messageType, messageType));
+    }
+
 }

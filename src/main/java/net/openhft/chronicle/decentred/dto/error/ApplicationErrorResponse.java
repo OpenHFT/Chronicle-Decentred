@@ -5,6 +5,7 @@ import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.dto.base.TransientFieldHandler;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.trait.HasDtoParser;
 import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoParser;
@@ -14,7 +15,9 @@ import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
 
-public final class ApplicationErrorResponse extends VanillaSignedMessage<ApplicationErrorResponse> {
+public final class ApplicationErrorResponse extends VanillaSignedMessage<ApplicationErrorResponse> implements
+    HasDtoParser<ApplicationErrorResponse, Object> {
+
     private String reason;
     private transient VanillaSignedMessage origMessage;
     private transient DtoParser dtoParser;
@@ -68,18 +71,23 @@ public final class ApplicationErrorResponse extends VanillaSignedMessage<Applica
         }
 
         @Override
-        public void copy(@NotNull ApplicationErrorResponse original, @NotNull ApplicationErrorResponse target) {
+        public void copyNonMarshalled(@NotNull ApplicationErrorResponse original, @NotNull ApplicationErrorResponse target) {
+            target.dtoParser(original.dtoParser());
+        }
+
+        /*        @Override
+        public void copyNonMarshalled(@NotNull ApplicationErrorResponse original, @NotNull ApplicationErrorResponse target) {
             target.origMessage = original.origMessage;
             target.dtoParser = original.dtoParser;
         }
 
         @Override
         public void deepCopy(@NotNull ApplicationErrorResponse original, @NotNull ApplicationErrorResponse target) {
-            copy(original, target); // Signed messages are immutable
-        }
+            copyNonMarshalled(original, target); // Signed messages are immutable
+        }*/
 
         @Override
-        public void writeMarshallableInternal(ApplicationErrorResponse original, BytesOut bytes) {
+        public void writeMarshallableInternal(ApplicationErrorResponse original, @NotNull BytesOut bytes) {
             original.origMessage.writeMarshallable(bytes);
         }
 

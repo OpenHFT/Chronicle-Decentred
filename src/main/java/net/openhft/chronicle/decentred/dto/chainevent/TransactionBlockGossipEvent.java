@@ -66,14 +66,20 @@ public final class TransactionBlockGossipEvent extends VanillaSignedMessage<Tran
         }
 
         @Override
-        public void copy(@NotNull TransactionBlockGossipEvent original, @NotNull TransactionBlockGossipEvent target) {
-            AddressToBlockNumberUtil.copy(original.addressToBlockNumberMap, m -> target.addressToBlockNumberMap = m);
+        public void copyNonMarshalled(@NotNull TransactionBlockGossipEvent original, @NotNull TransactionBlockGossipEvent target) {
+            // All transient fields are marshalled
+        }
+
+
+        /*        @Override
+        public void copyNonMarshalled(@NotNull TransactionBlockGossipEvent original, @NotNull TransactionBlockGossipEvent target) {
+            AddressToBlockNumberUtil.copyNonMarshalled(original.addressToBlockNumberMap, m -> target.addressToBlockNumberMap = m);
         }
 
         @Override
         public void deepCopy(@NotNull TransactionBlockGossipEvent original, @NotNull TransactionBlockGossipEvent target) {
-            copy(original, target);
-        }
+            copyNonMarshalled(original, target);
+        }*/
 
         @Override
         public void writeMarshallable(@NotNull TransactionBlockGossipEvent original, @NotNull WireOut wire) {

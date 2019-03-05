@@ -15,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 final class ApplicationErrorResponseFundamentalTest extends AbstractFundamentalDtoTest<ApplicationErrorResponse> {
 
     private static final String REASON = "CreateAddressRequest failed due to some reason";
-    private final CreateAddressRequest ORIGINAL_MESSAGE = createChild(CreateAddressRequest::new);
+    private CreateAddressRequest createAddressRequest = createChild(CreateAddressRequest.class);
 
     ApplicationErrorResponseFundamentalTest() {
-        super(ApplicationErrorResponseFundamentalTest::create);
+        super(ApplicationErrorResponse.class);
 
     }
 
@@ -29,13 +29,15 @@ final class ApplicationErrorResponseFundamentalTest extends AbstractFundamentalD
 
     @Override
     protected void initializeSpecifics(ApplicationErrorResponse message) {
-        message.init(ORIGINAL_MESSAGE, REASON);
+        final CreateAddressRequest m = createChild(CreateAddressRequest.class);
+
+        message.init(createAddressRequest, REASON);
     }
 
     @Override
     protected void assertInitializedSpecifics(ApplicationErrorResponse message) {
         assertEquals(REASON, message.reason());
-        assertEquals(ORIGINAL_MESSAGE, message.origMessage());
+        assertEquals(createAddressRequest, message.origMessage());
     }
 
     @Override

@@ -25,7 +25,7 @@ final class AssignDelegatesRequestFundamentalTest extends AbstractFundamentalDto
     );
 
     AssignDelegatesRequestFundamentalTest() {
-        super(AssignDelegatesRequest::new);
+        super(AssignDelegatesRequest.class);
     }
 
     @Override

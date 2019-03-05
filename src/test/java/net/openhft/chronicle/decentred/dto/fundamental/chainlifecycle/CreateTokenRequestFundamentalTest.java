@@ -16,7 +16,7 @@ public final class CreateTokenRequestFundamentalTest extends AbstractFundamental
     private static final double GRANULARITY = 1.0d;
 
     CreateTokenRequestFundamentalTest() {
-        super(CreateTokenRequest::new);
+        super(CreateTokenRequest.class);
     }
 
     @Override

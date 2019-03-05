@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 final class InvalidationEventFundamentalTest extends AbstractFundamentalDtoTest<InvalidationEvent> {
 
     InvalidationEventFundamentalTest() {
-        super(InvalidationEvent::new);
+        super(InvalidationEvent.class);
     }
 
     @Override

@@ -3,30 +3,32 @@ package net.openhft.chronicle.decentred.dto.fundamental.base;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
+import net.openhft.chronicle.decentred.api.AddressManagementRequests;
+import net.openhft.chronicle.decentred.api.ConnectionStatusListener;
+import net.openhft.chronicle.decentred.api.SystemMessageListener;
+import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.base.TransientFieldHandler;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.dto.base.trait.HasDtoParser;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 import net.openhft.chronicle.wire.TextWire;
 import net.openhft.chronicle.wire.Wire;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.nio.ByteBuffer;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -39,20 +41,30 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     protected static final double EPSILON = 1e-7;
 
     private final long SEED = 1;
-    private final KeyPair KEY_PAIR = new KeyPair(SEED);
+    protected final KeyPair KEY_PAIR = new KeyPair(SEED);
 
     private static final long DEFAULT_LONG = 42L;
+    protected static final long DEFAULT_ADDRESS = 96L;
     private static final int DEFAULT_PROTOCOL = 17;
     private static final int DEFAULT_MESSAGE_TYPE = 0xFFF2;
     private final Consumer<T> NO_OP = m -> {};
 
-    private final Supplier<T> constructor;
-    private final long timeMS;
+    protected final DtoRegistry<SystemMessages> registry;
+    protected final Supplier<T> constructor;
+    protected final long timeMS;
 
-    private T instance;
+    protected T instance;
 
-    protected AbstractFundamentalDtoTest(Supplier<T> constructor) {
-        this.constructor = requireNonNull(constructor);
+    protected AbstractFundamentalDtoTest(@NotNull Class<? super T> clazz) {
+        registry = DtoRegistry.newRegistry(SystemMessages.class)
+            .addProtocol(1, SystemMessageListener.class)
+            .addProtocol(2, AddressManagementRequests.class)
+            .addProtocol(3, ConnectionStatusListener.class);
+
+        @SuppressWarnings("unchecked")
+        final Class<T> castedClass = (Class<T>)clazz;
+
+        this.constructor = () -> registry.create(castedClass);
         this.timeMS = UniqueMicroTimeProvider.INSTANCE.currentTimeMicros();
     }
 
@@ -60,11 +72,10 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertTrue(original.contains(find), "\"" + original + "\" doesn't contain \"" + find + "\"");
     }
 
-    final void initialize(T message) {
-        message.protocol(DEFAULT_PROTOCOL);
-        message.messageType(DEFAULT_MESSAGE_TYPE);
+    protected final void initialize(T message) {
         message.timestampUS(timeMS);
         message.address(DecentredUtil.toAddress(KEY_PAIR.publicKey));
+        ensureDtoParserSetIfHasDtoParser(message);
         initializeSpecifics(message);
     }
 
@@ -96,8 +107,8 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     @Test
     void testInitialized() {
         initialize(instance);
-        assertEquals(DEFAULT_PROTOCOL, instance.protocol());
-        assertEquals(DEFAULT_MESSAGE_TYPE, instance.messageType());
+        assertTrue(instance.protocol() != 0);
+        assertTrue(instance.messageType() != 0);
         assertEquals(timeMS, instance.timestampUS());
         assertEquals(DecentredUtil.toAddress(KEY_PAIR.publicKey), instance.address());
         assertInitializedSpecifics(instance);
@@ -108,14 +119,15 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEquals(0L, instance.address());
     }
 
+    @Test
     public void testAddress() {
-        instance.address(DEFAULT_LONG);
-        assertEquals(DEFAULT_LONG, instance.address());
+        instance.address(DEFAULT_ADDRESS);
+        assertEquals(DEFAULT_ADDRESS, instance.address());
     }
 
     @Test
     void testIntialTimestampUS() {
-        assertEquals(0L, instance.address());
+        assertEquals(0, instance.timestampUS());
     }
 
     @Test
@@ -127,13 +139,13 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     @Test
     void testInitialThrowers() {
         assertThrows(Throwable.class, () -> {
-            instance.toHexString();
+            System.out.println(instance.toHexString());
         });
     }
 
     @Test
     void testInitialProtocol() {
-        assertEquals(0L, instance.protocol());
+        assertEquals(registry.protocolFor(instance.getClass()), instance.protocol());
     }
 
     @Test
@@ -144,7 +156,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
 
     @Test
     void testInitialMessageType() {
-        assertEquals(0L, instance.messageType());
+        assertEquals(registry.messageTypeFor(instance.getClass()), instance.messageType());
     }
 
     @Test
@@ -171,9 +183,12 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
     @Test
     void testToString() {
         initialize(instance);
+        instance.sign(KEY_PAIR.secretKey);
+
         final StringBuilder sb = new StringBuilder();
-        new MicroTimestampLongConverter().append(sb, timeMS);
+        new MicroTimestampLongConverter().append(sb, instance.timestampUS());
         final String expectedTimeString = sb.toString();
+
         final String s = instance.toString();
         // System.out.println(s);
         assertContains(s, "timestampUS: " + expectedTimeString);
@@ -203,17 +218,22 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
 
     @ParameterizedTest
     @ValueSource(ints = { 0, 147, 63, 64, 65 }) // Cover the case of mid Byte serialization
-    void testMarshallUnMarshallBytes(int offset) {
+    protected void testMarshallUnMarshallBytes(int offset) {
         final Bytes bytes = Bytes.allocateElasticDirect(1000);
         bytes.writePosition(offset);
+
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
         instance.writeMarshallable(bytes);
         final long writePosition = bytes.writePosition();
 
         final T actual = constructor.get();
+        ensureDtoParserSetIfHasDtoParser(actual);
+
         bytes.readPosition(offset);
         actual.readMarshallable(bytes);
+
+        String s = actual.toString();
 
         //Todo: Make sure that all bytes are consumed. How? readMarshallable does not modify bytes
 
@@ -289,13 +309,14 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
      /// AbstractBytesMarshallable
 
     @Test
-    void testMarshallUnMarshallWire() {
+    public void testMarshallUnMarshallWire() {
         final Wire wire = new TextWire(Bytes.allocateElasticDirect(1000));
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
         instance.writeMarshallable(wire);
         System.out.println(wire);
         final T actual = constructor.get();
+        ensureDtoParserSetIfHasDtoParser(actual);
         actual.readMarshallable(wire);
 
         assertEqualsDoubleSided(instance, actual);
@@ -304,7 +325,6 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
 
     /// Marshallable
 
-    @Disabled
     @Test
     void testDeepCopy() {
         initialize(instance);
@@ -313,7 +333,6 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEqualsDoubleSided(instance, copy);
     }
 
-    @Disabled
     @Test
     void testCopyTo() {
         initialize(instance);
@@ -352,21 +371,31 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         return new AbstractMap.SimpleImmutableEntry<>(s, c);
     }
 
-    protected static <C extends VanillaSignedMessage<C>> C createChild(Supplier<C> constructor) {
-        return createChild(constructor, m -> {});
+    protected <C extends VanillaSignedMessage<C>> C createChild(Class<C> clazz) {
+        return createChild(clazz, m -> {}, new Random(42).nextLong());
     }
 
+    protected <C extends VanillaSignedMessage<C>> C createChild(Class<C> clazz, long seed) {
+        return createChild(clazz, m -> {}, seed);
+    }
 
-    protected static <C extends VanillaSignedMessage<C>> C createChild(Supplier<C> constructor, Consumer<C> initializer) {
-        final C result = constructor.get()
-            .protocol(1)
-            .messageType(1)
-            .address(3);
+    protected <C extends VanillaSignedMessage<C>> C createChild(Class<C> clazz, Consumer<C> initializer, long seed) {
+        final KeyPair kp = new KeyPair(seed);
+        final C result = registry.create(clazz)
+            .address(DecentredUtil.toAddress(kp.publicKey));
+            ensureDtoParserSetIfHasDtoParser(result);
             initializer.accept(result);
-            return result.sign(new KeyPair(933448745).secretKey);
+            return result.sign(kp.secretKey);
     }
 
-    private void assertEqualsDoubleSided(T expected, T actual) {
+    protected <M extends VanillaSignedMessage<M>> void ensureDtoParserSetIfHasDtoParser(M message) {
+        if (message instanceof HasDtoParser) {
+            final HasDtoParser hasDtoParser = ((HasDtoParser) message);
+            hasDtoParser.dtoParser(registry.get());
+        }
+    }
+
+    protected void assertEqualsDoubleSided(T expected, T actual) {
         assertEquals(expected, actual);
         assertEquals(actual, expected);
     }
@@ -386,6 +415,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEquals(instance, other);
         assertEquals(other, instance);
     }
+
 
 /*    private <R> void assertThrowsBeforeSign(Function<T, R> mapper) {
         try {

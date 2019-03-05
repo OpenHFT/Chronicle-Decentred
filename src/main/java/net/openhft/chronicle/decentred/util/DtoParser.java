@@ -2,6 +2,7 @@ package net.openhft.chronicle.decentred.util;
 
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
+import org.jetbrains.annotations.NotNull;
 
 public interface DtoParser<U>
     extends HasSuperInterface<U> {
@@ -22,7 +23,7 @@ public interface DtoParser<U>
      * are {@code null}
      *
      */
-    void parseOne(BytesIn bytes, U listener);
+    void parseOne(@NotNull BytesIn bytes, @NotNull U listener);
 
     /**
      * Parse one object return the message as an object.
@@ -30,7 +31,7 @@ public interface DtoParser<U>
      * @param bytes to use for parsing the dto
      * @return the object.
      */
-    SignedMessage parseOne(BytesIn bytes);
+    SignedMessage parseOne(@NotNull BytesIn bytes);
 
     /**
      * Invokes a method on the given {@code component} with the given {@code message}
@@ -46,5 +47,5 @@ public interface DtoParser<U>
      * @throws NullPointerException if any of the provided parameters
      * are {@code null}
      */
-    void onMessage(U component, Object message);
+    void onMessage(@NotNull U component, @NotNull Object message);
 }

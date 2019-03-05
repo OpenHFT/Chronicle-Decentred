@@ -16,26 +16,28 @@ public interface TransientFieldHandler<T extends VanillaSignedMessage<T>> {
     void reset(@NotNull T original);
 
     /***
-     * Copies any transient fields from the provided original to the provided
-     * target.
+     * Copies any transient and non-marshalled fields that from the provided original
+     * to the provided target.
      *
      * @param original message (source)
      * @param target   mesaage (destination)
      *
      */
-    void copy(@NotNull T original, @NotNull T target);
+    void copyNonMarshalled(@NotNull T original, @NotNull T target);
 
-    /***
-     * Copies any transient fields from the provided original to the provided
-     * target whereby elements are re-created and are thus not shared between
-     * the original and target.
-     *
-     * @param original message (source)
-     * @param target   mesaage (destination)
-     *
-     */
-    void deepCopy(@NotNull T original, @NotNull T target);
+//    /***
+//     * Copies any transient fields from the provided original to the provided
+//     * target whereby elements are re-created and are thus not shared between
+//     * the original and target.
+//     *
+//     * @param original message (source)
+//     * @param target   mesaage (destination)
+//     *
+//     */
+//    void deepCopy(@NotNull T original, @NotNull T target);
 
+
+//   void dereference(T target) ;
 
     // Wire
 
