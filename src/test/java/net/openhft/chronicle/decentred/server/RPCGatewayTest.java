@@ -49,14 +49,14 @@ final class RPCGatewayTest {
                         SystemMessages listener = Mocker.queuing(SystemMessages.class, "", queue);
                         try (RPCClient<SystemMessages, SystemMessages> client = new RPCClient<>("test", "localhost", 9009, kp2.secretKey, dtoRegistry, listener, SystemMessages.class)) {
                             System.out.println("Client address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp2.publicKey)));
-                            client.toDefault().createAddressRequest(new CreateAddressRequest());
+                            client.toDefault().createAddressRequest(new CreateAddressRequest().address(42));
                             String s = queue.poll(Jvm.isDebug() ? 100 : 10, TimeUnit.SECONDS);
                             assertEquals("createAddressEvent[!CreateAddressEvent {\n" +
                                 "  timestampUS: {deleted},\n" +
-                                "  address: phccofmpy6ci,\n" +
+                                "  address: nphccofmpy6ci,\n" +
                                 "  createAddressRequest: {\n" +
                                 "    timestampUS: {deleted},\n" +
-                                "    address: ud6jbceicts2,\n" +
+                                "    address: nud6jbceicts2,\n" +
                                 "    publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o=\n" +
                                 "  }\n" +
                                 "}\n" +
