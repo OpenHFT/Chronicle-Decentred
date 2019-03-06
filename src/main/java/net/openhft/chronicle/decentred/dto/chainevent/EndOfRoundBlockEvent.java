@@ -7,6 +7,7 @@ import net.openhft.chronicle.decentred.dto.base.TransientFieldHandler;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.decentred.dto.base.trait.HasAddressToBlockNumberMap;
 import net.openhft.chronicle.decentred.dto.base.trait.HasChainAddress;
+import net.openhft.chronicle.decentred.internal.unmodifiable.UnmodifiableLongLongMap;
 import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.LongLongMap;
@@ -49,10 +50,17 @@ public final class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundB
 
     @Override
     public LongLongMap addressToBlockNumberMap() {
-        if (addressToBlockNumberMap == null) {
-            addressToBlockNumberMap = LongLongMap.withExpectedSize(16);
+        if (signed()) {
+            if (addressToBlockNumberMap == null) {
+                return new UnmodifiableLongLongMap(LongLongMap.withExpectedSize(0));
+            }
+            return new UnmodifiableLongLongMap(addressToBlockNumberMap);
+        } else {
+            if (addressToBlockNumberMap == null) {
+                addressToBlockNumberMap = LongLongMap.withExpectedSize(16);
+            }
+            return addressToBlockNumberMap;
         }
-        return addressToBlockNumberMap;
     }
 
     @Override
