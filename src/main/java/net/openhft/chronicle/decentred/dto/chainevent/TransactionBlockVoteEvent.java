@@ -56,16 +56,6 @@ public final class TransactionBlockVoteEvent extends VanillaSignedMessage<Transa
             // All transient fields are marshalled
         }
 
-        /*        @Override
-        public void copyNonMarshalled(@NotNull TransactionBlockVoteEvent original, @NotNull TransactionBlockVoteEvent target) {
-            throw new NotImplementedException();
-        }
-
-        @Override
-        public void deepCopy(@NotNull TransactionBlockVoteEvent original, @NotNull TransactionBlockVoteEvent target) {
-            throw new NotImplementedException();
-        }*/
-
         @Override
         public void writeMarshallable(@NotNull TransactionBlockVoteEvent original, @NotNull WireOut wire) {
             wire.write(GOSSIP_EVENT).object(
