@@ -9,15 +9,12 @@ import net.openhft.chronicle.decentred.api.SystemMessageListener;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.dto.base.DtoAliases;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockVoteEvent;
 import net.openhft.chronicle.decentred.util.*;
-import net.openhft.chronicle.wire.BinaryWire;
-import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.TextWire;
 import net.openhft.chronicle.wire.Wire;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

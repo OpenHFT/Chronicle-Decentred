@@ -1,7 +1,7 @@
 package net.openhft.chronicle.decentred.server;
 
 
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockEvent;
 
 public interface Gossiper {
     void transactionBlockEvent(TransactionBlockEvent transactionBlockEvent);

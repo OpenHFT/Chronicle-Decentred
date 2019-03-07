@@ -3,8 +3,8 @@ package net.openhft.chronicle.decentred.server;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.api.SystemMessages;
-import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.EndOfRoundBlockEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockVoteEvent;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.LongLongMap;
 

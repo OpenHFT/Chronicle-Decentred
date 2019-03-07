@@ -1,6 +1,6 @@
 package net.openhft.chronicle.decentred.dto.fundamental.chainevent;
 
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.LongLongMap;

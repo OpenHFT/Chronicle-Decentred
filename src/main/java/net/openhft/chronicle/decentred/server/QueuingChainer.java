@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.decentred.api.MessageListener;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 
 import java.util.ArrayList;

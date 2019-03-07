@@ -2,7 +2,7 @@ package net.openhft.chronicle.decentred.dto;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.fundamental.base.AbstractFundamentalDtoTest;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import org.junit.jupiter.api.Test;

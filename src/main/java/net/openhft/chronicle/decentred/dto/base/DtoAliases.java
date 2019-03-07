@@ -2,10 +2,10 @@ package net.openhft.chronicle.decentred.dto.base;
 
 import net.openhft.chronicle.core.pool.ClassAliasPool;
 import net.openhft.chronicle.decentred.dto.*;
-import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.EndOfRoundBlockEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockVoteEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateChainRequest;

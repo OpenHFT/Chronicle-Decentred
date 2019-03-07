@@ -1,4 +1,4 @@
-package net.openhft.chronicle.decentred.dto.chainevent;
+package net.openhft.chronicle.decentred.dto.blockevent;
 
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;

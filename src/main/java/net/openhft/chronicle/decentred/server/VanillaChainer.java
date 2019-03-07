@@ -1,7 +1,7 @@
 package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockEvent;
 
 public class VanillaChainer implements Chainer {
     private final Object transactionLock = new Object();

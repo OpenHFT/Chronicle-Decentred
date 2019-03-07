@@ -1,4 +1,4 @@
-package net.openhft.chronicle.decentred.dto.chainevent;
+package net.openhft.chronicle.decentred.dto.blockevent;
 
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
@@ -7,7 +7,6 @@ import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 // I vote that this gossip event
 

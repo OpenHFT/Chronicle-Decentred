@@ -2,8 +2,8 @@ package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
-import net.openhft.chronicle.decentred.dto.chainevent.EndOfRoundBlockEvent;
-import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.EndOfRoundBlockEvent;
+import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.LongLongMap;
