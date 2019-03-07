@@ -6,9 +6,10 @@ import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateChainRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateTokenRequest;
 
 public interface SystemMessages extends
-        WeeklyEvents,
-        AddressManagementRequests,
-        SystemMessageListener {
+    BlockEvents,
+    AddressManagementRequests,
+    SystemMessageListener {
+
     @MethodId(0x0101)
     void createChainRequest(CreateChainRequest createChainRequest);
 

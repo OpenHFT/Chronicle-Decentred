@@ -6,8 +6,8 @@ import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.chainevent.TransactionBlockVoteEvent;
 
-public interface WeeklyEvents {
-    // weekly events
+public interface BlockEvents {
+
     @MethodId(0xFFF0)
     void transactionBlockEvent(TransactionBlockEvent transactionBlockEvent);
 
