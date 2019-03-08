@@ -16,6 +16,7 @@ import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockVoteEvent;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.AssignDelegatesRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateChainRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateTokenRequest;
+import net.openhft.chronicle.decentred.internal.server.VanillaBlockEngine;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
@@ -55,8 +56,8 @@ public class VanillaGateway implements Gateway {
         long region = DecentredUtil.parseAddress(regionStr);
         return new VanillaGateway(address,
                 region,
-                VanillaBlockEngine.newMain(dtoRegistry, address, mainPeriodMS, clusterAddresses, mainTransactionProcessor, secretKey),
-                VanillaBlockEngine.newLocal(dtoRegistry, address, region, localPeriodMS, clusterAddresses, localTransactionProcessor, secretKey)
+                BlockEngine.newMain(dtoRegistry, address, mainPeriodMS, clusterAddresses, mainTransactionProcessor, secretKey),
+                BlockEngine.newLocal(dtoRegistry, address, region, localPeriodMS, clusterAddresses, localTransactionProcessor, secretKey)
         );
     }
 

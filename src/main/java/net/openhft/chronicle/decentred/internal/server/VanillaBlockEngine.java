@@ -1,4 +1,4 @@
-package net.openhft.chronicle.decentred.server;
+package net.openhft.chronicle.decentred.internal.server;
 
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.Closeable;
@@ -15,9 +15,11 @@ import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockVoteEvent;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.AssignDelegatesRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateChainRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateTokenRequest;
+import net.openhft.chronicle.decentred.server.*;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.threads.NamedThreadFactory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,13 +48,13 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     private long nextSendUS;
     private MessageToListener tcpMessageListener;
 
-    public <U extends T> VanillaBlockEngine(DtoRegistry<U> dtoRegistry,
+    public <U extends T> VanillaBlockEngine(@NotNull DtoRegistry<U> dtoRegistry,
                                             long address,
                                             long chainAddress,
                                             int periodMS,
-                                            T postBlockChainProcessor,
-                                            long[] clusterAddresses,
-                                            BytesStore secretKey) {
+                                            @NotNull T postBlockChainProcessor,
+                                            @NotNull long[] clusterAddresses,
+                                            @NotNull BytesStore secretKey) {
         this.address = address;
         this.chainAddress = chainAddress;
         this.secretKey = secretKey;
@@ -70,30 +72,6 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         votingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-voter", true, Thread.MAX_PRIORITY));
         processingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-processor", true, Thread.MAX_PRIORITY));
 //        writerSes = Executors.newCachedThreadPool(new NamedThreadFactory(regionStr + "-writer", true, Thread.MIN_PRIORITY));
-    }
-
-    public static <T, U extends T> VanillaBlockEngine<T> newMain(DtoRegistry<U> dtoRegistry,
-                                                                 long address,
-                                                                 int periodMS,
-                                                                 long[] clusterAddresses,
-                                                                 T postBlockChainProcessor,
-                                                                 BytesStore secretKey) {
-        assert LongStream.of(clusterAddresses).distinct().count() == clusterAddresses.length;
-
-        long main = DecentredUtil.parseAddress("main");
-
-        return new VanillaBlockEngine<>(dtoRegistry, address, main, periodMS, postBlockChainProcessor, clusterAddresses, secretKey);
-    }
-
-    public static <T, U extends T> VanillaBlockEngine<T> newLocal(DtoRegistry<U> dtoRegistry,
-                                                                  long address,
-                                                                  long chainAddress,
-                                                                  int periodMS,
-                                                                  long[] clusterAddresses,
-                                                                  T postBlockChainProcessor, BytesStore secretKey) {
-        assert LongStream.of(clusterAddresses).distinct().count() == clusterAddresses.length;
-
-        return new VanillaBlockEngine<>(dtoRegistry, address, chainAddress, periodMS, postBlockChainProcessor, clusterAddresses, secretKey);
     }
 
     @Override

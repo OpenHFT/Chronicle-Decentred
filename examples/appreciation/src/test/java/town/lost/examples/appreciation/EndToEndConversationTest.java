@@ -12,6 +12,7 @@ import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.internal.server.VanillaBlockEngine;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.server.*;
