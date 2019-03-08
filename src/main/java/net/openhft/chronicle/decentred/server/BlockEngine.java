@@ -5,18 +5,16 @@ import net.openhft.chronicle.decentred.api.MessageListener;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.internal.server.VanillaBlockEngine;
+import net.openhft.chronicle.decentred.server.trait.HasTcpMessageListener;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.LongStream;
 
-public interface BlockEngine extends SystemMessages, MessageListener {
+public interface BlockEngine extends SystemMessages, MessageListener, HasTcpMessageListener {
 
     void start(MessageToListener messageToListener);
-
-    // Used for testing.
-    void tcpMessageListener(MessageToListener messageToListener);
 
     // Used for testing.
     void processOneBlock();
