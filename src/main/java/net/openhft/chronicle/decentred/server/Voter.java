@@ -9,13 +9,25 @@ import org.jetbrains.annotations.NotNull;
 
 public interface Voter extends HasTcpMessageListener {
 
+    /**
+     * Receives a TransactionBlockGossipEvent from a node.
+     *
+     * @param transactionBlockGossipEvent to receive
+     */
     void transactionBlockGossipEvent(@NotNull TransactionBlockGossipEvent transactionBlockGossipEvent);
 
+    /**
+     * Instructs this Voter to send a vote for the provided
+     * {@code blockNumber}
+     *
+     * @param blockNumber to use
+     */
     void sendVote(long blockNumber);
 
+    @NotNull
     static Voter createLastGossipVoter(long address,
                                        @NotNull long[] clusterAddresses,
-                                       @NotNull VanillaVoteTaker voteTaker,
+                                       @NotNull VoteTaker voteTaker,
                                        @NotNull BytesStore secretKey,
                                        @NotNull DtoRegistry dtoRegistry) {
         return new LastGossipVoter(address, clusterAddresses, voteTaker, secretKey, dtoRegistry);

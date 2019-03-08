@@ -5,7 +5,7 @@ import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockVoteEvent;
-import net.openhft.chronicle.decentred.server.VanillaVoteTaker;
+import net.openhft.chronicle.decentred.server.VoteTaker;
 import net.openhft.chronicle.decentred.server.Voter;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class LastGossipVoter implements Voter {
     private final long address;
     private final long[] clusterAddresses;
-    private final VanillaVoteTaker voteTaker;
+    private final VoteTaker voteTaker;
     private MessageToListener tcpMessageListener;
     private TransactionBlockGossipEvent receivedGossip = new TransactionBlockGossipEvent();
     private final DtoRegistry<SystemMessages> dtoRegistry;
@@ -22,7 +22,7 @@ public class LastGossipVoter implements Voter {
 
     public LastGossipVoter(long address,
                            @NotNull long[] clusterAddresses,
-                           @NotNull VanillaVoteTaker voteTaker,
+                           @NotNull VoteTaker voteTaker,
                            @NotNull BytesStore secretKey,
                            @NotNull DtoRegistry dtoRegistry) {
         this.address = address;
@@ -54,6 +54,7 @@ public class LastGossipVoter implements Voter {
         }
     }
 
+    @Override
     public void tcpMessageListener(@NotNull MessageToListener tcpMessageListener) {
         this.tcpMessageListener = tcpMessageListener;
     }
