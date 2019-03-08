@@ -7,6 +7,7 @@ import net.openhft.chronicle.decentred.dto.blockevent.EndOfRoundBlockEvent;
 import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockVoteEvent;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.LongLongMap;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.LongStream;
 
@@ -73,8 +74,7 @@ public class VanillaVoteTaker implements VoteTaker {
         return true;
     }
 
-    public VanillaVoteTaker tcpMessageListener(MessageToListener tcpMessageListener) {
+    public void tcpMessageListener(@NotNull MessageToListener tcpMessageListener) {
         this.tcpMessageListener = tcpMessageListener;
-        return this;
     }
 }
