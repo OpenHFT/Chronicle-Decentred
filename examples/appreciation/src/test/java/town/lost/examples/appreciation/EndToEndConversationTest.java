@@ -131,9 +131,9 @@ public class EndToEndConversationTest {
             Function<GatewayConfiguration<AppreciationMessages>, VanillaGateway> gatewayConstructor = config -> {
                 long region = DecentredUtil.parseAddress(config.regionStr());
                 Bytes secretKey = getRpcBuilder().secretKey();
-                BlockEngine mainEngine = VanillaBlockEngine.newMain(config.dtoRegistry(), config.address(),
+                BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.address(),
                     config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, secretKey);
-                BlockEngine localEngine = VanillaBlockEngine.newLocal(config.dtoRegistry(), config.address(), region,
+                BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.address(), region,
                     config.localPeriodMS(), config.clusterAddresses(), localProcessor, secretKey);
 
                 AppreciationTransactions blockChain = new AppreciationTransactions() {

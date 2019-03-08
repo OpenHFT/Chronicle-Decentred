@@ -1,14 +1,16 @@
-package net.openhft.chronicle.decentred.server;
+package net.openhft.chronicle.decentred.internal.server;
 
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockGossipEvent;
 import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockVoteEvent;
+import net.openhft.chronicle.decentred.server.VanillaVoteTaker;
+import net.openhft.chronicle.decentred.server.Voter;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 
 // Currently votes on the last piece of gossip
-public class VanillaVoter implements Voter {
+public class LastGossipVoter implements Voter {
     private final long address;
     private final long[] clusterAddresses;
     private final VanillaVoteTaker voteTaker;
@@ -17,7 +19,7 @@ public class VanillaVoter implements Voter {
     private final DtoRegistry<SystemMessages> dtoRegistry;
     private final BytesStore secretKey;
 
-    public VanillaVoter(long address, long[] clusterAddresses, VanillaVoteTaker voteTaker, BytesStore secretKey, DtoRegistry dtoRegistry) {
+    public LastGossipVoter(long address, long[] clusterAddresses, VanillaVoteTaker voteTaker, BytesStore secretKey, DtoRegistry dtoRegistry) {
         this.address = address;
         this.clusterAddresses = clusterAddresses;
         this.voteTaker = voteTaker;
@@ -47,7 +49,7 @@ public class VanillaVoter implements Voter {
         }
     }
 
-    public VanillaVoter tcpMessageListener(MessageToListener tcpMessageListener) {
+    public LastGossipVoter tcpMessageListener(MessageToListener tcpMessageListener) {
         this.tcpMessageListener = tcpMessageListener;
         return this;
     }

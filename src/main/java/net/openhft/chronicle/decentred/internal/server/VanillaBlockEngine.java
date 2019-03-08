@@ -35,7 +35,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
 
     private final QueuingChainer chainer;
     private final VanillaGossiper gossiper;
-    private final VanillaVoter voter;
+    private final LastGossipVoter voter;
     private final VanillaVoteTaker voteTaker;
     private final BlockReplayer blockReplayer;
 
@@ -66,7 +66,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         chainer = new QueuingChainer<>(chainAddress, dtoRegistry);
         blockReplayer = new VanillaBlockReplayer<>(address, dtoRegistry, postBlockChainProcessor);
         voteTaker = new VanillaVoteTaker(address, chainAddress, clusterAddresses, blockReplayer, secretKey, dtoRegistry);
-        voter = new VanillaVoter(address, clusterAddresses, voteTaker, secretKey, dtoRegistry);
+        voter = new LastGossipVoter(address, clusterAddresses, voteTaker, secretKey, dtoRegistry);
         gossiper = new VanillaGossiper(address, chainAddress, clusterAddresses, voter, secretKey, dtoRegistry);
         String regionStr = DecentredUtil.toAddressString(chainAddress);
         votingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-voter", true, Thread.MAX_PRIORITY));
