@@ -115,21 +115,35 @@ Chronicle Decentred Java Server Components and Messages are typically handled as
 
 ==== Server Components
 
-`Gateway`:: Receives `SignedMessage` application messages and validates signatures and sends `SignedMessage` application messages to a `BlockEngine`.
+`Gateway`:: Receives `SignedMessage` application messages, validates signatures, responds to query messages that do
+not change any perceived state of the chain members and sends potentially state altering `SignedMessage`
+application messages to a `BlockEngine`.
+
 `BlockEngine`:: Contains and manages the following sub-components:
+
 `Chainer`::: Receives `SignedMessage` application messages from `Gateway` instances and produces `TransactionBlockEvent` messages.
+
 `Gossiper`::: Receives `TransactionBlockEvent` messages and sends `TransactionBlockGossipEvent` messages to `Voter` instances.
+
 `Voter`::: Receives `TransactionBlockGossipEvent` from `Gossiper` instances and sends `TransactionBlockVoteEvent` messages to `VoteTaker` instances.
+
 `VoteTaker`::: Receives `TransactionBlockVoteEvent` from `Voter` instances and sends `EndOfRoundBlockEvent` messages to `BlockReplayer` instances.
-`BlockReplayer`::: Replays `SignedMessage` application messages on participating nodes.
+
+`BlockReplayer`::: Replays `SignedMessage` application messages on participating nodes, altering the perceived state of
+the chain to reflect the evetns agreed upon by the voting steps above.
 
 ==== Messages
 
 `SignedMessage` application messages:: For example the messages in `examples/appreciation`: `OpeningBalance`, `Give`, `Topup`.
+
 `TransactionBlockEvent`:: Contains one or several `SignedMessage` application messages proposed to be included in the next block.
-`TransactionBlockGossipEvent`:: Contains associations between other node addresses and which block number another node address has seen.
-`TransactionBlockVoteEvent`:: Contains a nodes perception of other nodes' association between node addresses and block number
-`EndOfRoundBlockEvent`:: Contains the consensus of events in the block
+
+`TransactionBlockGossipEvent`:: Constitutes a new chain state and consists of one cursor for each event producing node.
+The cursor determines the highest numbered event from that particular node that is included in the block.
+
+`TransactionBlockVoteEvent`:: Consists of a block gossip event that is proposed as next block of the chain.
+
+`EndOfRoundBlockEvent`:: Contains the consensus of events in the block, the outcome of a voting round.
 
 === Creating a chain
 
