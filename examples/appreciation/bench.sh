@@ -73,12 +73,12 @@ if [[ ${RUN} == YES ]]; then
     echo "Starting benchmark @ ${HOST}:${DIR}"
     PEERS="0.0.0.0:10000,0.0.0.0:10001,0.0.0.0:10002"
 
-    run "Peer 0" 112x50+10+10 "Peer 0 ${PEERS}" &
-    run "Peer 1" 112x50+1300+10 "Peer 1 ${PEERS}" &
-    run "Peer 2" 112x50+2590+10 "Peer 2 ${PEERS}" &
+    run "Peer 0 @ ${HOST}" 112x50+10+10 "Peer 0 ${PEERS}" &
+    run "Peer 1 @ ${HOST}" 112x50+1300+10 "Peer 1 ${PEERS}" &
+    run "Peer 2 @ ${HOST}" 112x50+2590+10 "Peer 2 ${PEERS}" &
 
     sleep 15
 
-    run "Traffic" 112x20+200+1200 "Traffic 0.0.0.0:10000" &
+    run "Traffic @ ${HOST}" 112x30+1300+1300 "Traffic 0.0.0.0:10000" &
 
 fi
