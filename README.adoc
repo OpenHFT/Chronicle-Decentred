@@ -110,8 +110,8 @@ The IPv4:port:id is shorten to IPv4:port if the id is 0.
 
 See DecentredUtils for more details.
 
-==== Java Server Components and Messages
-hronicle Decentred Java Server Components and Messages are typically handled as described hereunder:
+=== Java Server Components and Messages
+Chronicle Decentred Java Server Components and Messages are typically handled as described hereunder:
 
 ==== Server Components
 
@@ -130,7 +130,6 @@ hronicle Decentred Java Server Components and Messages are typically handled as 
 `TransactionBlockGossipEvent`:: Contains a nodes associations between other node addresses and which block number another node address has seen.
 `TransactionBlockVoteEvent`:: Contains a nodes perception of other nodes' association between node addresses and block number
 `EndOfRoundBlockEvent`:: Contains the consensus of events in the block
-
 
 === Creating a chain
 
