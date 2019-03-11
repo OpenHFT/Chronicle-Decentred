@@ -128,7 +128,7 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
 
     @Override
     public synchronized void onMessageTo(long address, SignedMessage message) {
-        System.out.println(Thread.currentThread().getName() + " to " + DecentredUtil.toAddressString(address) + " " + message);
+        //System.out.println(Thread.currentThread().getName() + " to " + DecentredUtil.toAddressString(address) + " " + message);
         write(address, message);
     }
 
