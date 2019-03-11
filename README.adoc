@@ -115,6 +115,27 @@ See DecentredUtils for more details.
 ==== Create a private/public key pair.
 The KeyPair class can help.
 
+==== Server Components and Messages
+Chronicle Decentred Java Server Components and Messages are typically handled as described hereunder:
+
+Server Components
+
+* `Gateway` - Receives `SignedMessage` application messages and validates signatures and sends `SignedMessage` application messages to a `BlockEngine`.
+* `BlockEngine` - Contains and manages the following sub-components:
+** `Chainer` - Receives `SignedMessage` application messages from `Gateway` instances and produces `TransactionBlockEvent` messages.
+** `Gossiper`- Receives `TransactionBlockEvent` messages and sends `TransactionBlockGossipEvent` messages to `Voter` instances.
+** `Voter` - Receives `TransactionBlockGossipEvent` from `Gossiper` instances and sends `TransactionBlockVoteEvent` messages to `VoteTaker` instances.
+** `VoteTaker` - Receives `TransactionBlockVoteEvent` from `Voter` instances and sends `EndOfRoundBlockEvent` messages to `BlockReplayer` instances.
+** `BlockReplayer` - Replays `SignedMessage` application messages on participating nodes.
+
+Messages
+
+* `SignedMessage` application messages - For example the messages in `examples/appreciation`: `OpeningBalance`, `Give`, `Topup`.
+* `TransactionBlockEvent` - Contains one or several `SignedMessage` application messages proposed to be included in the next block.
+* `TransactionBlockGossipEvent` - Contains a nodes associations between other node addresses and which block number another node address has seen.
+* `TransactionBlockVoteEvent` - Contains a nodes perception of other nodes' association between node addresses and block number
+* `EndOfRoundBlockEvent` - Contains the consensus of events in the block
+
 ==== Send a create address request
 
 [source, yaml]

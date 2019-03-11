@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Voter extends HasTcpMessageListener {
 
     /**
-     * Receives a TransactionBlockGossipEvent from a node.
+     * Receives a TransactionBlockGossipEvent from a Gossiper.
      *
      * @param transactionBlockGossipEvent to receive
      */
