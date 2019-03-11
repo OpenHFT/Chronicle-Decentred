@@ -1,5 +1,6 @@
 #!/bin/bash
 
+PULL=NO
 REBUILD=NO
 RUN=YES
 
@@ -8,6 +9,10 @@ PARAMS=()
 while [[ $# -gt 0 ]]; do
     KEY="$1"
     case ${KEY} in
+        -p|--pull)
+        PULL=YES
+        shift
+        ;;
         -r|--rebuild)
         REBUILD=YES
         shift
@@ -18,7 +23,8 @@ while [[ $# -gt 0 ]]; do
         ;;
         -h|--help)
         echo "Usage: $0 <-r|--rebuild> <-n|--no-run> <host> <dir>"
-        echo "  <-r|--rebuild> git pull and rebuild before running benchmark"
+        echo "  <-p|--pull>    git pull before running benchmark"
+        echo "  <-r|--rebuild> rebuild before running benchmark"
         echo "  <-n|--no-run>  do not run benchmark"
         echo "  <host>         name of host (defaults to localhost)"
         echo "  <dir>          location of Chronicle-Decentred root dir"
@@ -50,20 +56,29 @@ else
 fi
 
 function run {
-    xterm -geometry $1 -e "ssh ${HOST} \"bash --login -c '$2'\""
+    xterm -fa 'Monospace' -fs 14 -T "${1}" -geometry "${2}" -e "ssh ${HOST} \"bash --login -c 'cd ${DIR}/examples/appreciation; ./run.sh ${3}'\""
 }
+
+if [[ ${PULL} == YES ]]; then
+    echo "Pulling latest @ ${HOST}:${DIR}"
+    ssh ${HOST} "bash --login -c 'cd ${DIR} && git checkout benchmark && git pull --rebase"
+fi
 
 if [[ ${REBUILD} == YES ]]; then
     echo "Compiling @ ${HOST}:${DIR}"
-    ssh ${HOST} "bash --login -c 'cd ${DIR} && git checkout benchmark && git pull --rebase && mvn clean install -q -Dmaven.test.skip && cd examples/appreciation && mvn clean install -q -Dmaven.test.skip'"
+    ssh ${HOST} "bash --login -c 'cd ${DIR} && mvn clean install -q -Dmaven.test.skip && cd examples/appreciation && mvn clean install -q -Dmaven.test.skip'"
 fi
 
 if [[ ${RUN} == YES ]]; then
     echo "Starting benchmark @ ${HOST}:${DIR}"
-    run 180x70+100+100 "cd ${DIR}/examples/appreciation; ./server.sh" &
+    PEERS="0.0.0.0:10000,0.0.0.0:10001,0.0.0.0:10002"
 
-    sleep 5
+    run "Peer 0" 112x50+10+10 "Peer 0 ${PEERS}" &
+    run "Peer 1" 112x50+1300+10 "Peer 1 ${PEERS}" &
+    run "Peer 2" 112x50+2590+10 "Peer 2 ${PEERS}" &
 
-    run 180x70+1200+100 "cd ${DIR}/examples/appreciation; ./client.sh 0.0.0.0 1 2" &
-    run 180x70+2300+100 "cd ${DIR}/examples/appreciation; ./client.sh 0.0.0.0 2 1" &
+    sleep 10
+
+    run "Traffic" 112x20+100+1200 "Traffic 0.0.0.0:10000" &
+
 fi
