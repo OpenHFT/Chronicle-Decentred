@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.LongStream;
 
 public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
-    public static final int STEP_PAUSE_MILLIS = 5000;
+    public static final int STEP_PAUSE_MILLIS = 2000;
 
     private final long address;
     private final long chainAddress;

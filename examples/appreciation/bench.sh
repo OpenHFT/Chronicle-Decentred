@@ -61,7 +61,7 @@ function run {
 
 if [[ ${PULL} == YES ]]; then
     echo "Pulling latest @ ${HOST}:${DIR}"
-    ssh ${HOST} "bash --login -c 'cd ${DIR} && git checkout benchmark && git pull --rebase"
+    ssh ${HOST} "bash --login -c 'cd ${DIR} && git checkout benchmark && git pull --rebase'"
 fi
 
 if [[ ${REBUILD} == YES ]]; then
@@ -77,8 +77,8 @@ if [[ ${RUN} == YES ]]; then
     run "Peer 1" 112x50+1300+10 "Peer 1 ${PEERS}" &
     run "Peer 2" 112x50+2590+10 "Peer 2 ${PEERS}" &
 
-    sleep 10
+    sleep 15
 
-    run "Traffic" 112x20+100+1200 "Traffic 0.0.0.0:10000" &
+    run "Traffic" 112x20+200+1200 "Traffic 0.0.0.0:10000" &
 
 fi

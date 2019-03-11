@@ -82,7 +82,7 @@ public class Traffic  {
                 .createClient(name, socketAddress, new Peer.ResponseSink());
             Client client = new Client(accountSeed, address, rpcClient);
 
-            System.out.println("Waiting for ability to send second message...");
+            System.out.println("Waiting some time before sending first client message to " + name);
             Jvm.pause(7000);
 
             System.out.println("Sending CreateAddressRequest");
@@ -96,7 +96,7 @@ public class Traffic  {
         }).collect(Collectors.toList());
 
         clients.forEach(client -> {
-            System.out.println("Waiting for ability to send second message...");
+            System.out.println("Waiting some time before sending second client message to " + client.name());
             Jvm.pause(7000);
 
             System.out.println("Setting account " + client + " to " + START_AMOUNT);
@@ -108,8 +108,8 @@ public class Traffic  {
             client.toDefault().openingBalance(ob);
         });
 
-        System.out.println("Waiting for ability to send second message...");
-        Jvm.pause(7000);
+        System.out.println("Waiting some time before sending give message...");
+        Jvm.pause(15_000);
 
         final Give give = new Give()
             .address(clients.get(0).address)
@@ -117,14 +117,16 @@ public class Traffic  {
             .init(clients.get(1).address, 17);
         clients.get(0).toDefault().give(give);
 
+        System.out.println("Done.");
         clients.forEach(client -> {
             System.out.println("Waiting");
             Jvm.pause(2000);
-            System.out.println("Closing");
+            System.out.println("Closing " + client.name());
             client.close();
 
         });
-
+        System.out.println("Done.");
+        Jvm.pause(7000);
 
     }
 
