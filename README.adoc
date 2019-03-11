@@ -127,7 +127,7 @@ Chronicle Decentred Java Server Components and Messages are typically handled as
 
 `SignedMessage` application messages:: For example the messages in `examples/appreciation`: `OpeningBalance`, `Give`, `Topup`.
 `TransactionBlockEvent`:: Contains one or several `SignedMessage` application messages proposed to be included in the next block.
-`TransactionBlockGossipEvent`:: Contains a nodes associations between other node addresses and which block number another node address has seen.
+`TransactionBlockGossipEvent`:: Contains associations between other node addresses and which block number another node address has seen.
 `TransactionBlockVoteEvent`:: Contains a nodes perception of other nodes' association between node addresses and block number
 `EndOfRoundBlockEvent`:: Contains the consensus of events in the block
 
