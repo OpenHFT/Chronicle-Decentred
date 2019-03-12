@@ -1,8 +1,10 @@
-package net.openhft.chronicle.decentred.server;
+package net.openhft.chronicle.decentred.internal.server;
 
 import net.openhft.chronicle.core.Maths;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
+import net.openhft.chronicle.decentred.server.RunningMessageToListener;
+import net.openhft.chronicle.decentred.server.SingleMessageToListener;
 
 public class MultiMessageToListener implements RunningMessageToListener {
     final SingleMessageToListener[] messageWriters;
