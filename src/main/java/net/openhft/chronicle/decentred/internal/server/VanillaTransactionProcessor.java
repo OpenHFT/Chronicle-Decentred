@@ -1,4 +1,4 @@
-package net.openhft.chronicle.decentred.server;
+package net.openhft.chronicle.decentred.internal.server;
 
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
