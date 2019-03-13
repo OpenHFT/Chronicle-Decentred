@@ -33,7 +33,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     private final BytesStore secretKey;
     private final int periodUS;
 
-    private final QueuingChainer chainer;
+    private final Chainer chainer;
     private final VanillaGossiper gossiper;
     private final Voter voter;
     private final VoteTaker voteTaker;
@@ -63,7 +63,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         nextSendUS = (SystemTimeProvider.INSTANCE.currentTimeMicros() / periodUS + 1) * periodUS;
         this.clusterAddresses = clusterAddresses;
         assert LongStream.of(clusterAddresses).anyMatch(a -> a == address);
-        chainer = new QueuingChainer<>(chainAddress, dtoRegistry);
+        chainer = Chainer.createQueuing(chainAddress, dtoRegistry);
         blockReplayer = new VanillaBlockReplayer<>(address, dtoRegistry, postBlockChainProcessor);
         voteTaker = VoteTaker.create(address, chainAddress, clusterAddresses, blockReplayer, secretKey, dtoRegistry);
         voter = Voter.createLastGossipVoter(address, clusterAddresses, voteTaker, secretKey, dtoRegistry);
@@ -192,7 +192,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     private void doProcessOneBlock() throws InterruptedException {
-        TransactionBlockEvent tbe = chainer.createTransactionBlockEvent();
+        final TransactionBlockEvent tbe = chainer.nextTransactionBlockEvent();
 //                sample.sample(System.nanoTime() - start);
 //                start = System.nanoTime();
         // tg System.out.println("TBE "+tbe);
