@@ -1,33 +1,37 @@
-package net.openhft.chronicle.decentred.server;
+package net.openhft.chronicle.decentred.internal.server;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
-import net.openhft.chronicle.decentred.dto.base.TransientFieldHandler;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
+import net.openhft.chronicle.decentred.server.RunningMessageToListener;
 import net.openhft.chronicle.threads.LongPauser;
 import net.openhft.chronicle.threads.Pauser;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SingleMessageToListener implements RunningMessageToListener, Runnable {
+public final class SingleMessageToListener implements RunningMessageToListener, Runnable {
+
     private final Pauser pauser = new LongPauser(0, 10, 1, 20, TimeUnit.MILLISECONDS);
-    private final MessageToListener xclServer;
+    private final MessageToListener server;
     private final AtomicReference<Bytes> writeLock = new AtomicReference<>();
     private final VanillaSignedMessage signedMessage = new VanillaSignedMessage(){};
     private final Bytes bytes1 = Bytes.allocateElasticDirect(32 << 20).unchecked(true);
     private final Bytes bytes2 = Bytes.allocateElasticDirect(32 << 20).unchecked(true);
 
-    public SingleMessageToListener(MessageToListener xclServer) {
-        this.xclServer = xclServer;
+    public SingleMessageToListener(@NotNull MessageToListener server) {
+        this.server = server;
         writeLock.set(bytes1);
     }
 
     @Override
-    public Runnable[] runnables() {
-        return new Runnable[]{this};
+    public List<Runnable> runnables() {
+        return Collections.singletonList(this);
     }
 
     @Override
@@ -73,7 +77,7 @@ public class SingleMessageToListener implements RunningMessageToListener, Runnab
             try {
                 long address = bytes.readLong();
                 signedMessage.readMarshallable(bytes);
-                xclServer.onMessageTo(address, signedMessage);
+                server.onMessageTo(address, signedMessage);
             } finally {
                 bytes.readPosition(end);
                 bytes.readLimit(limit);

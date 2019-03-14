@@ -4,28 +4,40 @@ import net.openhft.chronicle.core.Maths;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
 import net.openhft.chronicle.decentred.server.RunningMessageToListener;
-import net.openhft.chronicle.decentred.server.SingleMessageToListener;
+import org.jetbrains.annotations.NotNull;
 
-public class MultiMessageToListener implements RunningMessageToListener {
-    final SingleMessageToListener[] messageWriters;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+
+public final class MultiMessageToListener implements RunningMessageToListener {
+
+    private final SingleMessageToListener[] messageWriters;
+    private final List<Runnable> runnables;
     private final int mask;
 
-    public MultiMessageToListener(int count, MessageToListener xclServer) {
+    public MultiMessageToListener(int count, @NotNull MessageToListener server) {
         count = Maths.nextPower2(count, 2);
         this.mask = count - 1;
-        this.messageWriters = new SingleMessageToListener[count];
-        for (int i = 0; i < count; i++)
-            messageWriters[i] = new SingleMessageToListener(xclServer);
+        messageWriters = IntStream.range(0, count)
+            .mapToObj(i -> new SingleMessageToListener(server))
+            .toArray(SingleMessageToListener[]::new);
+        runnables = Stream.of(messageWriters)
+            .map(Runnable.class::cast)
+            .collect(collectingAndThen(toList(), Collections::unmodifiableList));
     }
 
     @Override
     public void onMessageTo(long address, SignedMessage message) {
         messageWriters[(int) (Maths.agitate(address) & mask)].onMessageTo(address, message);
-
     }
 
     @Override
-    public Runnable[] runnables() {
-        return messageWriters;
+    public List<Runnable> runnables() {
+        return runnables;
     }
 }
