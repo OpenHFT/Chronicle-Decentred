@@ -80,6 +80,7 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
                 .filter(f -> Modifier.isTransient(f.getModifiers()))
                 .map(Object::toString)
                 .filter(n -> !BASE_TRANSIENT_FIELD_NAMES.contains(n))
+                .filter(n -> !n.startsWith("$")) // Discard instrumented variables (e.g. jacocoData)
                 .collect(toSet());
 
             if (!newTransientFields.isEmpty() && transientFieldHandler() == TransientFieldHandler.empty()) {
