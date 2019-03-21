@@ -1,10 +1,12 @@
 package net.openhft.chronicle.decentred.internal.unmodifiable;
 
+import com.koloboke.collect.LongCursor;
 import com.koloboke.collect.set.LongSet;
 import com.koloboke.function.LongLongConsumer;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.io.IORuntimeException;
+import net.openhft.chronicle.decentred.util.LongLongMap;
 import net.openhft.chronicle.wire.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +37,26 @@ public final class UnmodifiableLongLongMap extends net.openhft.chronicle.decentr
     @Override public void readMarshallable(@NotNull WireIn wire) throws IORuntimeException { throw newUnsupportedOperationException(); }
     @Override public void writeMarshallable(@NotNull WireOut wire) { inner.writeMarshallable(wire); }
     @Override @Nonnull public LongSet keySet() { return new UnmodifiableLongSet(inner.keySet()); }
-    @Override public boolean equals(Object o) { return inner.equals(o); }
+    @Override public boolean equals(Object o) {
+        if (o == this || o == inner) {
+            return true;
+        }
+        if (o instanceof LongLongMap) {
+            final LongLongMap that = (LongLongMap)o;
+            if (this.size() == that.size()) {
+                final LongSet thisSet = this.keySet();
+                final LongCursor cursor = thisSet.cursor();
+                while (cursor.moveNext()) {
+                    final long key = cursor.elem();
+                    if (this.get(key) != that.get(key)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
     @Override public int hashCode() { return inner.hashCode(); }
     @Override public String toString() { return inner.toString(); }
     @Override @Nullable public <T> T getField(String name, Class<T> tClass) throws NoSuchFieldException { return inner.getField(name, tClass); }
