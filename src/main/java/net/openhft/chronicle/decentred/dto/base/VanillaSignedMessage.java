@@ -8,7 +8,7 @@ import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.base.trait.HasDtoParser;
 import net.openhft.chronicle.decentred.dto.base.trait.HasTransientFieldHandler;
 import net.openhft.chronicle.decentred.util.AddressLongConverter;
-import net.openhft.chronicle.decentred.util.ShortUtil;
+import net.openhft.chronicle.decentred.internal.util.ShortUtil;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.*;
 import org.jetbrains.annotations.NotNull;

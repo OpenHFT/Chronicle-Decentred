@@ -1,6 +1,8 @@
-package net.openhft.chronicle.decentred.util;
+package net.openhft.chronicle.decentred.internal.util;
 
 public enum ShortUtil {;
+
+    private static int MAX_UNSIGNED_VALUE = (1 << Short.SIZE) - 1;
 
     /**
      * Checks that the specified int can be represented by an unsigned short. This
@@ -17,7 +19,7 @@ public enum ShortUtil {;
      * @throws ArithmeticException if {@code int} is out of range
      */
     public static int requireUnsignedShort(int value) {
-        if (value < 0 || value > 65536) {
+        if (value < 0 || value > MAX_UNSIGNED_VALUE) {
             throw new ArithmeticException("unsigned short overflow");
         }
         return value;
@@ -42,7 +44,7 @@ public enum ShortUtil {;
         if (value <= 0) {
             throw new ArithmeticException("value is not positive");
         }
-        if (value > 65536) {
+        if (value > MAX_UNSIGNED_VALUE) {
             throw new ArithmeticException("unsigned short overflow");
         }
         return value;
