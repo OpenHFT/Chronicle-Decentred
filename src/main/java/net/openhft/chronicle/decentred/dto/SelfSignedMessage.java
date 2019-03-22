@@ -8,7 +8,7 @@ import net.openhft.chronicle.salt.Ed25519;
  * This message states this node verifies a given public key after connecting to it successfully.
  */
 public class SelfSignedMessage<M extends SelfSignedMessage<M>> extends VanillaSignedMessage<M> {
-    private final Bytes publicKey = Bytes.allocateElasticDirect(Ed25519.PUBLIC_KEY_LENGTH);
+    private Bytes publicKey = Bytes.allocateElasticDirect(Ed25519.PUBLIC_KEY_LENGTH);
 
     public SelfSignedMessage() {
     }
@@ -29,4 +29,35 @@ public class SelfSignedMessage<M extends SelfSignedMessage<M>> extends VanillaSi
     public BytesStore publicKey() {
         return publicKey;
     }
+/*
+    @Override
+    public void readMarshallable(@NotNull WireIn wire) throws IORuntimeException {
+        super.readMarshallable(wire);
+        if (publicKey == null)
+            publicKey = Bytes.allocateElasticDirect(Ed25519.PUBLIC_KEY_LENGTH);
+        wire.read("publicKey").bytes(publicKey);
+    }
+
+    @Override
+    public void writeMarshallable(@NotNull WireOut wire) {
+        super.writeMarshallable(wire);
+        wire.write("publicKey").bytes(publicKey);
+    }
+
+    @Override
+    protected void readMarshallable0(BytesIn bytes) {
+        super.readMarshallable0(bytes);
+        int length = Ed25519.PUBLIC_KEY_LENGTH;
+        if (publicKey == null)
+            publicKey = Bytes.allocateElasticDirect(length);
+        publicKey.write(bytes, bytes.readPosition(), length);
+        bytes.readSkip(length);
+    }
+
+    @Override
+    protected void writeMarshallable0(BytesOut bytes) {
+        super.writeMarshallable0(bytes);
+        assert publicKey.readRemaining() == Ed25519.PUBLIC_KEY_LENGTH;
+        bytes.write(publicKey);
+    }*/
 }

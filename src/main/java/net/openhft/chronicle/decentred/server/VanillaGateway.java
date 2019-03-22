@@ -2,13 +2,11 @@ package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.annotation.UsedViaReflection;
+import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.decentred.api.Verifier;
 import net.openhft.chronicle.decentred.dto.*;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
-import net.openhft.chronicle.decentred.util.DecentredUtil;
-import net.openhft.chronicle.decentred.util.DtoRegistry;
-import net.openhft.chronicle.decentred.util.PublicKeyRegistry;
-import net.openhft.chronicle.decentred.util.VanillaPublicKeyRegistry;
+import net.openhft.chronicle.decentred.util.*;
 
 /**
  * This accepts message from the RPCServer and passes them to the appropriate downstream component
@@ -32,18 +30,19 @@ public class VanillaGateway implements Gateway {
     }
 
     public static <T> VanillaGateway newGateway(DtoRegistry<T> dtoRegistry,
-                                                long address,
+                                                KeyPair keyPair,
                                                 String regionStr,
                                                 long[] clusterAddresses,
                                                 int mainPeriodMS,
                                                 int localPeriodMS,
                                                 T mainTransactionProcessor,
-                                                T localTransactionPrcoessor) {
+                                                T localTransactionProcessor,
+                                                TimeProvider timeProvider) {
         long region = DecentredUtil.parseAddress(regionStr);
-        return new VanillaGateway(address,
+        return new VanillaGateway(keyPair.address(),
                 region,
-                VanillaBlockEngine.newMain(dtoRegistry, address, mainPeriodMS, clusterAddresses, mainTransactionProcessor),
-                VanillaBlockEngine.newLocal(dtoRegistry, address, region, localPeriodMS, clusterAddresses, localTransactionPrcoessor)
+                VanillaBlockEngine.newMain(dtoRegistry, keyPair, mainPeriodMS, clusterAddresses, mainTransactionProcessor, timeProvider),
+                VanillaBlockEngine.newLocal(dtoRegistry, keyPair, region, localPeriodMS, clusterAddresses, localTransactionProcessor, timeProvider)
         );
     }
 

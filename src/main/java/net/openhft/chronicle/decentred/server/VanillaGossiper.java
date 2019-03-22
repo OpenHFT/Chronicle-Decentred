@@ -1,8 +1,11 @@
 package net.openhft.chronicle.decentred.server;
 
+import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.TransactionBlockEvent;
 import net.openhft.chronicle.decentred.dto.TransactionBlockGossipEvent;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.decentred.util.LongLongMap;
 
 import java.util.stream.LongStream;
@@ -13,13 +16,22 @@ public class VanillaGossiper implements Gossiper {
     private final LongLongMap lastBlockMap = LongLongMap.withExpectedSize(16);
     private final long[] clusterAddresses;
     private final Voter voter;
+    private final TimeProvider timeProvider;
     private final TransactionBlockGossipEvent gossip;
     private MessageToListener tcpMessageToListener;
+    private final KeyPair keyPair;
+    private final int protocol;
+    private final int messageType;
 
-    public VanillaGossiper(long address, long chainAddress, long[] clusterAddresses, Voter voter) {
-        this.address = address;
+    public VanillaGossiper(KeyPair keyPair, DtoRegistry dtoRegistry, long chainAddress, long[] clusterAddresses, Voter voter, TimeProvider timeProvider) {
+        this.keyPair = keyPair;
+        this.address = keyPair.address();
+        protocol = dtoRegistry.protocolFor(TransactionBlockGossipEvent.class);
+        messageType = dtoRegistry.messageTypeFor(TransactionBlockGossipEvent.class);
+
         this.clusterAddresses = clusterAddresses;
         this.voter = voter;
+        this.timeProvider = timeProvider;
         assert LongStream.of(clusterAddresses).anyMatch(a -> a == address);
         gossip = new TransactionBlockGossipEvent()
                 .chainAddress(chainAddress);
@@ -47,11 +59,14 @@ public class VanillaGossiper implements Gossiper {
         }
 
         gossip.reset();
-        gossip.address(address);
-        gossip.blockNumber(blockNumber);
+        gossip.protocol(protocol)
+                .messageType(messageType)
+                .address(address)
+                .blockNumber(blockNumber);
         synchronized (this) {
             gossip.addressToBlockNumberMap().putAll(lastBlockMap);
         }
+        gossip.sign(keyPair.secretKey, timeProvider);
         for (long clusterAddress : clusterAddresses) {
             if (clusterAddress == address)
                 voter.transactionBlockGossipEvent(gossip);

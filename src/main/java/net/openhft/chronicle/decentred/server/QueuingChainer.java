@@ -3,7 +3,6 @@ package net.openhft.chronicle.decentred.server;
 import net.openhft.chronicle.decentred.api.MessageListener;
 import net.openhft.chronicle.decentred.dto.SignedMessage;
 import net.openhft.chronicle.decentred.dto.TransactionBlockEvent;
-import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 
 public class QueuingChainer implements MessageListener {
@@ -13,9 +12,8 @@ public class QueuingChainer implements MessageListener {
 
 
     public QueuingChainer(long chainAddress, DtoRegistry dtoRegistry) {
-        DtoParser dtoParser = dtoRegistry.get();
-        tbe.chainAddress(chainAddress).dtoParser(dtoParser);
-        tbe2.chainAddress(chainAddress).dtoParser(dtoParser);
+        tbe.chainAddress(chainAddress).dtoRegistry(dtoRegistry);
+        tbe2.chainAddress(chainAddress).dtoRegistry(dtoRegistry);
     }
 
     @Override

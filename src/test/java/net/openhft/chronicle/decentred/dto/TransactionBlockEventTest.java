@@ -36,7 +36,7 @@ public class TransactionBlockEventTest {
         @SuppressWarnings("unchecked")
         TransactionBlockEvent<SystemMessages> tbe = registry.create(TransactionBlockEvent.class);
         tbe.timestampUS(1534769584076123L);
-        tbe.dtoParser(registry.get());
+        tbe.dtoRegistry(registry);
         tbe.addTransaction(
                 registry.create(CreateAddressRequest.class)
                         .sign(kp.secretKey, new SetTimeProvider("2018-08-20T12:53:04.075128")));
@@ -118,7 +118,7 @@ public class TransactionBlockEventTest {
         @SuppressWarnings("unchecked")
         TransactionBlockEvent<SystemMessages> tbe = registry.create(TransactionBlockEvent.class);
         tbe.timestampUS(1534769584076123L);
-        tbe.dtoParser(registry.get());
+        tbe.dtoRegistry(registry);
 
         tbe.addTransaction(
                 registry.create(CreateAddressRequest.class)
@@ -173,8 +173,8 @@ public class TransactionBlockEventTest {
         tbe2.replay(registry, Mocker.logging(SystemMessages.class, "tbe2: ", System.out));
 
         // so we can dump the contents as strings
-        tbe.dtoParser(registry.get());
-        tbe2.dtoParser(registry.get());
+        tbe.dtoRegistry(registry);
+        tbe2.dtoRegistry(registry);
         assertEquals(tbe.toString(), tbe2.toString());
     }
 }

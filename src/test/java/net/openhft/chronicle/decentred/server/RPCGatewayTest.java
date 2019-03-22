@@ -2,6 +2,7 @@ package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.Mocker;
+import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
@@ -24,10 +25,9 @@ public class RPCGatewayTest {
         KeyPair kp = new KeyPair(7);
         RPCBuilder<SystemMessages> rpcBuilder = RPCBuilder.of(SystemMessages.class)
                 .addClusterAddress(DecentredUtil.toAddress(kp.publicKey))
-                .secretKey(kp.secretKey)
-                .publicKey(kp.publicKey);
+                .keyPair(kp);
         VanillaTransactionProcessor vtp = new VanillaTransactionProcessor();
-        try (RPCServer<SystemMessages> server = rpcBuilder.createServer(9009, vtp, vtp)) {
+        try (RPCServer<SystemMessages> server = rpcBuilder.createServer("server", 9009, vtp, vtp, new SetTimeProvider())) {
             System.out.println("Server address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp.publicKey)));
 
             KeyPair kp2 = new KeyPair(17);

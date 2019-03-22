@@ -1,6 +1,6 @@
 ---
 onMessageTo: [
-  phccofmpy6ci,
+  ng62j3usr3yrr,
   !TransactionBlockVoteEvent {
     timestampUS: 1970-01-01T00:00:00,
     address: .,
@@ -8,10 +8,10 @@ onMessageTo: [
   }
 ]
 onMessageTo: [
-  phccofmpy6ci,
+  ng62j3usr3yrr,
   !EndOfRoundBlockEvent {
     timestampUS: 1970-01-01T00:00:00,
-    address: server,
+    address: nphccofmpy6ci,
     chainAddress: local,
     weekNumber: 0,
     blockNumber: 0,

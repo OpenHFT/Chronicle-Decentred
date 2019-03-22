@@ -17,18 +17,12 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
-
 public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBlockEvent<T>> {
+    private transient DtoRegistry<T> dtoRegistry;
     private transient DtoParser<T> dtoParser;
 
     // for writing to a new set of bytes
     private transient Bytes writeTransactions = Bytes.allocateElasticDirect(4L << 10);
-
-    // where to read transactions from
-    private transient long messagesStart;
-    private transient Bytes transactions;
-    private transient List<SignedMessage> transactionsList;
 
     @LongConversion(AddressLongConverter.class)
     private long chainAddress;
@@ -39,33 +33,44 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     @IntConversion(UnsignedIntConverter.class)
     private int blockNumber; // up to 7k/s on average
 
+    // where to read transactions from
+    private transient long messagesStart;
+    private transient Bytes transactions;
+    private transient List<SignedMessage> transactionsList;
+
     public TransactionBlockEvent() {
         transactions = writeTransactions.clear();
         messagesStart = 0;
     }
 
-    public TransactionBlockEvent dtoParser(DtoParser<T> dtoParser) {
-        this.dtoParser = requireNonNull(dtoParser);
+    @Override
+    public TransactionBlockEvent<T> dtoRegistry(DtoRegistry dtoRegistry) {
+        this.dtoRegistry = dtoRegistry;
         return this;
     }
 
     @Override
-    public void readMarshallable(BytesIn bytes) throws IORuntimeException {
-        super.readMarshallable(bytes);
+    protected void readMarshallable0(BytesIn bytes) throws IORuntimeException {
+        super.readMarshallable0(bytes);
         messagesStart = this.bytes.readPosition();
         transactions = this.bytes;
     }
 
     public void replay(DtoRegistry<T> dtoRegistry, T allMessages) {
+        this.dtoRegistry = dtoRegistry;
+        replay(allMessages);
+    }
+
+    private DtoParser<T> dtoParser() {
         if (dtoParser == null)
             dtoParser = dtoRegistry.get();
-        replay(allMessages);
+        return dtoParser;
     }
 
     public void replay(T allMessages) {
         if (transactionsList != null) {
             for (SignedMessage signedMessage : transactionsList) {
-                dtoParser.onMessage(allMessages, signedMessage);
+                dtoParser().onMessage(allMessages, signedMessage);
             }
         }
         long p0 = transactions.readPosition();
@@ -77,7 +82,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
                 long length = transactions.readUnsignedInt(position);
                 transactions.readLimit(position + length);
                 try {
-                    dtoParser.parseOne(transactions, allMessages);
+                    dtoParser().parseOne(transactions, allMessages);
                 } catch (Exception e) {
                     Jvm.warn().on(getClass(), "Error processing transaction event ", e);
                 }
@@ -135,7 +140,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
             wire.write("transactions").sequence(transactionsList);
 
         } else {
-            Class<T> superInterface = dtoParser.superInterface();
+            Class<T> superInterface = dtoParser().superInterface();
             //noinspection unchecked
             wire.write("transactions").sequence(out -> replay(
                     (T) Proxy.newProxyInstance(superInterface.getClassLoader(),
@@ -153,7 +158,7 @@ public class TransactionBlockEvent<T> extends VanillaSignedMessage<TransactionBl
     @Override
     public <T> T deepCopy() {
         TransactionBlockEvent tbe = new TransactionBlockEvent();
-        tbe.dtoParser = dtoParser;
+        tbe.dtoRegistry = dtoRegistry;
         tbe.transactions = (transactions.readRemaining() == 0
                 ? Bytes.elasticHeapByteBuffer(1)
                 : transactions.copy().bytesForRead());

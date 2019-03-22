@@ -1,14 +1,12 @@
 package net.openhft.chronicle.decentred.server;
 
-import net.openhft.chronicle.bytes.Bytes;
-import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
-import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
-import net.openhft.chronicle.salt.Ed25519;
+import net.openhft.chronicle.decentred.util.KeyPair;
 
 import java.io.IOException;
 import java.util.LinkedHashSet;
@@ -18,9 +16,7 @@ public class RPCBuilder<T> {
     private final Class<T> tClass;
     private final DtoRegistry<T> dtoRegistry;
 
-    private BytesStore privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
-    private BytesStore publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-    private BytesStore secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
+    private KeyPair keyPair = new KeyPair();
     private Set<Long> clusterAddresses = new LinkedHashSet<>();
     private int mainBlockPeriodMS = 1000;
     private int localBlockPeriodMS = 100;
@@ -36,21 +32,11 @@ public class RPCBuilder<T> {
         return new RPCBuilder<>(tClass);
     }
 
-    public RPCServer<T> createServer(int port, T mainTransactionProcessor, T localTransactionProcessor) throws IOException {
-        return createServer("server:" + port, port, mainTransactionProcessor, localTransactionProcessor);
-    }
-
-    public RPCServer<T> createServer(String name, int port, T mainTransactionProcessor, T localTransactionProcessor) throws IOException {
+    public RPCServer<T> createServer(String name, int port, T mainTransactionProcessor, T localTransactionProcessor, TimeProvider timeProvider) throws IOException {
         assert mainTransactionProcessor instanceof TransactionProcessor;
         assert localTransactionProcessor instanceof TransactionProcessor;
 
-        if (publicKey.isEmpty() || secretKey.isEmpty()) {
-            if (privateKey.isEmpty())
-                Ed25519.generatePublicAndSecretKey((Bytes) publicKey, (Bytes) secretKey);
-            else
-                Ed25519.privateToPublicAndSecret((Bytes) publicKey, (Bytes) secretKey, privateKey);
-        }
-        long serverAddress = DecentredUtil.toAddress(publicKey);
+        long serverAddress = keyPair.address();
         addClusterAddress(serverAddress);
 
         boolean addressAdded = clusterAddresses.add(serverAddress);
@@ -61,19 +47,18 @@ public class RPCBuilder<T> {
 
         VanillaGateway gateway = VanillaGateway.newGateway(
                 dtoRegistry,
-                serverAddress,
+                keyPair,
                 region,
                 clusterAddressArray,
                 mainBlockPeriodMS,
                 localBlockPeriodMS,
                 mainTransactionProcessor,
-                localTransactionProcessor);
+                localTransactionProcessor,
+                timeProvider);
         RPCServer<T> server = new RPCServer<>(
                 name,
                 port,
-                serverAddress,
-                publicKey,
-                secretKey,
+                keyPair,
                 tClass,
                 dtoRegistry,
                 t -> (T) gateway)
@@ -85,7 +70,7 @@ public class RPCBuilder<T> {
         gateway.createAddressEvent(
                 new CreateAddressEvent()
                         .createAddressRequest(new CreateAddressRequest()
-                                .publicKey(publicKey)));
+                                .publicKey(keyPair.publicKey)));
 
         if (addressAdded)
             clusterAddresses.remove(serverAddress);
@@ -103,21 +88,12 @@ public class RPCBuilder<T> {
         return this;
     }
 
-    public BytesStore publicKey() {
-        return publicKey;
+    public KeyPair keyPair() {
+        return keyPair;
     }
 
-    public RPCBuilder<T> publicKey(BytesStore publicKey) {
-        this.publicKey = publicKey;
-        return this;
-    }
-
-    public BytesStore secretKey() {
-        return secretKey;
-    }
-
-    public RPCBuilder<T> secretKey(BytesStore secretKey) {
-        this.secretKey = secretKey;
+    public RPCBuilder keyPair(KeyPair keyPair) {
+        this.keyPair = keyPair;
         return this;
     }
 

@@ -1,7 +1,8 @@
 package net.openhft.chronicle.decentred.util;
 
-import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.core.Jvm;
+import net.openhft.chronicle.decentred.dto.SignedMessage;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 
 import java.lang.reflect.Method;
@@ -25,15 +26,30 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
     }
 
     @Override
-    public void parseOne(Bytes bytes, T listener) {
+    public void parseOne(BytesIn bytes, T listener) {
         requireNonNull(bytes);
         requireNonNull(listener);
-        final int protocolMessageType = bytes.readInt(bytes.readPosition() + VanillaSignedMessage.MESSAGE_TYPE);
+        long start = bytes.readPosition();
+        final int protocolMessageType = bytes.readInt(start + VanillaSignedMessage.MESSAGE_TYPE);
         final DtoParselet parselet = parseletMap.get(protocolMessageType);
         if (parselet == null) {
             Jvm.warn().on(getClass(), "Unable to find a parselet for protocol " + (protocolMessageType >>> 16) + " messageType " + (protocolMessageType & 0xFFFF));
         } else {
             parselet.parse(bytes, listener);
+        }
+    }
+
+    @Override
+    public SignedMessage parseOne(BytesIn bytes) {
+        requireNonNull(bytes);
+        long start = bytes.readPosition();
+        final int protocolMessageType = bytes.readInt(start + VanillaSignedMessage.MESSAGE_TYPE);
+        final DtoParselet parselet = parseletMap.get(protocolMessageType);
+        if (parselet == null) {
+            throw new IllegalStateException("Unable to find a parselet for protocol " + (protocolMessageType >>> 16) + " messageType " + (protocolMessageType & 0xFFFF));
+
+        } else {
+            return parselet.parse(bytes);
         }
     }
 

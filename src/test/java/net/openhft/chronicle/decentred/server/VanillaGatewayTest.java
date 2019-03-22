@@ -5,7 +5,6 @@ import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.DtoAliases;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
-import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.wire.TextMethodTester;
@@ -49,6 +48,7 @@ public class VanillaGatewayTest {
             if (args.length > 0 && args[0] instanceof VanillaSignedMessage) {
                 VanillaSignedMessage sm = (VanillaSignedMessage) args[0];
                 if (!sm.signed()) {
+                    sm.dtoRegistry(dtoRegistry);
                     sm.protocol(dtoRegistry.protocolFor(sm.getClass()));
                     sm.messageType(dtoRegistry.messageTypeFor(sm.getClass()));
                     sm.sign(kp.secretKey, stp);
@@ -71,20 +71,21 @@ public class VanillaGatewayTest {
     }
 
     static SystemMessages createGateway(GatewayTester tester) {
-        long address = DecentredUtil.parseAddress("server");
         DtoRegistry<SystemMessages> dtoRegistry = DtoRegistry.newRegistry(SystemMessages.class);
+        KeyPair kp = new KeyPair(7);
+        KeyPair kp2 = new KeyPair('X');
+        SetTimeProvider stp = new SetTimeProvider("2018-08-20T12:53:05.000001")
+                .autoIncrement(1, TimeUnit.MICROSECONDS);
         VanillaGateway gateway = VanillaGateway.newGateway(
                 dtoRegistry,
-                address,
+                kp,
                 "local",
-                new long[]{address, DecentredUtil.parseAddress("phccofmpy6ci")},
+                new long[]{kp.address(), kp2.address()},
                 50,
                 50,
                 tester,
-                tester);
-        KeyPair kp = new KeyPair(17);
-        SetTimeProvider stp = new SetTimeProvider("2018-08-20T12:53:05.000001")
-                .autoIncrement(1, TimeUnit.MICROSECONDS);
+                tester,
+                stp);
         gateway.tcpMessageListener(tester);
         return gateway;
     }

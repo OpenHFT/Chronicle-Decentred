@@ -2,6 +2,7 @@ package net.openhft.chronicle.decentred.dto;
 
 import net.openhft.chronicle.bytes.BytesMarshallable;
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
 
 public interface SignedMessage extends BytesMarshallable {
     int protocol();
@@ -48,5 +49,13 @@ public interface SignedMessage extends BytesMarshallable {
      * @throws NullPointerException if the provided {@code secretKey} is {@code null}
      */
     SignedMessage sign(BytesStore secretKey);
+
+    /**
+     * A dtoRegistry for parsing nested messages if needed
+     *
+     * @param dtoRegistry to parse nested messages
+     * @return this
+     */
+    SignedMessage dtoRegistry(DtoRegistry dtoRegistry);
 
 }

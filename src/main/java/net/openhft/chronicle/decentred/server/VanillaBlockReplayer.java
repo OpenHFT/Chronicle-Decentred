@@ -4,7 +4,6 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.dto.EndOfRoundBlockEvent;
 import net.openhft.chronicle.decentred.dto.SignedMessage;
 import net.openhft.chronicle.decentred.dto.TransactionBlockEvent;
-import net.openhft.chronicle.decentred.util.DtoParser;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.decentred.util.LongLongMap;
 
@@ -20,11 +19,11 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
     private Map<Long, TransactionLog> transactionLogMap = new ConcurrentHashMap<>();
     private EndOfRoundBlockEvent lastEndOfRoundBlockEvent = null;
     private LongLongMap replayedMap = LongLongMap.withExpectedSize(16);
-    private DtoParser dtoParser;
+    private DtoRegistry dtoRegistry;
 
     public VanillaBlockReplayer(long address, DtoRegistry<T> dtoRegistry, T postBlockChainProcessor) {
         this.address = address;
-        dtoParser = dtoRegistry.get();
+        this.dtoRegistry = dtoRegistry;
         this.postBlockChainProcessor = postBlockChainProcessor;
     }
 
@@ -95,7 +94,7 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
             SignedMessage message = messages.get((int) i);
             if (message instanceof TransactionBlockEvent) {
                 TransactionBlockEvent tbe = (TransactionBlockEvent) message;
-                tbe.dtoParser(dtoParser);
+                tbe.dtoRegistry(dtoRegistry);
                 tbe.replay(postBlockChainProcessor);
             }
         }

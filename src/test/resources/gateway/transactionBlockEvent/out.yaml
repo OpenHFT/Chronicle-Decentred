@@ -6,10 +6,10 @@ subscribe: ng62j3usr3yrr
 ---
 ---
 onMessageTo: [
-  phccofmpy6ci,
+  ng62j3usr3yrr,
   !TransactionBlockEvent {
     timestampUS: 1970-01-01T00:00:00,
-    address: server,
+    address: nphccofmpy6ci,
     chainAddress: main,
     weekNumber: 0,
     blockNumber: 0,
@@ -19,38 +19,38 @@ onMessageTo: [
   }
 ]
 onMessageTo: [
-  phccofmpy6ci,
+  ng62j3usr3yrr,
   !TransactionBlockGossipEvent {
-    timestampUS: 1970-01-01T00:00:00,
-    address: server,
+    timestampUS: 2018-08-20T12:53:05.000001,
+    address: nphccofmpy6ci,
     chainAddress: .,
     weekNumber: 0,
     blockNumber: 1,
     addressToBlockNumberMap: {
       ng62j3usr3yrr: 0,
-      server: 0
+      nphccofmpy6ci: 0
     }
   }
 ]
 onMessageTo: [
-  phccofmpy6ci,
+  ng62j3usr3yrr,
   !TransactionBlockVoteEvent {
     timestampUS: 1970-01-01T00:00:00,
     address: .,
-    gossipEvent: { timestampUS: 1970-01-01T00:00:00, address: ., chainAddress: ., weekNumber: 0, blockNumber: 1, addressToBlockNumberMap: { server: 0, ng62j3usr3yrr: 0 } }
+    gossipEvent: { timestampUS: 1970-01-01T00:00:00, address: ., chainAddress: ., weekNumber: 0, blockNumber: 1, addressToBlockNumberMap: { ng62j3usr3yrr: 0, nphccofmpy6ci: 0 } }
   }
 ]
 onMessageTo: [
-  phccofmpy6ci,
+  ng62j3usr3yrr,
   !EndOfRoundBlockEvent {
     timestampUS: 1970-01-01T00:00:00,
-    address: server,
+    address: nphccofmpy6ci,
     chainAddress: main,
     weekNumber: 0,
     blockNumber: 1,
     addressToBlockNumberMap: {
       ng62j3usr3yrr: 0,
-      server: 0
+      nphccofmpy6ci: 0
     }
   }
 ]

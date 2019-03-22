@@ -57,10 +57,13 @@ public class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundBlockEv
     }
 
     @Override
-    public void readMarshallable(BytesIn bytes) throws IORuntimeException {
-        super.readMarshallable(bytes);
-        addressToBlockNumberMap.justPut(bytes.readLong(), bytes.readUnsignedInt());
-
+    protected void readMarshallable0(BytesIn bytes) throws IORuntimeException {
+        super.readMarshallable0(bytes);
+        int entries = (int) bytes.readStopBit();
+        if (addressToBlockNumberMap == null)
+            addressToBlockNumberMap = LongLongMap.withExpectedSize(entries);
+        for (int i = 0; i < entries; i++)
+            addressToBlockNumberMap.justPut(bytes.readLong(), bytes.readUnsignedInt());
     }
 
     @Override

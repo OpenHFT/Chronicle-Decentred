@@ -31,6 +31,8 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
         wire.read("addressToBlockNumberMap").marshallable(in -> {
             while (in.hasMore()) {
                 String key = in.readEvent(String.class);
+                if (key == null || key.length() == 0)
+                    return;
                 long addr = DecentredUtil.parseAddress(key);
                 long value = in.getValueIn().int64();
                 addressToBlockNumberMap().justPut(addr, value);
@@ -48,7 +50,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
     }
 
     @Override
-    public void readMarshallable(BytesIn bytes) throws IORuntimeException {
+    protected void readMarshallable0(BytesIn bytes) throws IORuntimeException {
         chainAddress = bytes.readLong();
         weekNumber = bytes.readShort();
         blockNumber = bytes.readInt();
@@ -61,7 +63,7 @@ public class TransactionBlockGossipEvent extends VanillaSignedMessage<Transactio
     }
 
     @Override
-    public void writeMarshallable(BytesOut bytes) {
+    protected void writeMarshallable0(BytesOut bytes) {
         bytes.writeLong(chainAddress);
         bytes.writeShort(weekNumber);
         bytes.writeInt(blockNumber);

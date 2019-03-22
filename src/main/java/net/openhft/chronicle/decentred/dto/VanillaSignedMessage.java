@@ -6,6 +6,7 @@ import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.util.AddressLongConverter;
+import net.openhft.chronicle.decentred.util.DtoRegistry;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.AbstractBytesMarshallable;
 import net.openhft.chronicle.wire.LongConversion;
@@ -26,7 +27,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     private static final int MESSAGE_TYPE_END = MESSAGE_TYPE + Short.BYTES;
     private static final int PROTOCOL = MESSAGE_TYPE_END;
     private static final int PROTOCOL_END = PROTOCOL + Short.BYTES;
-    private static final int MESSAGE_START = PROTOCOL_END;
+    public static final int MESSAGE_START = PROTOCOL_END;
 
     private static final Field BB_ADDRESS = Jvm.getField(ByteBuffer.allocateDirect(0).getClass(), "address");
     private static final Field BB_CAPACITY = Jvm.getField(ByteBuffer.allocateDirect(0).getClass(), "capacity");
@@ -49,13 +50,18 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     }
 
     @Override
+    public T dtoRegistry(DtoRegistry dtoRegistry) {
+        return (T) this;
+    }
+
+    @Override
     public void readMarshallable(@NotNull WireIn wire) throws IORuntimeException {
         signed = false;
         super.readMarshallable(wire);
     }
 
     @Override
-    public void readMarshallable(BytesIn bytes) throws IORuntimeException {
+    public final void readMarshallable(BytesIn bytes) throws IORuntimeException {
         long capacity = bytes.readRemaining();
         readPointer.set(bytes.addressForRead(bytes.readPosition()), capacity);
         messageType = readPointer.readShort(MESSAGE_TYPE);
@@ -63,8 +69,12 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
 
         this.bytes.clear();
         this.bytes.readPositionRemaining(MESSAGE_START, capacity - MESSAGE_START);
-        super.readMarshallable(this.bytes);
+        readMarshallable0(this.bytes);
         signed = true;
+    }
+
+    protected void readMarshallable0(BytesIn bytes) {
+        BytesUtil.readMarshallable(this, bytes);
     }
 
     public void reset() {
@@ -79,7 +89,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     }
 
     @Override
-    public void writeMarshallable(BytesOut bytes) {
+    public final void writeMarshallable(BytesOut bytes) {
         assert signed();
         bytes.write(this.bytes, 0, this.bytes.readLimit());
     }
@@ -130,7 +140,7 @@ public class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends Abs
     }
 
     @Override
-    public T sign(BytesStore secretKey) {
+    public final T sign(BytesStore secretKey) {
         UniqueMicroTimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;
         return sign(secretKey, timeProvider);
     }

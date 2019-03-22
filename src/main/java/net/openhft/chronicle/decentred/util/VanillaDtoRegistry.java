@@ -89,7 +89,9 @@ public final class VanillaDtoRegistry<T>  implements DtoRegistry<T> {
     public DtoParser<T> get() {
         final IntObjMap<DtoParselet> parseletMap2 = IntObjMap.withExpectedSize(DtoParselet.class, parseletMap.size() * 2);
         parseletMap.forEach((i, dp) -> parseletMap2.justPut(i, new DtoParselet(dp)));
-        return new VanillaDtoParser<>(superInterface, parseletMap2, classConsumerMap);
+        VanillaDtoParser<T> dtoParser = new VanillaDtoParser<>(superInterface, parseletMap2, classConsumerMap);
+        parseletMap2.forEach((i, p) -> p.dtoRegistry(this));
+        return dtoParser;
     }
 
     @Override

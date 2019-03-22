@@ -1,7 +1,8 @@
 package net.openhft.chronicle.decentred.util;
 
-import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.core.util.ObjectUtils;
+import net.openhft.chronicle.decentred.dto.SignedMessage;
 import net.openhft.chronicle.decentred.dto.VanillaSignedMessage;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,13 +40,18 @@ class DtoParselet<T> {
         return vsm.protocol(protocol).messageType(messageType);
     }
 
-    public void parse(Bytes bytes, T listener) {
+    public void parse(BytesIn bytes, T listener) {
         vsm.readMarshallable(bytes);
         try {
             method.invoke(listener, vsm);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public SignedMessage parse(BytesIn bytes) {
+        vsm.readMarshallable(bytes);
+        return vsm;
     }
 
     @Override
@@ -56,5 +62,9 @@ class DtoParselet<T> {
                 ", midValue=" + midValue +
                 ", vsm=" + vsm +
                 '}';
+    }
+
+    public void dtoRegistry(DtoRegistry dtoRegistry) {
+        vsm.dtoRegistry(dtoRegistry);
     }
 }

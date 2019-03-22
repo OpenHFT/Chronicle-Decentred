@@ -2,10 +2,12 @@ package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
+import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.*;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.threads.NamedThreadFactory;
 
 import java.util.concurrent.ExecutorService;
@@ -33,12 +35,13 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     private MessageToListener tcpMessageListener;
 
     public VanillaBlockEngine(DtoRegistry<T> dtoRegistry,
-                              long address,
+                              KeyPair keyPair,
                               long chainAddress,
                               int periodMS,
                               T postBlockChainProcessor,
-                              long[] clusterAddresses) {
-        this.address = address;
+                              long[] clusterAddresses,
+                              TimeProvider timeProvider) {
+        this.address = keyPair.address();
         this.chainAddress = chainAddress;
         this.periodUS = periodMS * 1000;
 
@@ -49,7 +52,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
         blockReplayer = new VanillaBlockReplayer<>(address, dtoRegistry, postBlockChainProcessor);
         voteTaker = new VanillaVoteTaker(address, chainAddress, clusterAddresses, blockReplayer);
         voter = new VanillaVoter(address, clusterAddresses, voteTaker);
-        gossiper = new VanillaGossiper(address, chainAddress, clusterAddresses, voter);
+        gossiper = new VanillaGossiper(keyPair, dtoRegistry, chainAddress, clusterAddresses, voter, timeProvider);
         String regionStr = DecentredUtil.toAddressString(chainAddress);
         votingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-voter", true, Thread.MAX_PRIORITY));
         processingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-processor", true, Thread.MAX_PRIORITY));
@@ -57,26 +60,28 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     public static <T> VanillaBlockEngine<T> newMain(DtoRegistry<T> dtoRegistry,
-                                                    long address,
+                                                    KeyPair keyPair,
                                                     int periodMS,
                                                     long[] clusterAddresses,
-                                                    T postBlockChainProcessor) {
+                                                    T postBlockChainProcessor,
+                                                    TimeProvider timeProvider) {
         assert LongStream.of(clusterAddresses).distinct().count() == clusterAddresses.length;
 
         long main = DecentredUtil.parseAddress("main");
 
-        return new VanillaBlockEngine<>(dtoRegistry, address, main, periodMS, postBlockChainProcessor, clusterAddresses);
+        return new VanillaBlockEngine<>(dtoRegistry, keyPair, main, periodMS, postBlockChainProcessor, clusterAddresses, timeProvider);
     }
 
     public static <T> VanillaBlockEngine<T> newLocal(DtoRegistry<T> dtoRegistry,
-                                                     long address,
+                                                     KeyPair keyPair,
                                                      long chainAddress,
                                                      int periodMS,
                                                      long[] clusterAddresses,
-                                                     T postBlockChainProcessor) {
+                                                     T postBlockChainProcessor,
+                                                     TimeProvider timeProvider) {
         assert LongStream.of(clusterAddresses).distinct().count() == clusterAddresses.length;
 
-        return new VanillaBlockEngine<>(dtoRegistry, address, chainAddress, periodMS, postBlockChainProcessor, clusterAddresses);
+        return new VanillaBlockEngine<>(dtoRegistry, keyPair, chainAddress, periodMS, postBlockChainProcessor, clusterAddresses, timeProvider);
     }
 
     public void start(MessageToListener tcpMessageListener) {

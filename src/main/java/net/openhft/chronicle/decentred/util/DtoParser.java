@@ -1,6 +1,7 @@
 package net.openhft.chronicle.decentred.util;
 
-import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.decentred.dto.SignedMessage;
 
 public interface DtoParser<T>
     extends HasSuperInterface<T> {
@@ -21,7 +22,9 @@ public interface DtoParser<T>
      * are {@code null}
      *
      */
-    void parseOne(Bytes bytes, T listener);
+    void parseOne(BytesIn bytes, T listener);
+
+    SignedMessage parseOne(BytesIn bytes);
 
     /**
      * Invokes a method on the given {@code component} with the given {@code message}
