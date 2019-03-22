@@ -46,13 +46,13 @@ public class TransactionBlockEventTest {
         tbe.sign(kp.secretKey, new SetTimeProvider("2018-08-20T12:53:04.076123"));
         assertEquals("!TransactionBlockEvent {\n" +
                 "  timestampUS: 2018-08-20T12:53:04.076123,\n" +
-                "  address: phccofmpy6ci,\n" +
-                "  chainAddress: 0.0.0.0:0,\n" +
+                "  address: nphccofmpy6ci,\n" +
+                "  chainAddress: .,\n" +
                 "  weekNumber: 0,\n" +
                 "  blockNumber: 0,\n" +
                 "  transactions: [\n" +
-                "    !CreateAddressRequest { timestampUS: 2018-08-20T12:53:04.075128, address: phccofmpy6ci, publicKey: !!binary 9M9t8hyt2kEJmL46Fs+si0VigLTMQt9OafgMm3ljIOg= },\n" +
-                "    !CreateAddressRequest { timestampUS: 2018-08-20T12:53:04.075256, address: ud6jbceicts2, publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o= }\n" +
+                "    !CreateAddressRequest { timestampUS: 2018-08-20T12:53:04.075128, address: nphccofmpy6ci, publicKey: !!binary 9M9t8hyt2kEJmL46Fs+si0VigLTMQt9OafgMm3ljIOg= },\n" +
+                "    !CreateAddressRequest { timestampUS: 2018-08-20T12:53:04.075256, address: nud6jbceicts2, publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o= }\n" +
                 "  ]\n" +
                 "}\n", tbe.toString());
         System.out.println(tbe);

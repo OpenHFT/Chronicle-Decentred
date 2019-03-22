@@ -39,15 +39,15 @@ public class RPCGatewayTest {
                 client.toDefault().createAddressRequest(new CreateAddressRequest());
                 String s = queue.poll(Jvm.isDebug() ? 100 : 10, TimeUnit.SECONDS);
                 assertEquals("createAddressEvent[!CreateAddressEvent {\n" +
-                    "  timestampUS: {deleted},\n" +
-                    "  address: phccofmpy6ci,\n" +
-                    "  createAddressRequest: {\n" +
-                    "    timestampUS: {deleted},\n" +
-                    "    address: ud6jbceicts2,\n" +
-                    "    publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o=\n" +
-                    "  }\n" +
-                    "}\n" +
-                    "]", s.replaceAll("timestampUS: 20[^,]+", "timestampUS: {deleted}"));
+                        "  timestampUS: {deleted},\n" +
+                        "  address: nphccofmpy6ci,\n" +
+                        "  createAddressRequest: {\n" +
+                        "    timestampUS: {deleted},\n" +
+                        "    address: nud6jbceicts2,\n" +
+                        "    publicKey: !!binary TsXED8x8VoxtLgRu7iPaz4aAhfQUtmvee9KRyhDKk+o=\n" +
+                        "  }\n" +
+                        "}\n" +
+                        "]", s.replaceAll("timestampUS: 20[^,]+", "timestampUS: {deleted}"));
             }
         }
     }

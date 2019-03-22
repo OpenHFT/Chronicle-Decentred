@@ -11,7 +11,7 @@ public class KeyPairMain {
                 .forEach(i -> {
                     KeyPair kp = new KeyPair((char) i);
                     long address = DecentredUtil.toAddress(kp.publicKey);
-                    if (DecentredUtil.isAddressNamed(address)) {
+                    if (true) {
                         String s = DecentredUtil.toAddressString(address);
                         int dots = s.split("[.]").length;
                         if (dots > 0)

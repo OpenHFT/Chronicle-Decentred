@@ -59,9 +59,9 @@ public class VerificationEventTest {
 
         assertEquals("!VerificationEvent {\n" +
                 "  timestampUS: 2014-10-22T18:22:32.901131,\n" +
-                "  address: ayua2manpmw7f,\n" +
+                "  address: oyua2manpmw7f,\n" +
                 "  publicKey: !!binary zswVB9wd3XKVlRwpCIjwla25BE0bc9aW5t8GXWg71Pw=,\n" +
-                "  addressVerified: 41.218.89.139:41288:c03a,\n" +
+                "  addressVerified: bsvryqnptqpaz,\n" +
                 "  keyVerified: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +
                 "}\n", v.toString());
 

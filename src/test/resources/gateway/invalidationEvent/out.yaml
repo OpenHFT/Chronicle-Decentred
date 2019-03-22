@@ -1,7 +1,7 @@
-to: 0.0.0.0:0
+to: .
 invalidationEvent: {
   timestampUS: 2018-09-03T16:00:00.000001,
-  address: g62j3usr3yrr,
+  address: ng62j3usr3yrr,
   publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
 }
 ---

@@ -1,71 +1,21 @@
 ---
-to: g62j3usr3yrr
+to: ng62j3usr3yrr
 createAddressEvent: {
   timestampUS: 2018-09-03T16:00:00.000002,
-  address: g62j3usr3yrr,
+  address: ng62j3usr3yrr,
   createAddressRequest: {
     timestampUS: 2018-09-03T16:00:00.000001,
-    address: g62j3usr3yrr,
+    address: ng62j3usr3yrr,
     publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
   }
 }
 ---
 ---
 ---
-to: g62j3usr3yrr
-createAddressEvent: {
-  timestampUS: 2018-09-03T16:00:00.000005,
-  address: g62j3usr3yrr,
-  createAddressRequest: {
-    timestampUS: 2018-09-03T16:00:00.000004,
-    address: g62j3usr3yrr,
-    publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
-  }
-}
 ---
-to: g62j3usr3yrr
-createAddressEvent: {
-  timestampUS: 2018-09-03T16:00:00.000007,
-  address: g62j3usr3yrr,
-  createAddressRequest: {
-    timestampUS: 2018-09-03T16:00:00.000006,
-    address: g62j3usr3yrr,
-    publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
-  }
-}
 ---
-to: g62j3usr3yrr
-createAddressEvent: {
-  timestampUS: 2018-09-03T16:00:00.000009,
-  address: g62j3usr3yrr,
-  createAddressRequest: {
-    timestampUS: 2018-09-03T16:00:00.000008,
-    address: g62j3usr3yrr,
-    publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
-  }
-}
 ---
-to: g62j3usr3yrr
-createAddressEvent: {
-  timestampUS: 2018-09-03T16:00:00.000011,
-  address: g62j3usr3yrr,
-  createAddressRequest: {
-    timestampUS: 2018-09-03T16:00:00.00001,
-    address: g62j3usr3yrr,
-    publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
-  }
-}
 ---
-to: g62j3usr3yrr
-createAddressEvent: {
-  timestampUS: 2018-09-03T16:00:00.000013,
-  address: g62j3usr3yrr,
-  createAddressRequest: {
-    timestampUS: 2018-09-03T16:00:00.000012,
-    address: g62j3usr3yrr,
-    publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
-  }
-}
 ---
 ---
 ---

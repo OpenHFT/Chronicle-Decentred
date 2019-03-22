@@ -54,10 +54,10 @@ public class ApplicationErrorResponseTest {
 
         assertEquals("!ApplicationErrorResponse {\n" +
                 "  timestampUS: 2014-10-22T18:22:32.901131,\n" +
-                "  address: 41.218.89.139:41288:c03a,\n" +
+                "  address: bsvryqnptqpaz,\n" +
                 "  origMessage: !CreateAddressRequest {\n" +
                 "    timestampUS: 2014-10-22T18:22:32.901131,\n" +
-                "    address: 41.218.89.139:41288:c03a,\n" +
+                "    address: bsvryqnptqpaz,\n" +
                 "    publicKey: !!binary O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=\n" +
                 "  },\n" +
                 "  reason: Not implemented\n" +

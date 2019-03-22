@@ -1,9 +1,7 @@
 package net.openhft.chronicle.decentred.util;
 
-import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.dto.CreateAddressRequest;
-import net.openhft.chronicle.salt.Ed25519;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -64,10 +62,9 @@ public class DecentredUtilTest {
 
         // generate user addresses
         for (int i = -999; i < 10000; i++) {
-            BytesStore privateKey = DecentredUtil.testPrivateKey(i);
-            Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-            Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
-            Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
+            KeyPair kp7 = new KeyPair(i);
+            BytesStore publicKey = kp7.publicKey;
+            BytesStore secretKey = kp7.secretKey;
 
             long address = DecentredUtil.toAddress(publicKey);
             if ((address >> 56) == 127) {
@@ -83,17 +80,15 @@ public class DecentredUtilTest {
 
     @Test
     public void testPrivateKey() {
-        BytesStore privateKey = DecentredUtil.testPrivateKey(0);
-        Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-        Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
-        Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
+        KeyPair kp7 = new KeyPair(0);
+        BytesStore publicKey1 = kp7.publicKey;
+        BytesStore secretKey1 = kp7.secretKey;
 
-        BytesStore privateKey2 = DecentredUtil.testPrivateKey(0);
-        Bytes publicKey2 = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-        Bytes secretKey2 = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
-        Ed25519.privateToPublicAndSecret(publicKey2, secretKey2, privateKey2);
-        assertEquals(privateKey2, privateKey);
-        assertEquals(publicKey2, publicKey);
-        assertEquals(secretKey2, secretKey);
+        KeyPair kp7b = new KeyPair(0);
+        BytesStore publicKey2 = kp7b.publicKey;
+        BytesStore secretKey2 = kp7b.secretKey;
+
+        assertEquals(publicKey2, publicKey1);
+        assertEquals(secretKey2, secretKey1);
     }
 }

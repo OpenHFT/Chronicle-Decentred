@@ -1,8 +1,8 @@
 register: [
-  g62j3usr3yrr,
+  ng62j3usr3yrr,
   !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
 ]
-subscribe: g62j3usr3yrr
+subscribe: ng62j3usr3yrr
 ---
 ---
 onMessageTo: [
@@ -14,7 +14,7 @@ onMessageTo: [
     weekNumber: 0,
     blockNumber: 0,
     transactions: [
-      !CreateAddressRequest { timestampUS: 2018-09-03T16:00:00.000001, address: g62j3usr3yrr, publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M= }
+    !CreateAddressRequest { timestampUS: 2018-09-03T16:00:00.000001, address: ng62j3usr3yrr, publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M= }
     ]
   }
 ]
@@ -23,11 +23,11 @@ onMessageTo: [
   !TransactionBlockGossipEvent {
     timestampUS: 1970-01-01T00:00:00,
     address: server,
-    chainAddress: 0.0.0.0:0,
+    chainAddress: .,
     weekNumber: 0,
     blockNumber: 1,
     addressToBlockNumberMap: {
-      g62j3usr3yrr: 0,
+      ng62j3usr3yrr: 0,
       server: 0
     }
   }
@@ -36,8 +36,8 @@ onMessageTo: [
   phccofmpy6ci,
   !TransactionBlockVoteEvent {
     timestampUS: 1970-01-01T00:00:00,
-    address: 0.0.0.0:0,
-    gossipEvent: { timestampUS: 1970-01-01T00:00:00, address: 0.0.0.0:0, chainAddress: 0.0.0.0:0, weekNumber: 0, blockNumber: 1, addressToBlockNumberMap: { server: 0, g62j3usr3yrr: 0 } }
+    address: .,
+    gossipEvent: { timestampUS: 1970-01-01T00:00:00, address: ., chainAddress: ., weekNumber: 0, blockNumber: 1, addressToBlockNumberMap: { server: 0, ng62j3usr3yrr: 0 } }
   }
 ]
 onMessageTo: [
@@ -49,24 +49,24 @@ onMessageTo: [
     weekNumber: 0,
     blockNumber: 1,
     addressToBlockNumberMap: {
-      g62j3usr3yrr: 0,
+      ng62j3usr3yrr: 0,
       server: 0
     }
   }
 ]
 createAddressRequest: {
   timestampUS: 2018-09-03T16:00:00.000003,
-  address: g62j3usr3yrr,
+  address: ng62j3usr3yrr,
   publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
 }
 createAddressRequest: {
   timestampUS: 2018-09-03T16:00:00.000004,
-  address: g62j3usr3yrr,
+  address: ng62j3usr3yrr,
   publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
 }
 createAddressRequest: {
   timestampUS: 2018-09-03T16:00:00.000001,
-  address: g62j3usr3yrr,
+  address: ng62j3usr3yrr,
   publicKey: !!binary 2sMevKFZ0oP4NB/ZDX+hzZW/XsyrZX95UmYuZ+Vq++M=
 }
 ---
