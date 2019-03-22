@@ -56,7 +56,7 @@ else
 fi
 
 function run {
-    xterm -fa 'Monospace' -fs 14 -T "${1}" -geometry "${2}" -e "ssh ${HOST} \"bash --login -c 'cd ${DIR}/examples/appreciation; ./run.sh ${3}'\""
+    xterm -fa 'Monospace' -fs 14 -T "${1}" -geometry "${2}" -e "ssh ${HOST} \"bash --login -c 'cd ${DIR}/examples/appreciation; ./run.sh ${3}; echo Hit Enter to Exit; read'\""
 }
 
 if [[ ${PULL} == YES ]]; then

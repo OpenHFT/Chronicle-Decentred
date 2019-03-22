@@ -7,8 +7,8 @@ import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.base.trait.HasDtoParser;
 import net.openhft.chronicle.decentred.dto.base.trait.HasTransientFieldHandler;
-import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.decentred.internal.util.ShortUtil;
+import net.openhft.chronicle.decentred.util.AddressLongConverter;
 import net.openhft.chronicle.salt.Ed25519;
 import net.openhft.chronicle.wire.*;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toSet;
 public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends AbstractBytesMarshallable
     implements SignedMessage, HasTransientFieldHandler<T> {
 
-    private static final long INITIAL_BYTES_CAPACITY = 4L << 10;
+    private static final int INITIAL_BYTES_CAPACITY = 4 << 10;
     private static final int LENGTH = 0;
     private static final int LENGTH_END = LENGTH + Integer.BYTES;
     private static final int SIGNATURE = LENGTH_END;

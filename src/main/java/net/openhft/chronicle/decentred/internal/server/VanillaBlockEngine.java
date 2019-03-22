@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.LongStream;
 
 public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
-    public static final int STEP_PAUSE_MILLIS = 2000;
+    public static final int STEP_PAUSE_MILLIS = 25;
 
     private final long address;
     private final long chainAddress;
@@ -47,6 +47,10 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     private long blockNumber = 0;
     private long nextSendUS;
     private MessageToListener tcpMessageListener;
+
+    static {
+        System.out.println("Step pause millis: " + STEP_PAUSE_MILLIS);
+    }
 
     public <U extends T> VanillaBlockEngine(@NotNull DtoRegistry<U> dtoRegistry,
                                             long address,
