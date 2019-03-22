@@ -36,4 +36,8 @@ public class KeyPair {
         Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
         privateKey.release();
     }
+
+    public long address() {
+        return DecentredUtil.toAddress(publicKey);
+    }
 }
