@@ -1,6 +1,7 @@
 package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
@@ -20,9 +21,9 @@ public class RPCBuilder<U extends T, T> {
     private final Class<T> tClass;
     private final DtoRegistry<U> dtoRegistry;
 
-    private Bytes privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
-    private Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-    private Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
+    private BytesStore privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
+    private BytesStore publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
+    private BytesStore secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
     private Set<Long> clusterAddresses = new LinkedHashSet<>();
     private int mainBlockPeriodMS = 1000;
     private int localBlockPeriodMS = 100;
@@ -75,9 +76,9 @@ public class RPCBuilder<U extends T, T> {
 
         if (publicKey.isEmpty() || secretKey.isEmpty()) {
             if (privateKey.isEmpty())
-                Ed25519.generatePublicAndSecretKey(publicKey, secretKey);
+                Ed25519.generatePublicAndSecretKey((Bytes) publicKey, (Bytes) secretKey);
             else
-                Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
+                Ed25519.privateToPublicAndSecret((Bytes) publicKey, (Bytes) secretKey, privateKey);
         }
         long serverAddress = DecentredUtil.toAddress(publicKey);
         addClusterAddress(serverAddress);
@@ -137,20 +138,20 @@ public class RPCBuilder<U extends T, T> {
         return this;
     }
 
-    public Bytes publicKey() {
+    public BytesStore publicKey() {
         return publicKey;
     }
 
-    public RPCBuilder<U, T> publicKey(Bytes publicKey) {
+    public RPCBuilder<U, T> publicKey(BytesStore publicKey) {
         this.publicKey = publicKey;
         return this;
     }
 
-    public Bytes secretKey() {
+    public BytesStore secretKey() {
         return secretKey;
     }
 
-    public RPCBuilder<U, T> secretKey(Bytes secretKey) {
+    public RPCBuilder<U, T> secretKey(BytesStore secretKey) {
         this.secretKey = secretKey;
         return this;
     }

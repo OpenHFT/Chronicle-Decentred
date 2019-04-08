@@ -8,6 +8,7 @@ import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.server.RPCBuilder;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.salt.Ed25519;
 import org.jetbrains.annotations.NotNull;
 import town.lost.examples.appreciation.api.AppreciationMessages;
@@ -66,10 +67,9 @@ public class Traffic  {
         System.out.println("Connecting to Gateway at " + socketAddress);
 
         List<Client> clients = Arrays.stream(ACCOUNTS).mapToObj(accountSeed -> {
-            final BytesStore privateKey = DecentredUtil.testPrivateKey(accountSeed);
-            final Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-            final Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
-            Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
+            KeyPair kp = new KeyPair(accountSeed);
+            final BytesStore publicKey = kp.publicKey;
+            final BytesStore secretKey = kp.secretKey;
 
             long address = DecentredUtil.toAddress(publicKey); // Isn't this the address to use?
             String name = DecentredUtil.toAddressString(address);

@@ -18,6 +18,7 @@ import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.server.*;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.salt.Ed25519;
 import town.lost.examples.appreciation.api.*;
 import town.lost.examples.appreciation.dto.*;
@@ -31,17 +32,15 @@ import java.util.function.Function;
 public class EndToEndConversationTest {
 
     private abstract static class Node<U extends T, T> {
-        private final BytesStore privateKey;
-        private final VanillaBytes<Void> publicKey;
-        private final VanillaBytes<Void> secretKey;
+        private final BytesStore publicKey;
+        private final BytesStore secretKey;
         private final RPCBuilder<U, T> rpcBuilder;
         private AppreciationGateway gateway;
 
         private Node(int seed, Class<U> uClass, Class<T> tClass) {
-            privateKey = DecentredUtil.testPrivateKey(seed);
-            publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-            secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
-            Ed25519.privateToPublicAndSecret(this.publicKey, this.secretKey, this.privateKey);
+            KeyPair kp = new KeyPair(seed);
+            publicKey = kp.publicKey;
+            secretKey = kp.secretKey;
 
             rpcBuilder = RPCBuilder.of(17, uClass, tClass)
                 .addClusterAddress(DecentredUtil.toAddress(this.publicKey))
@@ -54,15 +53,11 @@ public class EndToEndConversationTest {
             return DecentredUtil.toAddress(publicKey);
         }
 
-        public BytesStore getPrivateKey() {
-            return privateKey;
-        }
-
-        public VanillaBytes<Void> getPublicKey() {
+        public BytesStore getPublicKey() {
             return publicKey;
         }
 
-        public VanillaBytes<Void> getSecretKey() {
+        public BytesStore getSecretKey() {
             return secretKey;
         }
 
@@ -130,7 +125,7 @@ public class EndToEndConversationTest {
 
             Function<GatewayConfiguration<AppreciationMessages>, VanillaGateway> gatewayConstructor = config -> {
                 long region = DecentredUtil.parseAddress(config.regionStr());
-                Bytes secretKey = getRpcBuilder().secretKey();
+                BytesStore secretKey = getRpcBuilder().secretKey();
                 BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.address(),
                     config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, secretKey);
                 BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.address(), region,

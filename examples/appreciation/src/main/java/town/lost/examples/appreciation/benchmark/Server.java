@@ -1,6 +1,7 @@
 package town.lost.examples.appreciation.benchmark;
 
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
@@ -61,7 +62,7 @@ public class Server extends Node<AppreciationMessages, AppreciationRequests> {
 
         Function<GatewayConfiguration<AppreciationMessages>, VanillaGateway> gatewayConstructor = config -> {
             long region = DecentredUtil.parseAddress(config.regionStr());
-            Bytes secretKey = getRpcBuilder().secretKey();
+            BytesStore secretKey = getRpcBuilder().secretKey();
             BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.address(),
                 config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, secretKey);
             BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.address(), region,

@@ -11,24 +11,14 @@ public enum DecentredUtil {
     public static final int MASK_16 = 0xFFFF;
 
     public static long parseAddress(CharSequence text) {
-        return parseBase32(text);
+        return LetterBase32.decode(text);
     }
 
-    private static long parseBase32(CharSequence cs) {
-        return LetterBase32.decode(cs);
-    }
 
     public static long toAddress(BytesStore publicKey) {
         return publicKey.readLong(publicKey.readLimit() - Long.BYTES);
     }
 
-    public static BytesStore testPrivateKey(long seed) {
-        Bytes privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
-        privateKey.zeroOut(0, Ed25519.PRIVATE_KEY_LENGTH);
-        privateKey.writeSkip(Ed25519.PRIVATE_KEY_LENGTH - (long) Long.BYTES);
-        privateKey.writeLong(seed);
-        return privateKey;
-    }
 
     public static String toAddressString(long address) {
         StringBuilder sb = new StringBuilder(13);

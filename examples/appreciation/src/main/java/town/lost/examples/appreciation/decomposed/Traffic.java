@@ -8,6 +8,7 @@ import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
 import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.server.RPCBuilder;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.salt.Ed25519;
 import town.lost.examples.appreciation.api.AppreciationMessages;
 import town.lost.examples.appreciation.api.AppreciationResponses;
@@ -41,10 +42,9 @@ public class Traffic {
 
         LongStream.of(giver).forEachOrdered(seed -> {
 
-            final BytesStore privateKey = DecentredUtil.testPrivateKey(seed);
-            final Bytes publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-            final Bytes secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
-            Ed25519.privateToPublicAndSecret(publicKey, secretKey, privateKey);
+            KeyPair kp = new KeyPair(seed);
+            final BytesStore publicKey = kp.publicKey;
+            final BytesStore secretKey = kp.secretKey;
             final long address = DecentredUtil.toAddress(publicKey); // Isn't this the address to use?
             final String addressName = DecentredUtil.toAddressString(address);
 
