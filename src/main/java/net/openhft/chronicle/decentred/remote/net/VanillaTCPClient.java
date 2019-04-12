@@ -16,6 +16,7 @@ public class VanillaTCPClient extends AbstractTCPConnection {
     private final Thread thread;
     private final TCPClientListener clientListener;
     private int nextChannel = -1;
+    private long failed = 0;
 
     public VanillaTCPClient(String name, List<InetSocketAddress> socketAddresses, TCPClientListener clientListener) {
         this.clientListener = clientListener;
@@ -83,16 +84,21 @@ public class VanillaTCPClient extends AbstractTCPConnection {
         InetSocketAddress socketAddress = socketAddresses.get(nextChannel);
         try {
             channel(SocketChannel.open(socketAddress));
-            System.out.println("client channel = " + this.channel);
             Socket socket = channel.socket();
             socket.setReceiveBufferSize(1 << 20);
 //            socket.setTcpNoDelay(true);
+            System.out.println("Connected to " + socketAddress);
+            failed = 0;
 
         } catch (IOException ioe) {
-            System.out.println("failed for socketAddress " + socketAddress + ", " + ioe.getMessage());
-            //ioe.printStackTrace();
+            failed++;
+            if (failed > socketAddresses.size()) {
+                System.err.println("Failed to connect to " + socketAddress + " trying again. " + ioe);
+            }
+            long delay = Math.min(1000, 100 * failed / socketAddresses.size());
+            if (delay > 0)
+                Jvm.pause(delay);
             channel(null);
-            Jvm.pause(5000);
         }
     }
 }

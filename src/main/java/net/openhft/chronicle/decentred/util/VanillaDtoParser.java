@@ -30,7 +30,8 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
     public void parseOne(@NotNull BytesIn bytes, @NotNull T listener) {
         requireNonNull(bytes);
         requireNonNull(listener);
-        final int protocolMessageType = bytes.readInt(bytes.readPosition() + VanillaSignedMessage.MESSAGE_TYPE);
+        long start = bytes.readPosition();
+        final int protocolMessageType = bytes.readInt(start + VanillaSignedMessage.MESSAGE_TYPE);
         final DtoParselet parselet = parseletMap.get(protocolMessageType);
         // System.out.println("Incoming message for protocol " + (protocolMessageType >>> 16) + " messageType " + Integer.toHexString(protocolMessageType & 0xFFFF));
         if (bytes.readPosition() >= bytes.readLimit()) {

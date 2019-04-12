@@ -2,6 +2,7 @@ package town.lost.examples.appreciation.benchmark;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
@@ -36,6 +37,8 @@ public class Server extends Node<AppreciationMessages, AppreciationRequests> {
     private static final int MAX_SEED = 4;
 
     private final RPCServer<AppreciationMessages, AppreciationRequests> rpcServer;
+    private TimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;
+
 
     public Server(long seed, int port, BalanceStore balanceStore) throws IOException {
         super(seed, AppreciationMessages.class, AppreciationRequests.class);
@@ -62,11 +65,10 @@ public class Server extends Node<AppreciationMessages, AppreciationRequests> {
 
         Function<GatewayConfiguration<AppreciationMessages>, VanillaGateway> gatewayConstructor = config -> {
             long region = DecentredUtil.parseAddress(config.regionStr());
-            BytesStore secretKey = getRpcBuilder().secretKey();
-            BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.address(),
-                config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, secretKey);
-            BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.address(), region,
-                config.localPeriodMS(), config.clusterAddresses(), localProcessor, secretKey);
+            BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.keyPair(),
+                config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, timeProvider);
+            BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.keyPair(), region,
+                config.localPeriodMS(), config.clusterAddresses(), localProcessor, timeProvider);
 
             AppreciationTransactions blockChain = new AppreciationTransactions() {
                 @Override
@@ -86,7 +88,7 @@ public class Server extends Node<AppreciationMessages, AppreciationRequests> {
             };
 
             return new VanillaAppreciationGateway(
-                config.address(), mainEngine, localEngine, messageRouter, blockChain, balanceStore);
+                config.keyPair().address(), mainEngine, localEngine, messageRouter, blockChain, balanceStore);
         };
         rpcServer = getRpcBuilder().createServer(port, mainProcessor, localProcessor, gatewayConstructor);
         ((TransactionProcessor) mainProcessor).messageRouter(rpcServer);

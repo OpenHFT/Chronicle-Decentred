@@ -33,8 +33,6 @@ public class RPCClient<U extends T, T> implements Closeable, TCPConnection, Mess
     private final BytesStore secretKey;
     private final DtoRegistry<U> registry;
     private final DtoParser<T> parser;
-    private final LongObjMap<BytesStore> addressToPublicKey =
-            LongObjMap.withExpectedSize(BytesStore.class, 16);
     private final U proxy;
     private boolean internal = false;
     private TimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;

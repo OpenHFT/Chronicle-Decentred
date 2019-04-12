@@ -24,14 +24,14 @@ public class Client extends Node<AppreciationMessages, AppreciationResponses> im
     public Client(int seed, String serverHost, int serverPort) {
         super(seed, AppreciationMessages.class, AppreciationResponses.class);
         DtoRegistry<AppreciationMessages> dtoRegistry = DtoRegistry.newRegistry(17, AppreciationMessages.class);
-        rpcClient = new RPCClient<>("test", serverHost, serverPort, getSecretKey(), dtoRegistry, this, AppreciationResponses.class);
+        rpcClient = new RPCClient<>("test", serverHost, serverPort, getKeyPair().secretKey, dtoRegistry, this, AppreciationResponses.class);
     }
 
     public Client connect() {
         sendMsg(new CreateAddressRequest()
             .address(0)
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
-            .publicKey(getPublicKey()));
+            .publicKey(getKeyPair().publicKey));
         return this;
     }
 

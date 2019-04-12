@@ -3,6 +3,7 @@ package net.openhft.chronicle.decentred.internal.server;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
+import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.decentred.api.MessageToListener;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
@@ -18,6 +19,7 @@ import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateTokenRequest;
 import net.openhft.chronicle.decentred.server.*;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.threads.NamedThreadFactory;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +32,6 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
 
     private final long address;
     private final long chainAddress;
-    private final BytesStore secretKey;
     private final int periodUS;
 
     private final Chainer chainer;
@@ -43,6 +44,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     private final ExecutorService processingSes;
     //    private final ExecutorService writerSes;
     private final long[] clusterAddresses;
+    private final BytesStore secretKey;
 
     private long blockNumber = 0;
     private long nextSendUS;
@@ -53,25 +55,25 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     public <U extends T> VanillaBlockEngine(@NotNull DtoRegistry<U> dtoRegistry,
-                                            long address,
+                                            KeyPair keyPair,
                                             long chainAddress,
                                             int periodMS,
                                             @NotNull T postBlockChainProcessor,
                                             @NotNull long[] clusterAddresses,
-                                            @NotNull BytesStore secretKey) {
-        this.address = address;
+                                            @NotNull TimeProvider timeProvider) {
+        this.address = keyPair.address();
         this.chainAddress = chainAddress;
-        this.secretKey = secretKey;
         this.periodUS = periodMS * 1000;
+        this.secretKey = keyPair.secretKey;
 
         nextSendUS = (SystemTimeProvider.INSTANCE.currentTimeMicros() / periodUS + 1) * periodUS;
         this.clusterAddresses = clusterAddresses;
         assert LongStream.of(clusterAddresses).anyMatch(a -> a == address);
         chainer = Chainer.createQueuing(chainAddress, dtoRegistry);
         blockReplayer = new VanillaBlockReplayer<>(address, dtoRegistry, postBlockChainProcessor);
-        voteTaker = VoteTaker.create(address, chainAddress, clusterAddresses, blockReplayer, secretKey, dtoRegistry);
-        voter = Voter.createLastGossipVoter(address, clusterAddresses, voteTaker, secretKey, dtoRegistry);
-        gossiper = new VanillaGossiper(address, chainAddress, clusterAddresses, voter, secretKey, dtoRegistry);
+        voteTaker = VoteTaker.create(address, chainAddress, clusterAddresses, blockReplayer, keyPair.secretKey, dtoRegistry);
+        voter = Voter.createLastGossipVoter(address, clusterAddresses, voteTaker, keyPair.secretKey, dtoRegistry);
+        gossiper = new VanillaGossiper(keyPair, dtoRegistry, chainAddress, clusterAddresses, voter, timeProvider);
         String regionStr = DecentredUtil.toAddressString(chainAddress);
         votingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-voter", true, Thread.MAX_PRIORITY));
         processingSes = Executors.newSingleThreadExecutor(new NamedThreadFactory(regionStr + "-processor", true, Thread.MAX_PRIORITY));

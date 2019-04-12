@@ -45,6 +45,8 @@ enum AddressToBlockNumberUtil {;
         wire.read(name).marshallable(in -> {
             while (in.hasMore()) {
                 final String key = in.readEvent(String.class);
+                if (key == null || key.length() == 0)
+                    return;
                 final long addr = DecentredUtil.parseAddress(key);
                 final long value = in.getValueIn().int64();
                 map.justPut(addr, value);

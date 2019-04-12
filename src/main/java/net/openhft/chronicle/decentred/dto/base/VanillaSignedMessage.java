@@ -240,7 +240,7 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
      * not been set.
      *
      */
-    public final T sign(@NotNull BytesStore secretKey, @NotNull TimeProvider timeProvider) {
+    public T sign(@NotNull BytesStore secretKey, @NotNull TimeProvider timeProvider) {
         assertNotSigned();
         if (protocol == 0) {
             throw new IllegalStateException("The protocol must be set before signing");

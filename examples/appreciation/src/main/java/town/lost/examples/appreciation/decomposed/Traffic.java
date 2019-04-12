@@ -44,15 +44,13 @@ public class Traffic {
 
             KeyPair kp = new KeyPair(seed);
             final BytesStore publicKey = kp.publicKey;
-            final BytesStore secretKey = kp.secretKey;
             final long address = DecentredUtil.toAddress(publicKey); // Isn't this the address to use?
             final String addressName = DecentredUtil.toAddressString(address);
 
             System.out.println("Setting RPC client");
             RPCClient<AppreciationMessages, AppreciationResponses> client =
                 RPCBuilder.of(17, AppreciationMessages.class, AppreciationResponses.class)
-                    .secretKey(secretKey)
-                    .publicKey(publicKey)
+                    .keyPair(kp)
                     .createClient(addressName, socketAddress, new Peer.ResponseSink());
 
             System.out.println("Waiting for ability to send first message...");

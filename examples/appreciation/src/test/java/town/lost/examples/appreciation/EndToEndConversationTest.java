@@ -3,6 +3,7 @@ package town.lost.examples.appreciation;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.bytes.VanillaBytes;
+import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
@@ -44,8 +45,7 @@ public class EndToEndConversationTest {
 
             rpcBuilder = RPCBuilder.of(17, uClass, tClass)
                 .addClusterAddress(DecentredUtil.toAddress(this.publicKey))
-                .secretKey(this.secretKey)
-                .publicKey(this.publicKey);
+                .keyPair(kp);
 
         }
 
@@ -122,14 +122,14 @@ public class EndToEndConversationTest {
 
             AppreciationRequests mainProcessor = new TransactionsImpl(messageRouter, balanceStore);
             AppreciationRequests localProcessor = new TransactionsImpl(messageRouter, balanceStore);
+            TimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;
 
             Function<GatewayConfiguration<AppreciationMessages>, VanillaGateway> gatewayConstructor = config -> {
                 long region = DecentredUtil.parseAddress(config.regionStr());
-                BytesStore secretKey = getRpcBuilder().secretKey();
-                BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.address(),
-                    config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, secretKey);
-                BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.address(), region,
-                    config.localPeriodMS(), config.clusterAddresses(), localProcessor, secretKey);
+                BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.keyPair(),
+                    config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, timeProvider);
+                BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.keyPair(), region,
+                    config.localPeriodMS(), config.clusterAddresses(), localProcessor, timeProvider);
 
                 AppreciationTransactions blockChain = new AppreciationTransactions() {
                     @Override

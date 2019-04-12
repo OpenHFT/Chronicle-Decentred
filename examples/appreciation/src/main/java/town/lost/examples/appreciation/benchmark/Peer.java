@@ -3,6 +3,8 @@ package town.lost.examples.appreciation.benchmark;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.Jvm;
+import net.openhft.chronicle.core.time.TimeProvider;
+import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.BlockchainPhase;
 import net.openhft.chronicle.decentred.api.MessageRouter;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
@@ -48,6 +50,8 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
     private RPCServer<AppreciationMessages, AppreciationRequests> rpcServer;
     private final InetSocketAddress socketAddress;
     private final BalanceStore balanceStore;
+    private final TimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;
+
 
     public Peer(long seed, InetSocketAddress socketAddress, BalanceStore balanceStore) {
         super(seed, AppreciationMessages.class, AppreciationRequests.class);
@@ -79,11 +83,10 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
 
         Function<GatewayConfiguration<AppreciationMessages>, VanillaGateway> gatewayConstructor = config -> {
             long region = DecentredUtil.parseAddress(config.regionStr());
-            BytesStore secretKey = getRpcBuilder().secretKey();
-            BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.address(),
-                config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, secretKey);
-            BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.address(), region,
-                config.localPeriodMS(), config.clusterAddresses(), localProcessor, secretKey);
+            BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.keyPair(),
+                config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, timeProvider);
+            BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.keyPair(), region,
+                config.localPeriodMS(), config.clusterAddresses(), localProcessor, timeProvider);
 
             AppreciationTransactions blockChain = new AppreciationTransactions() {
                 @Override
@@ -105,7 +108,8 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
             return new VanillaAppreciationGateway(
                 region, mainEngine, localEngine, messageRouter, blockChain, balanceStore);
         };
-        rpcServer = getRpcBuilder().createServer(socketAddress.getHostName(), socketAddress.getPort(), mainProcessor, localProcessor, gatewayConstructor);
+        rpcServer = getRpcBuilder().createServer(socketAddress.getHostName(), socketAddress.getPort(),
+            mainProcessor, localProcessor, gatewayConstructor, timeProvider);
         ((TransactionProcessor) mainProcessor).messageRouter(rpcServer);
         ((TransactionProcessor) localProcessor).messageRouter(rpcServer);
     }

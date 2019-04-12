@@ -40,6 +40,15 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
 
     public RPCServer(String name,
                      int port,
+                     KeyPair keyPair,
+                     Class<T> tClass,
+                     DtoRegistry<U> dtoRegistry,
+                     Function<DecentredServer<U>, T> serverComponentBuilder) throws IOException {
+        this(name, port, keyPair.address(), keyPair.publicKey, keyPair.secretKey, tClass, dtoRegistry, serverComponentBuilder);
+    }
+
+    public RPCServer(String name,
+                     int port,
                      long address,
                      BytesStore publicKey,
                      BytesStore secretKey,

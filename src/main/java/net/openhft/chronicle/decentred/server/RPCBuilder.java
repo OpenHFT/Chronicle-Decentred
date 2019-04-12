@@ -2,6 +2,8 @@ package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.core.time.TimeProvider;
+import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.api.TransactionProcessor;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressEvent;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
@@ -9,7 +11,9 @@ import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.util.KeyPair;
 import net.openhft.chronicle.salt.Ed25519;
+import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -21,9 +25,7 @@ public class RPCBuilder<U extends T, T> {
     private final Class<T> tClass;
     private final DtoRegistry<U> dtoRegistry;
 
-    private BytesStore privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
-    private BytesStore publicKey = Bytes.allocateDirect(Ed25519.PUBLIC_KEY_LENGTH);
-    private BytesStore secretKey = Bytes.allocateDirect(Ed25519.SECRET_KEY_LENGTH);
+    private KeyPair keyPair = new KeyPair();
     private Set<Long> clusterAddresses = new LinkedHashSet<>();
     private int mainBlockPeriodMS = 1000;
     private int localBlockPeriodMS = 100;
@@ -49,19 +51,15 @@ public class RPCBuilder<U extends T, T> {
     }
 
     public RPCServer<U, T> createServer(int port, T mainTransactionProcessor, T localTransactionProcessor, Function<GatewayConfiguration<U>, VanillaGateway> gatewayConstructor) throws IOException {
-        return createServer("server:" + port, port, mainTransactionProcessor, localTransactionProcessor, gatewayConstructor);
+        return createServer("server:" + port, port, mainTransactionProcessor, localTransactionProcessor, gatewayConstructor, UniqueMicroTimeProvider.INSTANCE);
     }
 
     public RPCServer<U, T> createServer(String name, int port, Gateway gateway) throws IOException {
 
-        final long serverAddress = DecentredUtil.toAddress(publicKey);
-
         final RPCServer<U, T> server = new RPCServer<>(
             name,
             port,
-            serverAddress,
-            publicKey,
-            secretKey,
+            keyPair,
             tClass,
             dtoRegistry,
             t -> (T) gateway
@@ -70,17 +68,11 @@ public class RPCBuilder<U extends T, T> {
         return server;
     }
 
-    public RPCServer<U, T> createServer(String name, int port, T mainTransactionProcessor, T localTransactionProcessor, Function<GatewayConfiguration<U>, VanillaGateway> gatewayConstructor) throws IOException {
+    public RPCServer<U, T> createServer(String name, int port, T mainTransactionProcessor, T localTransactionProcessor, Function<GatewayConfiguration<U>, VanillaGateway> gatewayConstructor, TimeProvider timeProvider) throws IOException {
         assert mainTransactionProcessor instanceof TransactionProcessor;
         assert localTransactionProcessor instanceof TransactionProcessor;
 
-        if (publicKey.isEmpty() || secretKey.isEmpty()) {
-            if (privateKey.isEmpty())
-                Ed25519.generatePublicAndSecretKey((Bytes) publicKey, (Bytes) secretKey);
-            else
-                Ed25519.privateToPublicAndSecret((Bytes) publicKey, (Bytes) secretKey, privateKey);
-        }
-        long serverAddress = DecentredUtil.toAddress(publicKey);
+        long serverAddress = keyPair.address();
         addClusterAddress(serverAddress);
 
         boolean addressAdded = clusterAddresses.add(serverAddress);
@@ -91,20 +83,19 @@ public class RPCBuilder<U extends T, T> {
 
         VanillaGateway gateway = gatewayConstructor.apply(GatewayConfiguration.of(
             dtoRegistry,
-            serverAddress,
+            keyPair,
             region,
             clusterAddressArray,
             mainBlockPeriodMS,
-            localBlockPeriodMS
+            localBlockPeriodMS,
+            timeProvider
         ));
 
 
         RPCServer<U, T> server = new RPCServer<>(
                 name,
                 port,
-                serverAddress,
-                publicKey,
-                secretKey,
+                keyPair,
                 tClass,
                 dtoRegistry,
                 t -> (T) gateway
@@ -116,7 +107,7 @@ public class RPCBuilder<U extends T, T> {
         gateway.createAddressEvent(
                 new CreateAddressEvent()
                         .createAddressRequest(new CreateAddressRequest()
-                                .publicKey(publicKey)));
+                                .publicKey(keyPair.publicKey)));
 
         if (addressAdded)
             clusterAddresses.remove(serverAddress);
@@ -124,7 +115,7 @@ public class RPCBuilder<U extends T, T> {
     }
 
     public RPCClient<U, T> createClient(String name, InetSocketAddress socketAddress, T allMessages) {
-        return new RPCClient<>(name, socketAddress.getHostName(), socketAddress.getPort(), secretKey, dtoRegistry, allMessages, tClass)
+        return new RPCClient<>(name, socketAddress.getHostName(), socketAddress.getPort(), keyPair.secretKey, dtoRegistry, allMessages, tClass)
             .internal(internal);
     }
 
@@ -138,21 +129,12 @@ public class RPCBuilder<U extends T, T> {
         return this;
     }
 
-    public BytesStore publicKey() {
-        return publicKey;
+    public KeyPair keyPair() {
+        return keyPair;
     }
 
-    public RPCBuilder<U, T> publicKey(BytesStore publicKey) {
-        this.publicKey = publicKey;
-        return this;
-    }
-
-    public BytesStore secretKey() {
-        return secretKey;
-    }
-
-    public RPCBuilder<U, T> secretKey(BytesStore secretKey) {
-        this.secretKey = secretKey;
+    public RPCBuilder<U, T> keyPair(KeyPair keyPair) {
+        this.keyPair = keyPair;
         return this;
     }
 

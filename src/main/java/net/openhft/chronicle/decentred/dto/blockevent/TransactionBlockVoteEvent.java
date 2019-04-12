@@ -2,6 +2,8 @@ package net.openhft.chronicle.decentred.dto.blockevent;
 
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.decentred.dto.base.TransientFieldHandler;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import net.openhft.chronicle.wire.WireIn;
@@ -35,6 +37,18 @@ public final class TransactionBlockVoteEvent extends VanillaSignedMessage<Transa
         return gossipEvent.chainAddress();
     }
 
+    @Override
+    public TransactionBlockVoteEvent sign(BytesStore secretKey, TimeProvider timeProvider) {
+        if (!gossipEvent.signed()) {
+            /*
+            gossipEvent.protocol(dtoRegistry.protocolFor(gossipEvent.getClass()));
+            gossipEvent.messageType(dtoRegistry.messageTypeFor(gossipEvent.getClass()));
+            gossipEvent.sign(secretKey, timeProvider);
+            */
+            throw new IllegalStateException("Unable to sign vote event since contained gossip is unsigned");
+        }
+        return super.sign(secretKey, timeProvider);
+    }
 
     @Override
     public TransientFieldHandler<TransactionBlockVoteEvent> transientFieldHandler() {

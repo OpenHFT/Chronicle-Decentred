@@ -33,19 +33,18 @@ final class RPCGatewayTest {
                     KeyPair kp = new KeyPair(7);
                     RPCBuilder<SystemMessages, SystemMessages> rpcBuilder = RPCBuilder.of(SystemMessages.class, SystemMessages.class)
                         .addClusterAddress(DecentredUtil.toAddress(kp.publicKey))
-                        .secretKey(kp.secretKey)
-                        .publicKey(kp.publicKey);
+                        .keyPair(kp);
                     VanillaTransactionProcessor vtp = new VanillaTransactionProcessor();
                     try (RPCServer<SystemMessages, SystemMessages> server = rpcBuilder.createServer(9009, vtp, vtp, config -> VanillaGateway.newGateway(
                         config.dtoRegistry(),
-                        config.address(),
+                        config.keyPair(),
                         config.regionStr(),
                         config.clusterAddresses(),
                         config.mainPeriodMS(),
                         config.localPeriodMS(),
                         vtp,
                         vtp,
-                        kp.secretKey))) {
+                        config.timeProvider()))) {
                         System.out.println("Server address " + DecentredUtil.toAddressString(DecentredUtil.toAddress(kp.publicKey)));
 
                         KeyPair kp2 = new KeyPair(17);

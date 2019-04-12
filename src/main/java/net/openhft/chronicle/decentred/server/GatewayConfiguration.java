@@ -1,22 +1,26 @@
 package net.openhft.chronicle.decentred.server;
 
+import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.decentred.util.DtoRegistry;
+import net.openhft.chronicle.decentred.util.KeyPair;
 
 public interface GatewayConfiguration<U> {
     DtoRegistry<U> dtoRegistry();
-    long address();
+    KeyPair keyPair();
     String regionStr();
     long[] clusterAddresses();
     int mainPeriodMS();
     int localPeriodMS();
+    TimeProvider timeProvider();
 
     static <T, U extends T> GatewayConfiguration<U> of (
         DtoRegistry<U> dtoRegistry,
-        long serverAddress,
+        KeyPair keyPair,
         String region,
         long[] clusterAddressArray,
         int mainBlockPeriodMS,
-        int localBlockPeriodMS
+        int localBlockPeriodMS,
+        TimeProvider timeProvider
     ) {
         return new GatewayConfiguration<U>() {
             @Override
@@ -25,8 +29,8 @@ public interface GatewayConfiguration<U> {
             }
 
             @Override
-            public long address() {
-                return serverAddress;
+            public KeyPair keyPair() {
+                return keyPair;
             }
 
             @Override
@@ -48,6 +52,12 @@ public interface GatewayConfiguration<U> {
             public int localPeriodMS() {
                 return localBlockPeriodMS;
             }
+
+            @Override
+            public TimeProvider timeProvider() {
+                return timeProvider;
+            }
         };
     }
+
 }

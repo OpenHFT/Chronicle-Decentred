@@ -69,7 +69,6 @@ public class Traffic  {
         List<Client> clients = Arrays.stream(ACCOUNTS).mapToObj(accountSeed -> {
             KeyPair kp = new KeyPair(accountSeed);
             final BytesStore publicKey = kp.publicKey;
-            final BytesStore secretKey = kp.secretKey;
 
             long address = DecentredUtil.toAddress(publicKey); // Isn't this the address to use?
             String name = DecentredUtil.toAddressString(address);
@@ -77,8 +76,7 @@ public class Traffic  {
 
             System.out.println("Setting RPC client");
             RPCClient<AppreciationMessages, AppreciationResponses> rpcClient = RPCBuilder.of(17, AppreciationMessages.class, AppreciationResponses.class)
-                .secretKey(secretKey)
-                .publicKey(publicKey)
+                .keyPair(kp)
                 .createClient(name, socketAddress, new Peer.ResponseSink());
             Client client = new Client(accountSeed, address, rpcClient);
 

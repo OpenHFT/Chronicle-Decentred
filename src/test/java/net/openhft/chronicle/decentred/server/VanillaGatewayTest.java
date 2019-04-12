@@ -76,21 +76,21 @@ final class VanillaGatewayTest {
     }
 
     static SystemMessages createGateway(GatewayTester tester) {
-        long address = DecentredUtil.parseAddress("server");
         DtoRegistry<SystemMessages> dtoRegistry = DtoRegistry.newRegistry(SystemMessages.class);
-        KeyPair kp = new KeyPair(17);
+        KeyPair kp = new KeyPair(7);
+        KeyPair kp2 = new KeyPair(17);
+        SetTimeProvider stp = new SetTimeProvider("2018-08-20T12:53:05.000001")
+            .autoIncrement(1, TimeUnit.MICROSECONDS);
         VanillaGateway gateway = VanillaGateway.newGateway(
                 dtoRegistry,
-                address,
+                kp,
                 "local",
-                new long[]{address, DecentredUtil.parseAddress("phccofmpy6ci")},
+                new long[]{kp.address(), kp2.address()},
                 50,
                 50,
                 tester,
                 tester,
-                kp.secretKey);
-        SetTimeProvider stp = new SetTimeProvider("2018-08-20T12:53:05.000001")
-                .autoIncrement(1, TimeUnit.MICROSECONDS);
+                stp);
         gateway.tcpMessageListener(tester);
         return gateway;
     }
