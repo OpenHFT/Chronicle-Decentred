@@ -1,7 +1,5 @@
 package town.lost.examples.appreciation.benchmark;
 
-import net.openhft.chronicle.bytes.Bytes;
-import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
@@ -18,7 +16,6 @@ import net.openhft.chronicle.decentred.remote.rpc.RPCClient;
 import net.openhft.chronicle.decentred.remote.rpc.RPCServer;
 import net.openhft.chronicle.decentred.server.BlockEngine;
 import net.openhft.chronicle.decentred.server.GatewayConfiguration;
-import net.openhft.chronicle.decentred.internal.server.VanillaBlockEngine;
 import net.openhft.chronicle.decentred.server.VanillaGateway;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import town.lost.examples.appreciation.VanillaAppreciationGateway;
@@ -124,7 +121,7 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
         return rpcServer.getPort();
     }
 
-    private void connect(long address, InetSocketAddress serverAddress) {
+    public void connect(long address, InetSocketAddress serverAddress) {
         RPCClient<AppreciationMessages, AppreciationRequests> client = getRpcBuilder()
             .createClient("to " + serverAddress, serverAddress, new IncomingProcessor());
         rpcServer.setRoute(address, client);
