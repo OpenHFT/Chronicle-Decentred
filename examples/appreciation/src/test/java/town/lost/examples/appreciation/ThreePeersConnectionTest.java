@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
-public class TreePeersConnectionTest {
+public class ThreePeersConnectionTest {
     private static class Client {
         private final long address;
         private final RPCClient<AppreciationMessages, AppreciationResponses> client;
