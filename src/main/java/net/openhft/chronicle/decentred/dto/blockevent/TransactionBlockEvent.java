@@ -118,6 +118,8 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
      * <p>
      *  If all transactions are replayed, the method returns {@code true},
      *  otherwise it returns {@code false}
+     *
+     * @return if this message's transaction queue is empty (of un-replayed transactions)
      */
     public boolean isEmpty() {
         return transactions.readRemaining() == 0;
