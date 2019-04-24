@@ -1,6 +1,7 @@
 package town.lost.examples.appreciation;
 
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.bytes.NativeBytes;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
@@ -9,6 +10,8 @@ import net.openhft.chronicle.decentred.server.RPCBuilder;
 import net.openhft.chronicle.decentred.util.DecentredUtil;
 import net.openhft.chronicle.decentred.util.KeyPair;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import town.lost.examples.appreciation.api.AppreciationMessages;
 import town.lost.examples.appreciation.api.AppreciationResponses;
@@ -29,6 +32,16 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toList;
 
 public class ThreePeersConnectionTest {
+    @AfterAll
+    public static void resetGuarding() {
+        NativeBytes.resetNewGuarded();
+    }
+
+    @BeforeEach
+    public void enableGuarding() {
+        NativeBytes.setNewGuarded(true);
+    }
+
     private static class Client {
         private final long address;
         private final RPCClient<AppreciationMessages, AppreciationResponses> client;
