@@ -45,7 +45,7 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
             .map(Object::toString)
             .collect(toSet());
 
-    private static final boolean ENFORCE_TRANSIENT_OVERRIDE_INVARIANT = true;
+    private static final boolean ENFORCE_TRANSIENT_OVERRIDE_INVARIANT = false;
 
     @LongConversion(MicroTimestampLongConverter.class)
     private long timestampUS;
