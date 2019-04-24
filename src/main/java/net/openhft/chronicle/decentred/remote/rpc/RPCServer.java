@@ -23,6 +23,7 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable {
     private static final ThreadLocal<TCPConnection> DEFAULT_CONNECTION_TL = new ThreadLocal<>();
@@ -61,7 +62,7 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
         this.tClass = tClass;
         this.dtoRegistry = dtoRegistry;
         this.serverComponent = serverComponentBuilder.apply(this);
-        tcpServer = new VanillaTCPServer(name, port, new XCLConnectionListener(dtoRegistry.get(tClass)));
+        tcpServer = new VanillaTCPServer(name, port, new XCLConnectionListener(() -> dtoRegistry.get(tClass)));
     }
 
     public int getPort() {
@@ -198,10 +199,10 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
     }
 
     class XCLConnectionListener implements TCPServerConnectionListener {
-        final DtoParser<T> dtoParser;
+        final ThreadLocal<DtoParser<T>> dtoParserTL;
 
-        XCLConnectionListener(DtoParser<T> dtoParser) {
-            this.dtoParser = dtoParser;
+        XCLConnectionListener(Supplier<DtoParser<T>> dtoParserSupplier) {
+            this.dtoParserTL = ThreadLocal.withInitial(dtoParserSupplier);
         }
 
         @Override
@@ -209,7 +210,7 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
             DEFAULT_CONNECTION_TL.set(channel);
             bytes.readSkip(-4);
             try {
-                dtoParser.parseOne(bytes, serverComponent);
+                dtoParserTL.get().parseOne(bytes, serverComponent);
             } catch (IORuntimeException iore) {
                 if (iore.getCause() instanceof IOException)
                     throw (IOException) iore.getCause();

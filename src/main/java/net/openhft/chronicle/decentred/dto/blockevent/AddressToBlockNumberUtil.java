@@ -11,7 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-enum AddressToBlockNumberUtil {;
+enum AddressToBlockNumberUtil {
+    ;
 
     public static final String ADDRESS_TO_BLOCK_NUMBER_MAP_NAME = "addressToBlockNumberMap";
 
@@ -55,6 +56,7 @@ enum AddressToBlockNumberUtil {;
     }
 
     static void writeMap(@NotNull BytesOut bytes, @NotNull String name, LongLongMap map) {
+        bytes.writeLong(0x0102030405060708L);
         if (map == null || map.size() == 0) {
             bytes.writeStopBit(0);
         } else {
@@ -64,7 +66,17 @@ enum AddressToBlockNumberUtil {;
     }
 
     static void readMap(@NotNull BytesIn bytes, @NotNull String name, @NotNull Consumer<LongLongMap> setter) {
-        final int entries = (int) bytes.readStopBit();
+        assert bytes.readPosition() > 80;
+        long magic = bytes.readLong();
+        if (magic != 0x0102030405060708L)
+            throw new IllegalStateException();
+        long entries0 = bytes.readStopBit();
+        if (entries0 < 0 || entries0 > 128)
+            throw new IllegalStateException("entries: " + entries0);
+        final int entries = (int) entries0;
+        if (bytes.readRemaining() < entries * 16 || bytes.readRemaining() > entries * 18)
+            throw new IllegalStateException("entries: " + entries + ", remaining: " + bytes.readRemaining());
+
         final LongLongMap map = LongLongMap.withExpectedSize(entries);
         for (int i = 0; i < entries; i++) {
             map.justPut(bytes.readLong(), bytes.readLong());
