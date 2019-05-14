@@ -66,9 +66,19 @@ public final class Traffic  {
     }
 
     public static void main(String[] args) {
+        if (args.length < 2) {
+            System.out.println("Usage: " + Traffic.class.getSimpleName() + " address iterations");
+            System.exit(1);
+        }
         final String[] addrPair = args[0].split(":");
         final InetSocketAddress socketAddress = InetSocketAddress.createUnresolved(addrPair[0], Integer.parseInt(addrPair[1]));
         System.out.println("Connecting to Gateway at " + socketAddress);
+
+        final int iterations = Integer.parseInt(args[1]);
+        System.out.println(iterations +" iteration(s).");
+
+        final int threads = 1;
+        System.out.println(threads + " thread(s)");
 
         List<Client> clients = Arrays.stream(ACCOUNTS).mapToObj(accountSeed -> {
             final KeyPair kp = new KeyPair(accountSeed);
@@ -138,9 +148,11 @@ public final class Traffic  {
 
             System.out.println("Benchmark: " + state);
 
-            final int iterations = 30_000;
-
             System.out.println("Preparing Give messages....");
+
+            //final Bench bench = new Bench(clients.get(0).toDefault(), clients.get(0).address, clients.get(1).address, iterations);
+
+/*
             final List<Give> gives = IntStream.range(0, iterations)
                 .mapToObj(i ->
                     new Give()
@@ -149,16 +161,27 @@ public final class Traffic  {
                         .init(clients.get(1).address, 1)
                 )
                 .collect(toList());
+*/
 
 
             final long start = System.nanoTime();
             System.out.println("Running benchmark...");
-            for (int i = 0; i < iterations; i++) {
-                clients.get(0).toDefault().give(gives.get(i));
+
+            List<Bench> benches = IntStream.range(0, threads)
+                .mapToObj(i -> new Bench(clients.get(0).toDefault(), clients.get(0).address, clients.get(1).address, iterations))
+                .collect(toList());
+
+            benches.forEach(Bench::run);
+            for (Bench bench:benches) {
+                try {
+                    bench.join();
+                } catch (InterruptedException ie) {
+
+                }
             }
             final long duration = System.nanoTime() - start;
-            final double ratio = ((double) iterations) * 1e9 / (double) duration;
-            System.out.format("Completed %,d iterations in %,d ms (%,.0f TPS)%n", iterations, duration / 1000000, ratio);
+            final double ratio = threads * ((double) iterations) * 1e9 / (double) duration;
+            System.out.format("Completed %,d iterations in %,d ms (%,.0f TPS)%n", iterations * threads, duration / 1000000, ratio);
 
             Jvm.pause(500);
         }
@@ -171,6 +194,36 @@ public final class Traffic  {
 
         System.out.println("Done.");
 
+    }
+
+    private static final class Bench extends Thread {
+
+        private final AppreciationMessages appreciationMessages;
+        private final List<Give> gives;
+
+        public Bench(@NotNull AppreciationMessages appreciationMessages, long fromAddress, long toAddress, int items) {
+            super();
+            this.appreciationMessages = appreciationMessages;
+            gives = prepare(fromAddress, toAddress, items);
+        }
+
+        private List<Give> prepare(long fromAddress, long toAddress, int items) {
+            return  IntStream.range(0, items)
+                .mapToObj(i ->
+                    new Give()
+                        .address(fromAddress)
+                        .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
+                        .init(toAddress, 1)
+                )
+                .collect(toList());
+        }
+
+        @Override
+        public void run() {
+            for (Give give:gives) {
+                appreciationMessages.give(give);
+            }
+        }
     }
 
 
