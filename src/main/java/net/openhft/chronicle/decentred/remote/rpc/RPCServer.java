@@ -158,8 +158,8 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
         }
 
         if (tcpConnection == null) {
-            String addressString = DecentredUtil.toAddressString(toAddress);
-            System.out.println(address + " - No connection to address " + addressString + " to send " + message);
+/*            String addressString = DecentredUtil.toAddressString(toAddress);
+            System.out.println(address + " - No connection to address " + addressString + " to send " + message);*/
             return;
         }
 

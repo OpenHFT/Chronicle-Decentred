@@ -14,14 +14,14 @@ class DtoParselet<T> {
     private final int midValue;
     private final VanillaSignedMessage vsm;
 
-    public DtoParselet(Method method, int protocol, int midValue) {
-        this.method = Objects.requireNonNull(method);
+    public DtoParselet(@NotNull Method method, int protocol, int midValue) {
+        this.method = method;
         this.protocol = protocol;
         this.midValue = midValue;
         this.vsm = createVSM(method, protocol, midValue);
     }
 
-    public DtoParselet(DtoParselet parselet) {
+    public DtoParselet(@NotNull DtoParselet parselet) {
         this.method = parselet.method;
         this.protocol = parselet.protocol;
         this.midValue = parselet.midValue;
@@ -35,8 +35,8 @@ class DtoParselet<T> {
     @NotNull
     private static VanillaSignedMessage createVSM(Method method, int protocol, int messageType) {
         @SuppressWarnings("unchecked")
-        Class<VanillaSignedMessage> type = (Class) method.getParameterTypes()[0];
-        VanillaSignedMessage vsm = ObjectUtils.newInstance(type);
+        final Class<VanillaSignedMessage> type = (Class) method.getParameterTypes()[0];
+        final VanillaSignedMessage vsm = ObjectUtils.newInstance(type);
         return vsm.protocol(protocol).messageType(messageType);
     }
 
