@@ -34,19 +34,19 @@ public final class Traffic  {
         WARMUP, RUN;
     }
 
-    private final static class Client {
+    public final static class Client {
         private final long accountSeed;
         private final long address;
-        private final RPCClient<AppreciationMessages, AppreciationResponses> client;
+        private final RPCClient<AppreciationMessages, AppreciationResponses> rpcClient;
 
-        private Client(long accountSeed, long address, RPCClient<AppreciationMessages, AppreciationResponses> client) {
+        public Client(long accountSeed, long address, @NotNull RPCClient<AppreciationMessages, AppreciationResponses> rpcClient) {
             this.accountSeed = accountSeed;
             this.address = address;
-            this.client = client;
+            this.rpcClient = rpcClient;
         }
 
         public void close() {
-            client.close();
+            rpcClient.close();
         }
 
         @NotNull
@@ -55,12 +55,14 @@ public final class Traffic  {
         }
 
         @NotNull
-        private String name() {
+        public String name() {
             return DecentredUtil.toAddressString(address);
         }
 
-        private AppreciationMessages toDefault() {
-            return client.toDefault();
+        public long address() { return address;}
+
+        public AppreciationMessages toDefault() {
+            return rpcClient.toDefault();
         }
 
     }
@@ -81,6 +83,10 @@ public final class Traffic  {
         System.out.println(threads + " thread(s)");
 
         List<Client> clients = Arrays.stream(ACCOUNTS).mapToObj(accountSeed -> {
+
+            final Client client = createClient(accountSeed, socketAddress);
+
+/*
             final KeyPair kp = new KeyPair(accountSeed);
             final BytesStore publicKey = kp.publicKey;
 
@@ -93,7 +99,8 @@ public final class Traffic  {
                 .keyPair(kp)
                 .createClient(name, socketAddress, new Peer.ResponseSink());
 
-            final Client client = new Client(accountSeed, address, rpcClient);
+
+            final Client client = new Client(accountSeed, address, rpcClient);*/
 
 /*            System.out.println("Waiting some time before sending first client message to " + name);
             Jvm.pause(1000);*/
@@ -101,9 +108,9 @@ public final class Traffic  {
             System.out.println("Sending CreateAddressRequest");
 
             client.toDefault().createAddressRequest(new CreateAddressRequest()
-                .address(address)
+                .address(client.address)
                 .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
-                .publicKey(publicKey)
+                //.publicKey(client.publicKey)
             );
             return client;
         }).collect(toList());
@@ -164,13 +171,13 @@ public final class Traffic  {
 */
 
 
-            final long start = System.nanoTime();
             System.out.println("Running benchmark...");
 
             List<Bench> benches = IntStream.range(0, threads)
                 .mapToObj(i -> new Bench(clients.get(0).toDefault(), clients.get(0).address, clients.get(1).address, iterations))
                 .collect(toList());
 
+            final long start = System.nanoTime();
             benches.forEach(Bench::run);
             for (Bench bench:benches) {
                 try {
@@ -224,6 +231,23 @@ public final class Traffic  {
                 appreciationMessages.give(give);
             }
         }
+    }
+
+
+    public static Client createClient(long accountSeed, InetSocketAddress socketAddress) {
+        final KeyPair kp = new KeyPair(accountSeed);
+        final BytesStore publicKey = kp.publicKey;
+
+        final long address = DecentredUtil.toAddress(publicKey); // Isn't this the address to use?
+        final String name = DecentredUtil.toAddressString(address);
+        System.out.println("Account " + accountSeed + " is " + name);
+
+        System.out.println("Setting RPC client");
+        final RPCClient<AppreciationMessages, AppreciationResponses> rpcClient = RPCBuilder.of(17, AppreciationMessages.class, AppreciationResponses.class)
+            .keyPair(kp)
+            .createClient(name, socketAddress, new Peer.ResponseSink());
+
+        return new Client(accountSeed, address, rpcClient);
     }
 
 
