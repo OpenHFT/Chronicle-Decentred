@@ -3,6 +3,7 @@ package town.lost.examples.appreciation.benchmark.webapp;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.decentred.dto.address.CreateAddressRequest;
+import town.lost.examples.appreciation.api.AppreciationMessages;
 import town.lost.examples.appreciation.benchmark.Traffic;
 import town.lost.examples.appreciation.dto.Give;
 import town.lost.examples.appreciation.dto.OpeningBalance;
@@ -10,12 +11,15 @@ import town.lost.examples.appreciation.dto.QueryBalance;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.groupingBy;
 import static town.lost.examples.appreciation.benchmark.Traffic.createClient;
 
 final class Benchmark extends Thread {
@@ -36,6 +40,8 @@ final class Benchmark extends Thread {
     private boolean connected;
     private Traffic.Client firstClient;
     private Traffic.Client secondClient;
+
+    private WorkerThread[] workerThreads;
 
     // Todo: remove these
     private double firstBalance;
@@ -82,35 +88,46 @@ final class Benchmark extends Thread {
         sendOpeningBalance(secondClient, secondInitialValue);
         connected = true;
         Jvm.pause(500);
+        firstClient.close();
+        secondClient.close();
 
         log("Preparing list of messages");
-        List<Give> giveList = IntStream.range(0, totalIterations)
+        Map<Long, List<Give>> giveList = IntStream.range(0, totalIterations)
+            .parallel()
             .mapToObj(i ->
                 new Give()
                     .address(firstClient.address())
                     .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
                     .init(secondClient.address(), 1)
             )
-            .collect(toList());
+            .collect(groupingBy(g -> Thread.currentThread().getId()));
 
-        log("Benchmark with " + totalIterations + " iterations started.");
+
+        workerThreads = giveList.values().stream()
+            .map(WorkerThread::new)
+            .toArray(WorkerThread[]::new);
+
+        log("Benchmark with " + totalIterations + " iterations and " + workerThreads.length + " threads started.");
+
+        Stream.of(workerThreads).forEach(WorkerThread::start);
+
+
         this.start = System.nanoTime(); // Reset start
         while (running.get() && !Thread.interrupted() && !isCompleted()) {
-            while (!isCompleted()) {
-                if (firstBalance() > 0 && secondBalance() > 0) { // Todo: Remove this condition when real read of balance is done
-                    firstBalance--;
-                    secondBalance++;
-                }
+/*            while (!isCompleted()) {
+                kickBalance(); // Todo: Remove this condition when real read of balance is done
                 firstClient.toDefault().give(giveList.get(iterations));
                 if ((iterations++ % 10000) == 0 && iterations != 1) {
                     log(Integer.toString(iterations - 1));
                     break; // Check regularly
                 }
-            }
+            }*/
+            Jvm.pause(500);
+            log(Benchmark.class.getSimpleName() + " alive with " + iterations() + " iterations");
         }
+        log(Benchmark.class.getSimpleName() + " completed");
+        Stream.of(workerThreads).forEach(WorkerThread::shutDown);
         connectedListener.accept(false);
-        firstClient.close();
-        secondClient.close();
         log(String.format("Benchmark completed %,d iterations in %,d ms (%,.0f TPS)", iterations, elapsedMs(), tps()));
     }
 
@@ -131,7 +148,9 @@ final class Benchmark extends Thread {
     }
 
     int iterations() {
-        return iterations;
+        return  workerThreads == null
+        ? 0
+        :Stream.of(workerThreads).mapToInt(WorkerThread::iterations).sum();
     }
 
     float progress() {
@@ -143,7 +162,9 @@ final class Benchmark extends Thread {
     }
 
     boolean isCompleted() {
-        return iterations >= totalIterations;
+        return workerThreads == null
+            ? false
+            : Stream.of(workerThreads).allMatch(WorkerThread::completed);
     }
 
     void shutDown() {
@@ -153,6 +174,14 @@ final class Benchmark extends Thread {
     private void log(String s) {
         logListener.accept(s);
     }
+
+    public synchronized void kickBalance() {
+        if (firstBalance > 0 && secondBalance > 0) { // Todo: Remove this condition when real read of balance is done
+            firstBalance--;
+            secondBalance++;
+        }
+    }
+
 
     private void sendCreateAddress(Traffic.Client client) {
         log("Creating address " + client.address());
@@ -178,6 +207,58 @@ final class Benchmark extends Thread {
         return 0d;
     }
 
+
+    private final class WorkerThread extends Thread {
+
+        private final List<Give> giveList;
+        private final Traffic.Client c0;
+        private final Traffic.Client c1;
+        private final AtomicBoolean running;
+        private final AtomicInteger i;
+        private final AtomicBoolean completed;
+
+        public WorkerThread(List<Give> giveList) {
+            c0 = createClient(firstSeed, socketAddress);
+            c1 = createClient(secondSeed, socketAddress);
+            this.giveList = requireNonNull(giveList);
+            running =  new AtomicBoolean(true);
+            i = new AtomicInteger();
+            completed = new AtomicBoolean();
+        }
+
+        @Override
+        public void run() {
+            log("Starting " + getName() + " with " + giveList.size() + " messages");
+            final int end = giveList.size();
+            final AppreciationMessages m = c0.toDefault();
+            while (!Thread.interrupted() && running.get() && i.get() < end) {
+                kickBalance(); // Todo: Remove this later
+                final int j = i.getAndIncrement();
+                m.give(giveList.get(j));
+                if ((j % 10000) == 0 && j != 0) {
+                    log(getName() + " is on "+ j);
+                }
+            }
+            log(getName() + " completed " + i.get() + " iterations");
+            c0.close();
+            c1.close();
+            running.set(false);
+            completed.set(true);
+        }
+
+        void shutDown() {
+            running.set(false);
+        }
+
+        int iterations() {
+            return i.get();
+        }
+
+        boolean completed() {
+            return completed.get();
+        }
+
+    }
 
 
 }
