@@ -38,11 +38,16 @@ public final class Traffic  {
         private final long accountSeed;
         private final long address;
         private final RPCClient<AppreciationMessages, AppreciationResponses> rpcClient;
+        private final BytesStore publicKey;
+        private final BytesStore secretKey;
 
         public Client(long accountSeed, long address, @NotNull RPCClient<AppreciationMessages, AppreciationResponses> rpcClient) {
             this.accountSeed = accountSeed;
             this.address = address;
             this.rpcClient = rpcClient;
+            final KeyPair kp = new KeyPair(accountSeed);
+            publicKey = kp.publicKey;
+            secretKey = kp.secretKey;
         }
 
         public void close() {
@@ -63,6 +68,14 @@ public final class Traffic  {
 
         public AppreciationMessages toDefault() {
             return rpcClient.toDefault();
+        }
+
+        public BytesStore publicKey() {
+            return publicKey;
+        }
+
+        public BytesStore secretKey() {
+            return secretKey;
         }
 
     }

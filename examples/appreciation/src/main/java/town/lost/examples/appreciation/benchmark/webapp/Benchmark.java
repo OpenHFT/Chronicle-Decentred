@@ -47,6 +47,9 @@ final class Benchmark extends Thread {
     private double firstBalance;
     private double secondBalance;
 
+    private int messageType;
+    private int protocol;
+
 
     Benchmark(
         final InetSocketAddress socketAddress,
@@ -99,9 +102,11 @@ final class Benchmark extends Thread {
                     .address(firstClient.address())
                     .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
                     .init(secondClient.address(), 1)
+                    .protocol(protocol)
+                    .messageType(messageType)
+                    .sign(firstClient.secretKey())
             )
             .collect(groupingBy(g -> Thread.currentThread().getId()));
-
 
         workerThreads = giveList.values().stream()
             .map(WorkerThread::new)
@@ -192,10 +197,18 @@ final class Benchmark extends Thread {
 
     private void sendOpeningBalance(Traffic.Client client, double balance) {
         log("Setting opening balance for " + client.address() + " to " + balance);
-        client.toDefault().openingBalance(new OpeningBalance()
+        OpeningBalance ob = new OpeningBalance()
             .address(client.address())
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
-            .init(client.address(), balance));
+            .init(client.address(), balance);
+
+        client.toDefault().openingBalance(ob);
+
+        messageType = ob.messageType();
+        protocol = ob.protocol();
+
+        System.out.println("messageType = " + messageType);
+        System.out.println("protocol = " + protocol);
     }
 
     private double retrieveSaldo(Traffic.Client client) {
