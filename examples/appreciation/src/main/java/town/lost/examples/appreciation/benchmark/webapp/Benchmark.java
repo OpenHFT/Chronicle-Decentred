@@ -32,6 +32,7 @@ final class Benchmark extends Thread {
     private final int totalIterations;
     private final Consumer<String> logListener;
     private final Consumer<Boolean> connectedListener;
+    private final Consumer<String> progressListener;
     private final AtomicBoolean running;
 
     private long start;
@@ -59,7 +60,8 @@ final class Benchmark extends Thread {
         final double secondInitialValue,
         final int totalIterations,
         final Consumer<String> logListener,
-        final Consumer<Boolean> connectedListener
+        final Consumer<Boolean> connectedListener,
+        final Consumer<String> progressListener
     ) {
         super(Benchmark.class.getSimpleName());
         this.socketAddress = requireNonNull(socketAddress);
@@ -69,6 +71,7 @@ final class Benchmark extends Thread {
         this.secondInitialValue = secondInitialValue;
         this.logListener = requireNonNull(logListener);
         this.connectedListener = requireNonNull(connectedListener);
+        this.progressListener = requireNonNull(progressListener);
 
         this.running = new AtomicBoolean(true);
         this.totalIterations = totalIterations;
@@ -95,6 +98,7 @@ final class Benchmark extends Thread {
         secondClient.close();
 
         log("Preparing list of messages");
+        progressListener.accept("Preparing pre-signed messages");
         Map<Long, List<Give>> giveList = IntStream.range(0, totalIterations)
             .parallel()
             .mapToObj(i ->
@@ -113,6 +117,7 @@ final class Benchmark extends Thread {
             .toArray(WorkerThread[]::new);
 
         log("Benchmark with " + totalIterations + " iterations and " + workerThreads.length + " threads started.");
+        progressListener.accept("Running benchmark");
 
         Stream.of(workerThreads).forEach(WorkerThread::start);
 

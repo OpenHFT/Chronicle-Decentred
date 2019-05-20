@@ -215,7 +215,8 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
                 Double.parseDouble(secondInitialValue.getValue()),
                 it,
                 System.out::println,
-                connected::setValue
+                connected::setValue,
+                progressBar::setCaption
             );
             benchmark.start();
         }
