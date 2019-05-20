@@ -98,7 +98,7 @@ final class Benchmark extends Thread {
         secondClient.close();
 
         log("Preparing list of messages");
-        progressListener.accept("Preparing pre-signed messages");
+        progressListener.accept("Preparing messages");
         Map<Long, List<Give>> giveList = IntStream.range(0, totalIterations)
             .parallel()
             .mapToObj(i ->
@@ -106,9 +106,10 @@ final class Benchmark extends Thread {
                     .address(firstClient.address())
                     .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
                     .init(secondClient.address(), 1)
+                    /*
                     .protocol(protocol)
                     .messageType(messageType)
-                    .sign(firstClient.secretKey())
+                    .sign(firstClient.secretKey())*/
             )
             .collect(groupingBy(g -> Thread.currentThread().getId()));
 
