@@ -33,7 +33,7 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
     private static final String STYLE_NAME = "huge";
     //private static final String STYLE_NAME = "huge borderless";
     private static final int PIXEL_SIZE = 200;
-
+    private static final String DEFAULT_GATEWAY_ADDRESS = "decentred.chronicle.software:10000";  // "0.0.0.0:10000"
 
     private TextField gatewayAddress;
     private CheckBox connected;
@@ -57,8 +57,10 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
 
-        gatewayAddress = newTextField("Gateway Address", "0.0.0.0:10000");
+        gatewayAddress = newTextField("Gateway Address", DEFAULT_GATEWAY_ADDRESS);
+        gatewayAddress.setWidth(PIXEL_SIZE * 2 + PIXEL_SIZE / 2, Unit.PIXELS);
         connected = new CheckBox("Connected");
+        connected.setWidth(PIXEL_SIZE / 2, Unit.PIXELS);
         firstAddress = new NativeSelect<>("First Account", IntStream.range(1, 31).mapToObj(IntStringTuple::new).collect(toList()));
         firstAddress.setWidth(PIXEL_SIZE, Unit.PIXELS);
         firstAddress.setValue(new IntStringTuple(1));
@@ -116,7 +118,7 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
         final HorizontalLayout gwLayout = new HorizontalLayout(gatewayAddress, connected);
         gwLayout.setComponentAlignment(connected, Alignment.MIDDLE_LEFT);
 
-        menu.addComponents(headline, newSeparator(), gwLayout, first, second, iterations, /*callerTheads,*/ newSeparator(), new HorizontalLayout(progressBar), measures, button);
+        menu.addComponents(headline/*, *newSeparator()*/, gwLayout, first, second, iterations, /*callerTheads,*/ /*newSeparator(),*/ new HorizontalLayout(progressBar), measures, button);
 
         setContent(menu);
     }
