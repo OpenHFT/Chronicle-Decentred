@@ -6,12 +6,12 @@ import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
-import java.util.Objects;
 
 class DtoParselet<T> {
     private final Method method;
     private final int protocol;
     private final int midValue;
+    private final Object[] vsmArr = {null};
     private final VanillaSignedMessage vsm;
 
     public DtoParselet(@NotNull Method method, int protocol, int midValue) {
@@ -19,6 +19,7 @@ class DtoParselet<T> {
         this.protocol = protocol;
         this.midValue = midValue;
         this.vsm = createVSM(method, protocol, midValue);
+        vsmArr[0] = vsm;
     }
 
     public DtoParselet(@NotNull DtoParselet parselet) {
@@ -27,6 +28,7 @@ class DtoParselet<T> {
         this.midValue = parselet.midValue;
         try {
             this.vsm = createVSM(method, protocol, midValue);
+            vsmArr[0] = vsm;
         } catch (Exception e) {
             throw new AssertionError(e);
         }
@@ -48,7 +50,7 @@ class DtoParselet<T> {
                 method.getName(),
                 method.getParameterTypes()[0].getSimpleName())
             ); */
-            method.invoke(listener, vsm);
+            method.invoke(listener, vsmArr);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
