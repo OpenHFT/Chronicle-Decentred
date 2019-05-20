@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.LongStream;
 
 public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
-    public static final int STEP_PAUSE_MILLIS = 25;
+    public static final int STEP_PAUSE_MILLIS = 1; // 25
 
     private final long address;
     private final long chainAddress;
@@ -81,7 +81,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     @Override
-    public void start(MessageToListener tcpMessageListener) {
+    public void start(@NotNull MessageToListener tcpMessageListener) {
         tcpMessageListener(tcpMessageListener);
         votingSes.submit(this::runVoter);
 
@@ -91,7 +91,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     @Override
-    public void tcpMessageListener(MessageToListener tcpMessageListener) {
+    public void tcpMessageListener(@NotNull MessageToListener tcpMessageListener) {
         this.tcpMessageListener = tcpMessageListener;
         voter.tcpMessageListener(tcpMessageListener);
         voteTaker.tcpMessageListener(tcpMessageListener);
@@ -99,53 +99,53 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     @Override
-    public void transactionBlockEvent(TransactionBlockEvent transactionBlockEvent) {
+    public void transactionBlockEvent(@NotNull TransactionBlockEvent transactionBlockEvent) {
         blockReplayer.transactionBlockEvent(transactionBlockEvent);
         gossiper.transactionBlockEvent(transactionBlockEvent);
     }
 
     @Override
-    public void transactionBlockGossipEvent(TransactionBlockGossipEvent transactionBlockGossipEvent) {
+    public void transactionBlockGossipEvent(@NotNull TransactionBlockGossipEvent transactionBlockGossipEvent) {
         voter.transactionBlockGossipEvent(transactionBlockGossipEvent);
     }
 
     @Override
-    public void transactionBlockVoteEvent(TransactionBlockVoteEvent transactionBlockVoteEvent) {
+    public void transactionBlockVoteEvent(@NotNull TransactionBlockVoteEvent transactionBlockVoteEvent) {
         voteTaker.transactionBlockVoteEvent(transactionBlockVoteEvent);
     }
 
     @Override
-    public void endOfRoundBlockEvent(EndOfRoundBlockEvent endOfRoundBlockEvent) {
+    public void endOfRoundBlockEvent(@NotNull EndOfRoundBlockEvent endOfRoundBlockEvent) {
         blockReplayer.endOfRoundBlockEvent(endOfRoundBlockEvent);
     }
 
     @Override
-    public void createChainRequest(CreateChainRequest createChainRequest) {
+    public void createChainRequest(@NotNull CreateChainRequest createChainRequest) {
         chainer.onMessage(createChainRequest);
     }
 
     @Override
-    public void assignDelegatesRequest(AssignDelegatesRequest assignDelegatesRequest) {
+    public void assignDelegatesRequest(@NotNull AssignDelegatesRequest assignDelegatesRequest) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void createTokenRequest(CreateTokenRequest createTokenRequest) {
+    public void createTokenRequest(@NotNull CreateTokenRequest createTokenRequest) {
         chainer.onMessage(createTokenRequest);
     }
 
     @Override
-    public void createAddressRequest(CreateAddressRequest createAddressRequest) {
+    public void createAddressRequest(@NotNull CreateAddressRequest createAddressRequest) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void verificationEvent(VerificationEvent verificationEvent) {
+    public void verificationEvent(@NotNull VerificationEvent verificationEvent) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void invalidationEvent(InvalidationEvent invalidationEvent) {
+    public void invalidationEvent(@NotNull InvalidationEvent invalidationEvent) {
         throw new UnsupportedOperationException();
     }
 
