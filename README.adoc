@@ -7,6 +7,10 @@ Chronicle Decentred is a framework for building a peer to peer Secure Scalable M
 
 The purpose of this library is to make it easy to create many high throughput microservices which can be run in a decentralised manner.
 
+=== Versions supported
+
+Currently only Java 8, OpenJDK or Oracle JVMs are supported.
+
 === What features will be supported in the open source version
 
 The open source version will
