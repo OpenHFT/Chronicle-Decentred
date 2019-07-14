@@ -9,8 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import static java.util.Objects.requireNonNull;
-
 final class VanillaDtoParser<T> implements DtoParser<T> {
     private final Class<T> clazz;
 
@@ -28,9 +26,7 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
 
     @Override
     public void parseOne(@NotNull BytesIn bytes, @NotNull T listener) {
-        requireNonNull(bytes);
-        requireNonNull(listener);
-        long start = bytes.readPosition();
+        final long start = bytes.readPosition();
         final int protocolMessageType = bytes.readInt(start + VanillaSignedMessage.MESSAGE_TYPE);
         final DtoParselet parselet = parseletMap.get(protocolMessageType);
         // System.out.println("Incoming message for protocol " + (protocolMessageType >>> 16) + " messageType " + Integer.toHexString(protocolMessageType & 0xFFFF));
@@ -46,10 +42,9 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
 
     @Override
     public SignedMessage parseOne(@NotNull BytesIn bytes) {
-        requireNonNull(bytes);
         final int protocolMessageType = bytes.readInt(bytes.readPosition() + VanillaSignedMessage.MESSAGE_TYPE);
         final DtoParselet parselet = parseletMap.get(protocolMessageType);
-        System.out.println("Parsed message for protocol " + (protocolMessageType >>> 16) + " messageType " + Integer.toHexString(protocolMessageType & 0xFFFF));
+        // System.out.println("Parsed message for protocol " + (protocolMessageType >>> 16) + " messageType " + Integer.toHexString(protocolMessageType & 0xFFFF));
         if (parselet == null) {
             warnNotFound(protocolMessageType);
             return null;
@@ -60,9 +55,7 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
 
     @Override
     public void onMessage(@NotNull T component, @NotNull Object message) {
-        requireNonNull(component);
-        requireNonNull(message);
-        Method consumer = classConsumerMap.get(message.getClass());
+        final Method consumer = classConsumerMap.get(message.getClass());
         if (consumer == null) {
             Jvm.warn().on(getClass(), "Unable to find a consumer for " + message.getClass());
         } else {

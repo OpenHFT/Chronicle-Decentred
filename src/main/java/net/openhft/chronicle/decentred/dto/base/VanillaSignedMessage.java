@@ -48,9 +48,9 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
     private static final boolean ENFORCE_TRANSIENT_OVERRIDE_INVARIANT = false;
 
     @LongConversion(MicroTimestampLongConverter.class)
-    private long timestampUS;
+    protected long timestampUS;
     @LongConversion(AddressLongConverter.class)
-    private long address;
+    protected long address;
 
     // Byte area for storage of a complete signed message
     private final transient Bytes internalBytes;
@@ -118,10 +118,14 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
         protocol = internalBytes.readUnsignedShort(PROTOCOL);
 
         internalBytes.readSkip(MESSAGE_START);
-        super.readMarshallable(internalBytes);
+        readMarshallableInternal(internalBytes);
         signed = true;
-        transientFieldHandler().readMarshallable(self(), internalBytes);
         internalBytes.readPosition(0);
+    }
+
+    protected void readMarshallableInternal(Bytes bytes) {
+        super.readMarshallable(bytes);
+        transientFieldHandler().readMarshallable(self(), bytes);
     }
 
     /**
@@ -162,7 +166,7 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
      *
      * @param bytes to write to
      */
-    private void writeMarshallableInternal(BytesOut bytes) {
+    protected void writeMarshallableInternal(BytesOut bytes) {
         super.writeMarshallable(bytes);
         transientFieldHandler().writeMarshallableInternal(self(), bytes);
     }

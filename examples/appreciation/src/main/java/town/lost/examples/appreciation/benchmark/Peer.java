@@ -1,4 +1,4 @@
-package town.lost.examples.appreciation.benchmark;
+  package town.lost.examples.appreciation.benchmark;
 
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.TimeProvider;
@@ -38,7 +38,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
-public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
+public final class Peer extends Node<AppreciationMessages, AppreciationRequests> {
     private static final double START_AMOUNT = 2_000_000d;
     public static final String GIVER = "giver";
     public static final String TAKER = "taker";
@@ -75,17 +75,17 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
             }
         };
 
-        AppreciationRequests mainProcessor = new Processor(messageRouter, balanceStore);
-        AppreciationRequests localProcessor = new Processor(messageRouter, balanceStore);
+        final AppreciationRequests mainProcessor = new Processor(messageRouter, balanceStore);
+        final AppreciationRequests localProcessor = new Processor(messageRouter, balanceStore);
 
-        Function<GatewayConfiguration<AppreciationMessages>, VanillaGateway> gatewayConstructor = config -> {
-            long region = DecentredUtil.parseAddress(config.regionStr());
-            BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.keyPair(),
+        final Function<GatewayConfiguration<AppreciationMessages>, VanillaGateway> gatewayConstructor = config -> {
+            final long region = DecentredUtil.parseAddress(config.regionStr());
+            final BlockEngine mainEngine = BlockEngine.newMain(config.dtoRegistry(), config.keyPair(),
                 config.mainPeriodMS(), config.clusterAddresses(), mainProcessor, timeProvider);
-            BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.keyPair(), region,
+            final BlockEngine localEngine = BlockEngine.newLocal(config.dtoRegistry(), config.keyPair(), region,
                 config.localPeriodMS(), config.clusterAddresses(), localProcessor, timeProvider);
 
-            AppreciationTransactions blockChain = new AppreciationTransactions() {
+            final AppreciationTransactions blockChain = new AppreciationTransactions() {
                 @Override
                 public void openingBalance(OpeningBalance openingBalance) {
                     localEngine.onMessage(openingBalance);
@@ -107,8 +107,10 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
         };
         rpcServer = getRpcBuilder().createServer(socketAddress.getHostName(), socketAddress.getPort(),
             mainProcessor, localProcessor, gatewayConstructor, timeProvider);
+
         ((TransactionProcessor) mainProcessor).messageRouter(rpcServer);
         ((TransactionProcessor) localProcessor).messageRouter(rpcServer);
+
     }
 
 
@@ -122,7 +124,8 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
     }
 
     public void connect(long address, InetSocketAddress serverAddress) {
-        RPCClient<AppreciationMessages, AppreciationRequests> client = getRpcBuilder()
+        //System.out.format("Connection from address %d at %s%n", address, serverAddress.toString());
+        final RPCClient<AppreciationMessages, AppreciationRequests> client = getRpcBuilder()
             .createClient("to " + serverAddress, serverAddress, new IncomingProcessor());
         rpcServer.setRoute(address, client);
     }
@@ -258,7 +261,7 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
 
 
 
-    public static class ResponseSink implements AppreciationResponses {
+    public final static class ResponseSink implements AppreciationResponses {
         @Override
         public void onBalance(OnBalance onBalance) {
             System.out.println("RequestsSink.onBalance = " + onBalance);
@@ -321,21 +324,18 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        int peerSeedOffset = 1000;
-        IntUnaryOperator seedForPeerIdx = i -> i + peerSeedOffset;
-
-        BalanceStore balanceStore = new VanillaBalanceStore();
-
+        final int peerSeedOffset = 1000;
+        final IntUnaryOperator seedForPeerIdx = i -> i + peerSeedOffset;
+        final BalanceStore balanceStore = new VanillaBalanceStore();
         final int myAddressIndex = Integer.parseInt(args[0]);
-
-        List<InetSocketAddress> socketAddresses = Arrays.stream(args[1].split(","))
+        final List<InetSocketAddress> socketAddresses = Arrays.stream(args[1].split(","))
             .map(addrString -> {
                 String[] addrPair = addrString.split(":");
                 return InetSocketAddress.createUnresolved(addrPair[0], Integer.parseInt(addrPair[1]));
             })
             .collect(toList());
 
-        List<Long> addresses = IntStream.range(0, socketAddresses.size())
+        final List<Long> addresses = IntStream.range(0, socketAddresses.size())
             .map(seedForPeerIdx)
             .mapToObj(Node::addressFromSeed)
             .collect(toList());
@@ -369,12 +369,12 @@ public class Peer extends Node<AppreciationMessages, AppreciationRequests> {
 
         System.out.format("Peer #%d started at %s%n", myAddressIndex, myAddress);
 
-        if (myAddressIndex == 0 && false) {
+/*        if (myAddressIndex == 0 && false) {
             System.out.println("Waiting for network");
             Jvm.pause(5000);
             System.out.println("Send opening balances");
             peer.setOpeningBalances();
-        }
+        }*/
 
         while (System.in.available() == 0) {
             Thread.sleep(5000);

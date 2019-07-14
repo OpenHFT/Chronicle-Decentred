@@ -77,23 +77,24 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
     private void replay(@NotNull Consumer<Bytes> consumer) {
         assertSigned();
         transactions.readPosition(0);
-        final long limit = transactions.readLimit();
+        final long originalLimit = transactions.readLimit();
         try {
             while (!transactions.isEmpty()) {
                 final long position = transactions.readPosition();
                 final long length = transactions.readUnsignedInt(position);
                 transactions.readLimit(position + length);
                 try {
-                    consumer.accept(transactions);
-/*                    dtoParser.parseOne(transactions, messageHandler);*/
+                    consumer.accept(transactions);  // The consumer may or may not affect the read position
                 } catch (Exception e) {
                     Jvm.warn().on(getClass(), "Error processing transaction event ", e);
                 }
-                transactions.readLimit(limit);
-                transactions.readSkip(length);
+             //   System.out.format("txid: %d, originalLimit: %d, length: %d, position: %d, readPosition:%d%n", System.identityHashCode(transactions), originalLimit, length, position, transactions.readPosition());
+
+                transactions.readLimit(originalLimit);
+                transactions.readPosition(position + length);
             }
         } finally {
-            transactions.readLimit(limit);
+            transactions.readLimit(originalLimit);
         }
     }
 
@@ -118,6 +119,8 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
      * <p>
      *  If all transactions are replayed, the method returns {@code true},
      *  otherwise it returns {@code false}
+     *
+     * @return if this message's transaction queue is empty (of un-replayed transactions)
      */
     public boolean isEmpty() {
         return transactions.readRemaining() == 0;

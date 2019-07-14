@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -29,7 +27,7 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
     private static final ThreadLocal<TCPConnection> DEFAULT_CONNECTION_TL = new ThreadLocal<>();
     private final LongObjMap<TCPConnection> connections = LongObjMap.withExpectedSize(TCPConnection.class, 128);
     private final LongObjMap<TCPConnection> remoteMap = LongObjMap.withExpectedSize(TCPConnection.class, 128);
-    private final Map<Long, U> allMessagesMap = new ConcurrentHashMap<>();
+    private final LongObjMap<Object> toCache = LongObjMap.withExpectedSize(Object.class, 128);
     private final PublicKeyRegistry publicKeyRegistry = new VanillaPublicKeyRegistry();
     private final TCPServer tcpServer;
     private final long address;
@@ -108,13 +106,19 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
 
     @Override
     public U to(long addressOrRegion) {
-        InvocationHandler handler = new ServerInvocationHandler(addressOrRegion);
-        Class<U> uClass = dtoRegistry.superInterface();
-        //noinspection unchecked
-        U proxy = (U) Proxy.newProxyInstance(uClass.getClassLoader(),
-                new Class[]{uClass, SystemMessageListener.class},
-                handler);
-        return proxy;
+        synchronized (toCache) {
+            Object proxy0 = toCache.get(addressOrRegion);
+            if (proxy0 != null)
+                return (U) proxy0;
+            InvocationHandler handler = new ServerInvocationHandler(addressOrRegion);
+            Class<U> uClass = dtoRegistry.superInterface();
+            //noinspection unchecked
+            U proxy = (U) Proxy.newProxyInstance(uClass.getClassLoader(),
+                    new Class[]{uClass, SystemMessageListener.class},
+                    handler);
+            toCache.justPut(addressOrRegion, proxy);
+            return proxy;
+        }
     }
 
     private long address() {
@@ -158,8 +162,8 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
         }
 
         if (tcpConnection == null) {
-            String addressString = DecentredUtil.toAddressString(toAddress);
-            System.out.println(address + " - No connection to address " + addressString + " to send " + message);
+/*            String addressString = DecentredUtil.toAddressString(toAddress);
+            System.out.println(address + " - No connection to address " + addressString + " to send " + message);*/
             return;
         }
 
