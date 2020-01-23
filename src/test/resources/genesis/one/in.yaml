@@ -20,35 +20,35 @@ blockchainPhase: BOOTSTRAP
 # 142 127.102.155.73:26065:bc79
 createAddressRequest: {
   timestampUS: 2018-09-03T14:36:36.166,
-  address: 127.102.155.73:26065:bc79,
+  address: 26065.bc79,
   publicKey: !!binary WQnL2+L1VdG2wfERctkxxmGQlkqrkVQ8ebzRZUmbZn8=
 }
 ---
 # 229 127.162.254.71:54087:781
 createAddressRequest: {
   timestampUS: 2018-09-03T14:36:36.173,
-  address: 127.162.254.71:54087:781,
+  address: 54087.781,
   publicKey: !!binary z5iG3FI73ytbQnkGbtxua348mppMFaF0gQdH00f+on8=
 }
 ---
 # 602 127.27.187.195:45455:a9ac
 createAddressRequest: {
   timestampUS: 2018-09-03T14:36:36.196,
-  address: 127.27.187.195:45455:a9ac,
+  address: 45455.a9ac,
   publicKey: !!binary Qg2oHQDK3bwQHFOb9mh00z2abkhB+PwLrKmPscO7G38=
 }
 ---
 # 849 127.180.252.252:59774:fa8e
 createAddressRequest: {
   timestampUS: 2018-09-03T14:36:36.211,
-  address: 127.180.252.252:59774:fa8e,
+  address: 59774.fa8e,
   publicKey: !!binary v/BD7xu7t46RABudGm94AcxYyhJlESkCjvp+6fz8tH8=
 }
 ---
 # 981 127.182.134.255:60203:ec86
 createAddressRequest: {
   timestampUS: 2018-09-03T14:36:36.223,
-  address: 127.182.134.255:60203:ec86,
+  address: 60203.ec86,
   publicKey: !!binary wEompuoWYKSGhKwj0y2QUJTlBUuu5A+xhuwr6/+Gtn8=
 }
 ---

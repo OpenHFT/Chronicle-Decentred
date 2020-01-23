@@ -54,12 +54,12 @@ A transaction which only needs the authority of one address can be confirmed in 
 - Any transaction which has the same (or earlier timestamp) is ignored.
 - The Request is validated by the gateway of the nodes receiving the request, and possibly rejected with a Response to the sender.
 - If valid, the Request is passed to the chainer to be added to the block created by that node.
-- The blocks created by each node are socialised throughout the cluster and through a consesnus model agreed as to the order of those blocks.
+- The blocks created by each node are socialised throughout the cluster and through a consensus model agreed as to the order of those blocks.
 - Once the order of blocks has been agreed by a majority of nodes, every node processes those blocks in the same order and publishes any results.
 
 === Double pass transaction lifecycle
 
-A transaction whcih requires the authority of the majority of nodes running in the cluster requires two passes.
+A transaction which requires the authority of the majority of nodes running in the cluster requires two passes.
 
 - A Request is created which follows the single pass lifecycle above, however
 - The results of the transactions on each node are socialised to every other node.

@@ -1,5 +1,6 @@
 package net.openhft.chronicle.decentred.dto.error;
 
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.decentred.dto.base.TransientFieldHandler;
@@ -98,7 +99,12 @@ public final class ApplicationErrorResponse extends VanillaSignedMessage<Applica
 
         @Override
         public void readMarshallable(@NotNull ApplicationErrorResponse original, @NotNull BytesIn bytes) {
-            original.origMessage = (VanillaSignedMessage) original.dtoParser.parseOne(bytes);
+            if (original.dtoParser == null) {
+                System.err.println("Unable to parse " + ((Bytes) bytes).toHexString());
+                original.origMessage = null;
+            } else {
+                original.origMessage = (VanillaSignedMessage) original.dtoParser.parseOne(bytes);
+            }
         }
     }
 

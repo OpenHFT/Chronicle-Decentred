@@ -1,24 +1,24 @@
 createAddressRequest: {
   timestampUS: 2018-08-08T08:03:08.231112,
-  address: 127.102.155.73:26065:bc79,
+  address: 26065.bc79,
   publicKey: !!binary WQnL2+L1VdG2wfERctkxxmGQlkqrkVQ8ebzRZUmbZn8=
 }
 ---
 createAddressEvent: {
   timestampUS: 2018-08-08T08:03:08.231112,
-  address: 127.102.155.73:26065:bc79,
+  address: 26065.bc79,
   createAddressRequest: {
     timestampUS: 2018-08-08T08:03:08.231112,
-    address: 127.102.155.73:26065:bc79,
+    address: 26065.bc79,
     publicKey: !!binary WQnL2+L1VdG2wfERctkxxmGQlkqrkVQ8ebzRZUmbZn8=
   }
 }
 ---
 verificationEvent: {
   timestampUS: 2018-08-08T08:03:08.231112,
-  address: 127.102.155.73:26065:bc79,
+  address: 26065.bc79,
   publicKey: !!binary WQnL2+L1VdG2wfERctkxxmGQlkqrkVQ8ebzRZUmbZn8=,
-  addressVerified: 127.162.254.71:54087:781,
+  addressVerified: 54087.781,
   keyVerified: !!binary z5iG3FI73ytbQnkGbtxua348mppMFaF0gQdH00f+on8=
 }
 ---
