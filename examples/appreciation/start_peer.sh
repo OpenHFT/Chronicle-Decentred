@@ -4,4 +4,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 echo "Starting peer# $1"
-JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home M2_HOME=/Applications/apache-maven-3.6.0 /Applications/apache-maven-3.6.0/bin/mvn -q exec:java -Dexec.mainClass="town.lost.examples.appreciation.benchmark.Peer" -Dexec.args="$1 0.0.0.0:10000,0.0.0.0:10001,0.0.0.0:10002"
+if [ ! -d target ] ; then
+  mvn install
+fi
+mvn -q exec:java -Dexec.mainClass="town.lost.examples.appreciation.benchmark.Peer" -Dexec.args="$1 0.0.0.0:10000,0.0.0.0:10001,0.0.0.0:10002"
