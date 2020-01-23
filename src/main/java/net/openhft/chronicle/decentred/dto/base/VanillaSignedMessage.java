@@ -370,13 +370,16 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
 
     @Override
     public final <M extends Marshallable> M copyTo(@NotNull M m) {
+        if (internalBytes.isEmpty()) {
+            super.copyTo(m);
+            return (M) this;
+        }
         assertSameClassAsThis(m);
-        assertSigned();
-        @SuppressWarnings("unchecked")
-        final T other = (T) m;
+        //assertSigned();
+        @SuppressWarnings("unchecked") final T other = (T) m;
         // This volatile property gets magically copied
         if (this instanceof HasDtoParser) {
-            ((HasDtoParser)m).dtoParser(((HasDtoParser)this).dtoParser());
+            ((HasDtoParser) m).dtoParser(((HasDtoParser) this).dtoParser());
         }
         final Bytes internalBytesView = internalBytes.bytesForRead();
         internalBytesView.readPosition(0);
