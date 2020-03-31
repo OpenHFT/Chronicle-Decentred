@@ -29,7 +29,7 @@
                 <groupId>net.openhft</groupId>
                 <artifactId>third-party-bom</artifactId>
                 <type>pom</type>
-                <version>3.6.17</version>
+                <version>3.9.1</version>
                 <scope>import</scope>
             </dependency>
             <dependency>
@@ -186,38 +186,6 @@
                     </links>
                 </configuration>
             </plugin>
-<!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copyNonMarshalled-dependencies</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copyNonMarshalled-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
-<!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>cash.xcl.server.mock.ServerJVM</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>-->
 
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -290,7 +258,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
                 <configuration>
                     <compilerArgs>
                         <arg>-Xlint:deprecation</arg>
@@ -317,39 +284,8 @@
                     </dependency>
                 </dependencies>
             </plugin>
-<!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <configuration>
-                    &lt;!&ndash; put your configurations here &ndash;&gt;
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
--->
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>java9</id>
-            <properties>
-                <maven.compiler.source>1.9</maven.compiler.source>
-                <maven.compiler.target>1.9</maven.compiler.target>
-                <maven.compiler.fork>true</maven.compiler.fork>
-                <compiler.argument>--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED
-                    --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-exports=java.unsupported/sun.misc=ALL-UNNAMED
-                </compiler.argument>
-            </properties>
-        </profile>
-    </profiles>
     <scm>
         <url>scm:git:git@github.com:OpenHFT/Chronicle-Decentred.git</url>
         <connection>scm:git:git@github.com:OpenHFT/Chronicle-Decentred.git</connection>
