@@ -2,6 +2,7 @@ package net.openhft.chronicle.decentred.remote.net;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.core.io.AbstractCloseable;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.tcp.ISocketChannel;
 
@@ -12,7 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SocketChannel;
 
-public abstract class AbstractTCPConnection implements TCPConnection {
+public abstract class AbstractTCPConnection extends AbstractCloseable implements TCPConnection {
     private final ThreadLocal<ByteBuffer[]> headerBytesTL = ThreadLocal.withInitial(AbstractTCPConnection::createHeaderArray);
 
     protected volatile SocketChannel channel;
@@ -132,7 +133,7 @@ public abstract class AbstractTCPConnection implements TCPConnection {
     protected abstract void onMessage(Bytes<ByteBuffer> bytes) throws IOException;
 
     @Override
-    public final void close() {
+    protected void performClose() {
         running = false;
         close2();
         Closeable.closeQuietly(channel);

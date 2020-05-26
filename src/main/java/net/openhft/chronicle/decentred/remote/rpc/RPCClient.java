@@ -2,6 +2,7 @@ package net.openhft.chronicle.decentred.remote.rpc;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.core.io.AbstractCloseable;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.core.time.TimeProvider;
@@ -27,7 +28,7 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
 
-public class RPCClient<U extends T, T> implements Closeable, TCPConnection, MessageRouter<U> {
+public class RPCClient<U extends T, T> extends AbstractCloseable implements TCPConnection, MessageRouter<U> {
     private final VanillaTCPClient tcpClient;
     private final T listener;
     private final BytesStore secretKey;
@@ -106,7 +107,7 @@ public class RPCClient<U extends T, T> implements Closeable, TCPConnection, Mess
     }
 
     @Override
-    public void close() {
+    protected void performClose() {
         tcpClient.close();
     }
 
