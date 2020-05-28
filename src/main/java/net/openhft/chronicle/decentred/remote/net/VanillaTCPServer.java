@@ -1,5 +1,6 @@
 package net.openhft.chronicle.decentred.remote.net;
 
+import net.openhft.chronicle.core.io.AbstractCloseable;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.threads.NamedThreadFactory;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class VanillaTCPServer implements TCPServer {
+public class VanillaTCPServer extends AbstractCloseable implements TCPServer {
     private final ServerSocketChannel serverChannel;
     private final ExecutorService pool;
     private final List<TCPConnection> connections = Collections.synchronizedList(new ArrayList<>());
@@ -53,7 +54,7 @@ public class VanillaTCPServer implements TCPServer {
     }
 
     @Override
-    public void close() {
+    protected void performClose() {
         running = false;
         pool.shutdown();
 
