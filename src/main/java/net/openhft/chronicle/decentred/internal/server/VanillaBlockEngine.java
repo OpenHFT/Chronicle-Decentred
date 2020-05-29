@@ -1,6 +1,7 @@
 package net.openhft.chronicle.decentred.internal.server;
 
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.core.io.AbstractCloseable;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.core.time.TimeProvider;
@@ -27,7 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.LongStream;
 
-public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
+public class VanillaBlockEngine<T> extends AbstractCloseable implements BlockEngine, Closeable {
     public static final int STEP_PAUSE_MILLIS = 25;
 
     private final long address;
@@ -238,7 +239,7 @@ public class VanillaBlockEngine<T> implements BlockEngine, Closeable {
     }
 
     @Override
-    public void close() {
+    protected void performClose() {
         votingSes.shutdownNow();
     }
 

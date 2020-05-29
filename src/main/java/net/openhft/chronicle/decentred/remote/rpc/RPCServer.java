@@ -3,6 +3,7 @@ package net.openhft.chronicle.decentred.remote.rpc;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.Jvm;
+import net.openhft.chronicle.core.io.AbstractCloseable;
 import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.io.IORuntimeException;
 import net.openhft.chronicle.decentred.api.SystemMessageListener;
@@ -23,7 +24,7 @@ import java.lang.reflect.Proxy;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable {
+public class RPCServer<U extends T, T> extends AbstractCloseable implements DecentredServer<U>, Closeable {
     private static final ThreadLocal<TCPConnection> DEFAULT_CONNECTION_TL = new ThreadLocal<>();
     private final LongObjMap<TCPConnection> connections = LongObjMap.withExpectedSize(TCPConnection.class, 128);
     private final LongObjMap<TCPConnection> remoteMap = LongObjMap.withExpectedSize(TCPConnection.class, 128);
@@ -126,7 +127,7 @@ public class RPCServer<U extends T, T> implements DecentredServer<U>, Closeable 
     }
 
     @Override
-    public void close() {
+    protected void performClose() {
         synchronized (connections) {
             connections.forEach((k, connection) ->
                     Closeable.closeQuietly(connection));

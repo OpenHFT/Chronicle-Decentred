@@ -2,6 +2,7 @@ package net.openhft.chronicle.decentred.server;
 
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.annotation.UsedViaReflection;
+import net.openhft.chronicle.core.io.AbstractCloseable;
 import net.openhft.chronicle.core.time.TimeProvider;
 import net.openhft.chronicle.decentred.api.Verifier;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;
@@ -17,14 +18,13 @@ import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockVoteEvent;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.AssignDelegatesRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateChainRequest;
 import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateTokenRequest;
-import net.openhft.chronicle.decentred.internal.server.VanillaBlockEngine;
 import net.openhft.chronicle.decentred.remote.net.TCPConnection;
 import net.openhft.chronicle.decentred.util.*;
 
 /**
  * This accepts message from the RPCServer and passes them to the appropriate downstream component
  */
-public class VanillaGateway implements Gateway {
+public class VanillaGateway extends AbstractCloseable implements Gateway {
     private static final long MAIN_CHAIN = DecentredUtil.parseAddress("main");
     //    private final long address;
     private final long chainAddress;
@@ -182,7 +182,7 @@ public class VanillaGateway implements Gateway {
     }
 
     @Override
-    public void close() {
+    protected void performClose() {
 //        main.close();
 //        local.close();
     }
