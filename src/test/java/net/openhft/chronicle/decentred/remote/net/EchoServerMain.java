@@ -1,11 +1,12 @@
 package net.openhft.chronicle.decentred.remote.net;
 
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.core.io.AbstractCloseable;
 import net.openhft.chronicle.core.io.Closeable;
 
 import java.io.IOException;
 
-class EchoServerMain implements Closeable, TCPServerConnectionListener {
+class EchoServerMain extends AbstractCloseable implements Closeable, TCPServerConnectionListener {
     static final int PORT = Integer.getInteger("port", 9090);
 
     private final VanillaTCPServer server;
@@ -34,7 +35,7 @@ class EchoServerMain implements Closeable, TCPServerConnectionListener {
     }
 
     @Override
-    public void close() {
+    protected void performClose() {
         server.close();
     }
 }
