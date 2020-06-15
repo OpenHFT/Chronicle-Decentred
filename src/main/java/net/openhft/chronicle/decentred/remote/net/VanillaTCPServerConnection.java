@@ -28,7 +28,7 @@ public class VanillaTCPServerConnection extends AbstractTCPConnection implements
     }
 
     @Override
-    public void run() {
+    public void run() { throwExceptionIfClosed();
         try {
             tcpServer.connectionListener().onNewConnection(tcpServer, this);
             Bytes<ByteBuffer> readBytes = Bytes.elasticByteBuffer(MAX_MESSAGE_SIZE);

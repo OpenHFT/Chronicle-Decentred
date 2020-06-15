@@ -33,7 +33,7 @@ public abstract class AbstractTCPConnection extends AbstractCloseable implements
         return ret;
     }
 
-    public AbstractTCPConnection channel(SocketChannel channel) {
+    public AbstractTCPConnection channel(SocketChannel channel) { throwExceptionIfClosed();
         iSocketChannel = channel == null ? null : ISocketChannel.wrap(channel);
         this.channel = channel;
         return this;
@@ -45,7 +45,7 @@ public abstract class AbstractTCPConnection extends AbstractCloseable implements
     }
 
     @Override
-    public void write(BytesStore<?, ByteBuffer> bytes) throws IOException {
+    public void write(BytesStore<?, ByteBuffer> bytes) throws IOException { throwExceptionIfClosed();
         if (!running)
             throw new IOException("closed");
 
@@ -72,7 +72,7 @@ public abstract class AbstractTCPConnection extends AbstractCloseable implements
     }
 
     @Override
-    public void write(ByteBuffer buffer) throws IOException {
+    public void write(ByteBuffer buffer) throws IOException { throwExceptionIfClosed();
         if (!running)
             throw new IOException("closed");
 

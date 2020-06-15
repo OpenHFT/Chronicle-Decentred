@@ -60,26 +60,26 @@ public class VanillaGateway extends AbstractCloseable implements Gateway {
     }
 
     @Override
-    public void start(DecentredServer decentredServer) {
+    public void start(DecentredServer decentredServer) { throwExceptionIfClosed();
         this.decentredServer = decentredServer;
         main.start(decentredServer);
         local.start(decentredServer);
     }
 
-    public void tcpMessageListener(DecentredServer decentredServer) {
+    public void tcpMessageListener(DecentredServer decentredServer) { throwExceptionIfClosed();
         this.decentredServer = decentredServer;
         main.tcpMessageListener(decentredServer);
         local.tcpMessageListener(decentredServer);
     }
 
     @UsedViaReflection
-    public void processOneBlock() {
+    public void processOneBlock() { throwExceptionIfClosed();
         main.processOneBlock();
         local.processOneBlock();
     }
 
     @Override
-    public void createAddressRequest(CreateAddressRequest createAddressRequest) {
+    public void createAddressRequest(CreateAddressRequest createAddressRequest) { throwExceptionIfClosed();
         BytesStore publicKey = createAddressRequest.publicKey();
         long address = DecentredUtil.toAddress(publicKey);
         decentredServer.register(address, publicKey);
@@ -88,32 +88,32 @@ public class VanillaGateway extends AbstractCloseable implements Gateway {
     }
 
     @Override
-    public void createChainRequest(CreateChainRequest createChainRequest) {
+    public void createChainRequest(CreateChainRequest createChainRequest) { throwExceptionIfClosed();
         main.createChainRequest(createChainRequest);
     }
 
     @Override
-    public void assignDelegatesRequest(AssignDelegatesRequest assignDelegatesRequest) {
+    public void assignDelegatesRequest(AssignDelegatesRequest assignDelegatesRequest) { throwExceptionIfClosed();
         main.assignDelegatesRequest(assignDelegatesRequest);
     }
 
     @Override
-    public void createTokenRequest(CreateTokenRequest createTokenRequest) {
+    public void createTokenRequest(CreateTokenRequest createTokenRequest) { throwExceptionIfClosed();
         main.createTokenRequest(createTokenRequest);
     }
 
     @Override
-    public void verificationEvent(VerificationEvent verificationEvent) {
+    public void verificationEvent(VerificationEvent verificationEvent) { throwExceptionIfClosed();
         verifyIP.verificationEvent(verificationEvent);
     }
 
     @Override
-    public void invalidationEvent(InvalidationEvent invalidationEvent) {
+    public void invalidationEvent(InvalidationEvent invalidationEvent) { throwExceptionIfClosed();
         verifyIP.invalidationEvent(invalidationEvent);
     }
 
     @Override
-    public void transactionBlockEvent(TransactionBlockEvent transactionBlockEvent) {
+    public void transactionBlockEvent(TransactionBlockEvent transactionBlockEvent) { throwExceptionIfClosed();
         long chainAddress = transactionBlockEvent.chainAddress();
         if (isMainChain(chainAddress))
             main.transactionBlockEvent(transactionBlockEvent);
@@ -128,7 +128,7 @@ public class VanillaGateway extends AbstractCloseable implements Gateway {
     }
 
     @Override
-    public void transactionBlockGossipEvent(TransactionBlockGossipEvent transactionBlockGossipEvent) {
+    public void transactionBlockGossipEvent(TransactionBlockGossipEvent transactionBlockGossipEvent) { throwExceptionIfClosed();
         long chainAddress = transactionBlockGossipEvent.chainAddress();
         if (isMainChain(chainAddress))
             main.transactionBlockGossipEvent(transactionBlockGossipEvent);
@@ -139,7 +139,7 @@ public class VanillaGateway extends AbstractCloseable implements Gateway {
     }
 
     @Override
-    public void transactionBlockVoteEvent(TransactionBlockVoteEvent transactionBlockVoteEvent) {
+    public void transactionBlockVoteEvent(TransactionBlockVoteEvent transactionBlockVoteEvent) { throwExceptionIfClosed();
         long chainAddress = transactionBlockVoteEvent.chainAddress();
         if (isMainChain(chainAddress))
             main.transactionBlockVoteEvent(transactionBlockVoteEvent);
@@ -150,7 +150,7 @@ public class VanillaGateway extends AbstractCloseable implements Gateway {
     }
 
     @Override
-    public void endOfRoundBlockEvent(EndOfRoundBlockEvent endOfRoundBlockEvent) {
+    public void endOfRoundBlockEvent(EndOfRoundBlockEvent endOfRoundBlockEvent) { throwExceptionIfClosed();
         long chainAddress = endOfRoundBlockEvent.chainAddress();
         if (isMainChain(chainAddress))
             main.endOfRoundBlockEvent(endOfRoundBlockEvent);
@@ -170,7 +170,7 @@ public class VanillaGateway extends AbstractCloseable implements Gateway {
         );
     }
 
-    public void createAddressEvent(CreateAddressEvent createAddressEvent) {
+    public void createAddressEvent(CreateAddressEvent createAddressEvent) { throwExceptionIfClosed();
         // received as a weekly event
         checkTrusted(createAddressEvent);
         publicKeyRegistry.register(createAddressEvent.address(),
@@ -188,7 +188,7 @@ public class VanillaGateway extends AbstractCloseable implements Gateway {
     }
 
     @Override
-    public void onConnection(TCPConnection connection) {
+    public void onConnection(TCPConnection connection) { throwExceptionIfClosed();
         Gateway.super.onConnection(connection);
         verifyIP.onConnection(connection);
     }

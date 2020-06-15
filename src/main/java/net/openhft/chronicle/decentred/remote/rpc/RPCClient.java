@@ -75,11 +75,11 @@ public class RPCClient<U extends T, T> extends AbstractCloseable implements TCPC
     }
 
     @Override
-    public U to(long address) {
+    public U to(long address) { 
         return proxy;
     }
 
-    public void write(VanillaSignedMessage message) {
+    public void write(VanillaSignedMessage message) { throwExceptionIfClosed();
         try {
             if (message.protocol() == 0) {
                 int pmt = registry.protocolMessageTypeFor(message.getClass());
@@ -97,12 +97,12 @@ public class RPCClient<U extends T, T> extends AbstractCloseable implements TCPC
     }
 
     @Override
-    public void write(BytesStore<?, ByteBuffer> bytes) throws IOException {
+    public void write(BytesStore<?, ByteBuffer> bytes) throws IOException { throwExceptionIfClosed();
         tcpClient.write(bytes);
     }
 
     @Override
-    public void write(ByteBuffer buffer) throws IOException {
+    public void write(ByteBuffer buffer) throws IOException { throwExceptionIfClosed();
         tcpClient.write(buffer);
     }
 
@@ -111,7 +111,7 @@ public class RPCClient<U extends T, T> extends AbstractCloseable implements TCPC
         tcpClient.close();
     }
 
-    public boolean internal() {
+    public boolean internal() { 
         return internal;
     }
 
@@ -120,7 +120,7 @@ public class RPCClient<U extends T, T> extends AbstractCloseable implements TCPC
         return this;
     }
 
-    public TimeProvider timeProvider() {
+    public TimeProvider timeProvider() { throwExceptionIfClosed();
         return timeProvider;
     }
 
@@ -132,7 +132,7 @@ public class RPCClient<U extends T, T> extends AbstractCloseable implements TCPC
     class ClientListener implements TCPClientListener {
 
         @Override
-        public void onMessage(TCPConnection client, Bytes bytes) throws IOException {
+        public void onMessage(TCPConnection client, Bytes bytes) throws IOException { throwExceptionIfClosed();
             bytes.readSkip(-4);
             try {
                 parser.parseOne(bytes, listener);
