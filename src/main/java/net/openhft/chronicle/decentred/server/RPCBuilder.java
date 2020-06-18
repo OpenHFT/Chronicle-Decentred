@@ -91,8 +91,7 @@ public class RPCBuilder<U extends T, T> {
             timeProvider
         ));
 
-
-        RPCServer<U, T> server = new RPCServer<>(
+RPCServer<U, T> server = new RPCServer<>(
                 name,
                 port,
                 keyPair,

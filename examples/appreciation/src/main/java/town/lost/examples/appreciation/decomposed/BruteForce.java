@@ -20,9 +20,7 @@ public class BruteForce {
 
     public static final void main(String[] argv) {
 
-
-
-        List<Thread> threadList = LongStream.rangeClosed(0, THREADS)
+List<Thread> threadList = LongStream.rangeClosed(0, THREADS)
             .map(i -> i * STEP + OFFSET)
             .mapToObj(i -> new Thread(() -> eval(i), "from " + i))
             .collect(Collectors.toList())
@@ -38,8 +36,7 @@ public class BruteForce {
 
     }
 
-
-    private static void eval(final long from) {
+private static void eval(final long from) {
         final long start = System.currentTimeMillis();
         boolean printed = false;
 
@@ -88,6 +85,5 @@ public class BruteForce {
 
         }
     }
-
 
 }

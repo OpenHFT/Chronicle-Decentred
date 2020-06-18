@@ -93,8 +93,7 @@ final class SingleMessageRoundtripTest {
         assertTrue(balanceEquals(OTHER_CLIENT_ADDRESS, START_AMOUNT + GIVE_AMOUNT));
     }
 
-
-    @AfterEach
+@AfterEach
     void cleanup() {
         client.close();
         server.close();

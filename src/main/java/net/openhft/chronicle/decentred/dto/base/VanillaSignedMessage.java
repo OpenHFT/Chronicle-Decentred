@@ -74,8 +74,7 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
             .collect(Collectors.joining("\n")));
         System.exit(1);*/
 
-
-        if (ENFORCE_TRANSIENT_OVERRIDE_INVARIANT) {
+if (ENFORCE_TRANSIENT_OVERRIDE_INVARIANT) {
             final Set<String> newTransientFields = Stream.of(getClass().getDeclaredFields())
                 .filter(f -> Modifier.isTransient(f.getModifiers()))
                 .map(Object::toString)
@@ -411,8 +410,7 @@ public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> ex
 
     /// Overloaded hash, toString etc.
 
-
-    /**
+/**
      * Asserts that the provided instance class is the same as this class and
      * that the provided instance is not null.
      *

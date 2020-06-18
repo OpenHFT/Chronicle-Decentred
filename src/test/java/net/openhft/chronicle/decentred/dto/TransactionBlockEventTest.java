@@ -91,8 +91,7 @@ final class TransactionBlockEventTest {
                         "0150 93 ea\n", tbe.toHexString());
   */
 
-
-        TransactionBlockGossipEvent gossip = registry.create(TransactionBlockGossipEvent.class)
+TransactionBlockGossipEvent gossip = registry.create(TransactionBlockGossipEvent.class)
                 //.blockNumber(1)
                 .chainAddress(DecentredUtil.parseAddress("local"));
         LongLongMap map = gossip.addressToBlockNumberMap();

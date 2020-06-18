@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 final class TransactionBlockVoteEventFundamentalTest extends AbstractFundamentalDtoTest<TransactionBlockVoteEvent> {
 
     private final TransactionBlockGossipEvent transactionBlockGossipEvent = createChild(TransactionBlockGossipEvent.class, TransactionBlockGossipEvent::addressToBlockNumberMap, 37246L);

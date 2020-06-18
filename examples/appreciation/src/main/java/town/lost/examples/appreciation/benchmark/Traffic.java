@@ -112,8 +112,7 @@ public final class Traffic  {
                 .keyPair(kp)
                 .createClient(name, socketAddress, new Peer.ResponseSink());
 
-
-            final Client client = new Client(accountSeed, address, rpcClient);*/
+final Client client = new Client(accountSeed, address, rpcClient);*/
 
 /*            System.out.println("Waiting some time before sending first client message to " + name);
             Jvm.pause(1000);*/
@@ -150,8 +149,7 @@ public final class Traffic  {
             .init(clients.get(1).address, 1);
         clients.get(0).toDefault().give(give);
 
-
-        System.out.println("Waiting some time before sending a second give message...");
+System.out.println("Waiting some time before sending a second give message...");
         Jvm.pause(1_000);
         final Give give2 = new Give()
             .address(clients.get(0).address)
@@ -159,9 +157,7 @@ public final class Traffic  {
             .init(clients.get(1).address, 1);
         clients.get(0).toDefault().give(give2);
 
-
-
-        System.out.println("Done.");
+System.out.println("Done.");
         Jvm.pause(2000);
 
         for (BencmarkState state : BencmarkState.values()) {
@@ -183,8 +179,7 @@ public final class Traffic  {
                 .collect(toList());
 */
 
-
-            System.out.println("Running benchmark...");
+System.out.println("Running benchmark...");
 
             List<Bench> benches = IntStream.range(0, threads)
                 .mapToObj(i -> new Bench(clients.get(0).toDefault(), clients.get(0).address, clients.get(1).address, iterations))
@@ -246,8 +241,7 @@ public final class Traffic  {
         }
     }
 
-
-    public static Client createClient(long accountSeed, InetSocketAddress socketAddress) {
+public static Client createClient(long accountSeed, InetSocketAddress socketAddress) {
         final KeyPair kp = new KeyPair(accountSeed);
         final BytesStore publicKey = kp.publicKey;
 
@@ -262,6 +256,5 @@ public final class Traffic  {
 
         return new Client(accountSeed, address, rpcClient);
     }
-
 
 }

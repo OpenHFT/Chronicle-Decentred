@@ -12,7 +12,6 @@ import town.lost.examples.appreciation.dto.OpeningBalance;
 
 import static town.lost.examples.appreciation.TestUtils.test;
 
-
 final class GiveTest {
     public static void main(String[] args) {
         KeyPair kp7 = new KeyPair(7);

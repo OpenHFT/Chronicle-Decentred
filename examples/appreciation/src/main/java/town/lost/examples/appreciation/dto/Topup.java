@@ -1,6 +1,5 @@
 package town.lost.examples.appreciation.dto;
 
-
 import net.openhft.chronicle.core.annotation.UsedViaReflection;
 import net.openhft.chronicle.decentred.dto.base.VanillaSignedMessage;
 

@@ -34,8 +34,7 @@ public final class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundB
     private long chainAddress;
     private transient LongLongMap addressToBlockNumberMap;
 
-
-    @Override
+@Override
     public EndOfRoundBlockEvent chainAddress(long chainAddress) {
         assertNotSigned();
         this.chainAddress = chainAddress;
@@ -62,8 +61,7 @@ public final class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundB
         return chainAddress;
     }
 
-
-    // Handling of transient fields
+// Handling of transient fields
 
     private static final TransientFieldHandler<EndOfRoundBlockEvent> TRANSIENT_FIELD_HANDLER = new CustomTransientFieldHandler();
 
@@ -104,7 +102,6 @@ public final class EndOfRoundBlockEvent extends VanillaSignedMessage<EndOfRoundB
             AddressToBlockNumberUtil.readMap(bytes, ADDRESS_TO_BLOCK_NUMBER_MAP_NAME, m -> original.addressToBlockNumberMap = m);
         }
     }
-
 
 }
 

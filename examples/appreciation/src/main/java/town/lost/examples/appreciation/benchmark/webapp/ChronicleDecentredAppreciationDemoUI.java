@@ -82,8 +82,7 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
         elapsedTime = newReadOnlyTextField("Elapsed Time [ms]");
         tps = newReadOnlyTextField("TPS");
 
-
-        final Label appTitle = new Label("Chronicle Decentred - Appreciation Demo");
+final Label appTitle = new Label("Chronicle Decentred - Appreciation Demo");
         appTitle.setStyleName("h2");
         appTitle.setHeight(6, Unit.PIXELS);
         final Label appSubTitle = new Label("A Distributed High-Performance Ledger");
@@ -98,8 +97,7 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
 /*        combined.setWidthUndefined();*/
         final HorizontalLayout headline = new HorizontalLayout(image, combined, newSeparator());
 
-
-        final VerticalLayout menu = new VerticalLayout();
+final VerticalLayout menu = new VerticalLayout();
         menu.setSizeFull();
         menu.setWidth(PIXEL_SIZE * 3 + 100, Unit.PIXELS);
 
@@ -140,8 +138,7 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
         }
     }
 
-
-    private TextField newTextField(String caption, String value) {
+private TextField newTextField(String caption, String value) {
         final TextField result = new TextField(caption, value);
         result.setStyleName(STYLE_NAME);
         result.setWidth(PIXEL_SIZE, Unit.PIXELS);
@@ -163,8 +160,7 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
         return result;
     }
 
-
-    private void updateGui() {
+private void updateGui() {
         final Updater u = updater;
         if (u != null) {
             if (!firstAddress.getValue().equals(secondAddress.getValue())) {
@@ -181,8 +177,7 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
         progressBar.markAsDirtyRecursive();
     }
 
-
-    private String format(double val) {
+private String format(double val) {
         return String.format("%,.0f", val);
     }
 
@@ -190,8 +185,7 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
         return String.format("%,d", val);
     }
 
-
-    private final class Updater extends Thread {
+private final class Updater extends Thread {
 
         private final AtomicBoolean running;
         private final long selfDestructTime;
@@ -202,8 +196,7 @@ public final class ChronicleDecentredAppreciationDemoUI extends UI {
             this.running = new AtomicBoolean(true);
             this.selfDestructTime = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1);
 
-
-            final String[] addrPair = gatewayAddress.getValue().split(":");
+final String[] addrPair = gatewayAddress.getValue().split(":");
             final InetSocketAddress socketAddress = InetSocketAddress.createUnresolved(addrPair[0], Integer.parseInt(addrPair[1]));
             final int it = Integer.parseInt(iterations.getValue());
             System.out.println("Updater started with " + it + " iterations");

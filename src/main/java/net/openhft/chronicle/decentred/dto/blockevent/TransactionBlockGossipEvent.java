@@ -14,7 +14,6 @@ import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
 import org.jetbrains.annotations.NotNull;
 
-
 import static net.openhft.chronicle.decentred.dto.blockevent.AddressToBlockNumberUtil.ADDRESS_TO_BLOCK_NUMBER_MAP_NAME;
 
 // Block number is N:th round in a week for the round.
@@ -98,6 +97,5 @@ public final class TransactionBlockGossipEvent extends VanillaSignedMessage<Tran
             AddressToBlockNumberUtil.readMap(bytes, ADDRESS_TO_BLOCK_NUMBER_MAP_NAME, m -> original.addressToBlockNumberMap = m);
         }
     }
-
 
 }

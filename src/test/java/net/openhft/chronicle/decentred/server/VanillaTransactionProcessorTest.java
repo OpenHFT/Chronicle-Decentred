@@ -17,7 +17,6 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 final class VanillaTransactionProcessorTest {
     static {
         DtoAliases.addAliases();
@@ -69,8 +68,7 @@ final class VanillaTransactionProcessorTest {
         assertEquals(tester.expected(), tester.actual());
     }
 
-
-    static SystemMessages createGateway(TransactionProcessorTester tester) {
+static SystemMessages createGateway(TransactionProcessorTester tester) {
         VanillaTransactionProcessor vtp = new VanillaTransactionProcessor();
         vtp.messageRouter(tester);
         return vtp;

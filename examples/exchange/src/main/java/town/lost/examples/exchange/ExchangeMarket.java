@@ -45,8 +45,7 @@ public class ExchangeMarket implements Closeable {
         this.precision = Side.getDefaultPrecision(tickSize);
     }
 
-
-    private TreeSet<Order> getMarket(Side side) {
+private TreeSet<Order> getMarket(Side side) {
         if (side == BUY) {
             return buyOrders;
         } else {
@@ -138,8 +137,7 @@ public class ExchangeMarket implements Closeable {
         }
     }
 
-
-    /**
+/**
      * VERY VERY inefficient, but good for testing
      */
     private Order findOrder(Side side, long sourceAddress, long orderTime) {
@@ -160,8 +158,7 @@ public class ExchangeMarket implements Closeable {
         return getMarket(side).size();
     }
 
-
-    @Override
+@Override
     public void close() {
         for (Order toCancel : buyOrders) {
             closedListener.onClosed(toCancel, OrderCloseReason.EXCHANGE_CLOSED);

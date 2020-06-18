@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 final class EndOfRoundBlockEventTest {
     static void test(String basename) {
         TextMethodTester<BlockReplayer> tester = new TextMethodTester<>(

@@ -35,8 +35,7 @@ public final class AssignDelegatesRequest extends VanillaSignedMessage<AssignDel
         return this;
     }
 
-
-    // Handling of transient fields
+// Handling of transient fields
 
     private static final TransientFieldHandler<AssignDelegatesRequest> TRANSIENT_FIELD_HANDLER = new CustomTransientFieldHandler();
 
@@ -76,8 +75,7 @@ public final class AssignDelegatesRequest extends VanillaSignedMessage<AssignDel
             });
         }
 
-
-        @Override
+@Override
         public void writeMarshallableInternal(AssignDelegatesRequest original, BytesOut bytes) {
             bytes.writeStopBit(original.delegates.size());
             for (BytesStore delegate : original.delegates) {
@@ -97,6 +95,5 @@ public final class AssignDelegatesRequest extends VanillaSignedMessage<AssignDel
             }
         }
     }
-
 
 }

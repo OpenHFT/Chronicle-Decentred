@@ -50,8 +50,7 @@ public enum ShortUtil {;
         return value;
     }
 
-
-    /**
+/**
      * Returns the value of the {@code int} argument;
      * throwing an exception if the value overflows a {@code short}.
      *

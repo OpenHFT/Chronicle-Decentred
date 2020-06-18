@@ -39,8 +39,7 @@ public class Server extends Node<AppreciationMessages, AppreciationRequests> {
     private final RPCServer<AppreciationMessages, AppreciationRequests> rpcServer;
     private TimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;
 
-
-    public Server(long seed, int port, BalanceStore balanceStore) throws IOException {
+public Server(long seed, int port, BalanceStore balanceStore) throws IOException {
         super(seed, AppreciationMessages.class, AppreciationRequests.class);
 
         MessageRouter<AppreciationResponses> messageRouter = address -> new AppreciationResponses() {
@@ -162,8 +161,7 @@ public class Server extends Node<AppreciationMessages, AppreciationRequests> {
 
     }
 
-
-    private static void setOpeningBalances(String serverHost) {
+private static void setOpeningBalances(String serverHost) {
         final Client client = new Client(2342323, serverHost, Server.DEFAULT_SERVER_PORT); // Unused seed
         client.connect();
 
@@ -178,7 +176,5 @@ public class Server extends Node<AppreciationMessages, AppreciationRequests> {
 
         client.close();
     }
-
-
 
 }

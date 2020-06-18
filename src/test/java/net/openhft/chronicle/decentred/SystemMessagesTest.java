@@ -1,6 +1,5 @@
 package net.openhft.chronicle.decentred;
 
-
 import net.openhft.chronicle.core.Mocker;
 import net.openhft.chronicle.decentred.api.SystemMessages;
 import net.openhft.chronicle.decentred.dto.VerificationEvent;

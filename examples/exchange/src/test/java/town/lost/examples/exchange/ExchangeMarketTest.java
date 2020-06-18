@@ -1,6 +1,5 @@
 package town.lost.examples.exchange;
 
-
 import net.openhft.chronicle.core.Mocker;
 import org.junit.jupiter.api.Test;
 import town.lost.examples.exchange.ExchangeMarket.OrderClosedListener;
@@ -16,8 +15,7 @@ import static town.lost.examples.exchange.dto.Side.SELL;
 
 final class ExchangeMarketTest {
 
-
-    @Test
+@Test
     void simpleOrdersMatch() {
         CurrencyPair currencyPair = CurrencyPair.USDXCL;
         Queue<MethodCall> resultsQueue = new ArrayDeque<>();
@@ -135,12 +133,10 @@ final class ExchangeMarketTest {
             assertEquals(2, market.getOrdersCount(BUY));
             assertEquals(2, market.getOrdersCount(SELL));
 
-
-        }
+}
     }
 
-
-    @Test
+@Test
     void userCancel() {
         CurrencyPair currencyPair = CurrencyPair.EURXCL;
         TradeListener tradeListener = Mocker.ignored(TradeListener.class);

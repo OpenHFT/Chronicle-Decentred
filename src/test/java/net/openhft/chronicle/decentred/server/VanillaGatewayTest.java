@@ -20,7 +20,6 @@ import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
-
 @Disabled("TODO FIX")
 final class VanillaGatewayTest {
     static {

@@ -34,8 +34,7 @@ final class TransactionBlockEventFundamentalTest extends AbstractFundamentalDtoT
     private static final long ADDRESS0_SEED = 12635615L;
     private static final long ADDRESS1_SEED = ADDRESS0_SEED + 1;
 
-
-    private final CreateAddressRequest createAddressRequest0 = createChild(CreateAddressRequest.class, ADDRESS0_SEED);
+private final CreateAddressRequest createAddressRequest0 = createChild(CreateAddressRequest.class, ADDRESS0_SEED);
     private final CreateAddressRequest createAddressRequest1 = createChild(CreateAddressRequest.class, ADDRESS1_SEED);
 
     TransactionBlockEventFundamentalTest() {
@@ -177,7 +176,6 @@ final class TransactionBlockEventFundamentalTest extends AbstractFundamentalDtoT
             return Collections.unmodifiableList(createAddressRequestList);
         }
 
-
-    }
+}
 
 }

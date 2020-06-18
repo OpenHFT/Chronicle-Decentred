@@ -2150,9 +2150,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 16px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -2243,9 +2242,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 16px;
 	color: #ecf2f8;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #1362b1;
 	border-top-color: #156ab3;
 	border-bottom-color: #1156a8;
@@ -2287,9 +2285,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 16px;
 	color: #eaf4e9;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #227719;
 	border-top-color: #257d1a;
 	border-bottom-color: #1e6b15;
@@ -2328,9 +2325,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 16px;
 	color: #f9f0ef;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #bb382e;
 	border-top-color: #bc3c31;
 	border-bottom-color: #b13028;
@@ -2466,9 +2462,8 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-button-tiny {
 	height: 28px;
 	padding: 0 13px;
-	
-	
-	font-size: 12px;
+
+font-size: 12px;
 	
 	border-radius: 4px;
 }
@@ -2484,9 +2479,8 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-button-small {
 	height: 31px;
 	padding: 0 14px;
-	
-	
-	font-size: 14px;
+
+font-size: 14px;
 	
 	border-radius: 4px;
 }
@@ -2502,9 +2496,8 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-button-large {
 	height: 44px;
 	padding: 0 19px;
-	
-	
-	font-size: 20px;
+
+font-size: 20px;
 	
 	border-radius: 4px;
 }
@@ -2520,9 +2513,8 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-button-huge {
 	height: 59px;
 	padding: 0 26px;
-	
-	
-	font-size: 26px;
+
+font-size: 26px;
 	
 	border-radius: 4px;
 }
@@ -2651,9 +2643,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 9px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -2779,9 +2770,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 7px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -2907,9 +2897,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 10px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -3511,9 +3500,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 28px;
 	
 	padding: 3px 5px;
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	width: 100% !important;
@@ -3631,9 +3619,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 31px;
 	
 	padding: 3px 6px;
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	width: 100% !important;
@@ -3756,9 +3743,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 44px;
 	
 	padding: 5px 8px;
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	width: 100% !important;
@@ -3877,9 +3863,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 59px;
 	
 	padding: 7px 10px;
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	width: 100% !important;
@@ -5311,9 +5296,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 28px;
 	border-radius: 4px;
 	padding: 3px 7px;
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	font-size: 12px;
@@ -5337,9 +5321,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 31px;
 	border-radius: 4px;
 	padding: 3px 8px;
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 }
@@ -5366,9 +5349,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 44px;
 	border-radius: 4px;
 	padding: 5px 10px;
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	font-size: 20px;
@@ -5392,9 +5374,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 59px;
 	border-radius: 4px;
 	padding: 7px 12px;
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	font-size: 26px;
@@ -5751,10 +5732,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 28px;
 	border-radius: 4px;
 	padding: 6px;
-	
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	height: auto;
@@ -5781,10 +5760,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 31px;
 	border-radius: 4px;
 	padding: 6px;
-	
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	height: auto;
@@ -5811,10 +5788,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 44px;
 	border-radius: 4px;
 	padding: 6px;
-	
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	height: auto;
@@ -5841,10 +5816,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 59px;
 	border-radius: 4px;
 	padding: 6px;
-	
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	height: auto;
@@ -6560,10 +6533,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 28px;
 	border-radius: 4px;
 	padding: 3px 7px;
-	
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	padding-left: 33.6px;
@@ -6667,10 +6638,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 31px;
 	border-radius: 4px;
 	padding: 3px 8px;
-	
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	padding-left: 37.2px;
@@ -6779,10 +6748,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 44px;
 	border-radius: 4px;
 	padding: 5px 10px;
-	
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	padding-left: 52.8px;
@@ -6887,10 +6854,8 @@ div.v-layout.v-horizontal.v-widget {
 	height: 59px;
 	border-radius: 4px;
 	padding: 7px 12px;
-	
-	
-	
-	-webkit-transition: box-shadow 180ms, border 180ms;
+
+-webkit-transition: box-shadow 180ms, border 180ms;
 	-moz-transition: box-shadow 180ms, border 180ms;
 	transition: box-shadow 180ms, border 180ms;
 	padding-left: 70.8px;
@@ -7371,10 +7336,8 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-menubar > .v-menubar-menuitem-selected {
 	color: #ecf2f8;
-	
-	
-	
-	border-radius: 0;
+
+border-radius: 0;
 	border: 1px solid #1362b1;
 	border-top-color: #156ab3;
 	border-bottom-color: #1156a8;
@@ -7673,9 +7636,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 9px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -7834,9 +7796,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 7px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -7961,9 +7922,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 7px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -8122,9 +8082,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 10px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -8249,9 +8208,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 10px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -11260,9 +11218,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 16px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -11373,9 +11330,8 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme tbody.v-drag-element tr {
 	display: block;
-	
-	
-	-webkit-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+
+-webkit-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 	border-radius: 4px;
 	overflow: hidden;
@@ -11628,9 +11584,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 16px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -11688,9 +11643,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 16px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -11741,9 +11695,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 16px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -11815,9 +11768,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 16px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;
@@ -11884,9 +11836,8 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: #197de1;
 	background-image: -webkit-linear-gradient(top, #1b87e3 2%, #166ed5 98%);
 	background-image: linear-gradient(to bottom,#1b87e3 2%, #166ed5 98%);
-	
-	
-	border: 1px solid #1362b1;
+
+border: 1px solid #1362b1;
 	box-sizing: border-box;
 	max-width: 100%;
 	min-width: 8px;
@@ -11912,9 +11863,8 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: #197de1;
 	background-image: -webkit-linear-gradient(top, #1b87e3 2%, #166ed5 98%);
 	background-image: linear-gradient(to bottom,#1b87e3 2%, #166ed5 98%);
-	
-	
-	border: 1px solid #1362b1;
+
+border: 1px solid #1362b1;
 	box-sizing: border-box;
 	max-width: 100%;
 	width: 9px;
@@ -11988,9 +11938,8 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: #197de1;
 	background-image: -webkit-linear-gradient(top, #1b87e3 2%, #166ed5 98%);
 	background-image: linear-gradient(to bottom,#1b87e3 2%, #166ed5 98%);
-	
-	
-	border: 1px solid #1362b1;
+
+border: 1px solid #1362b1;
 	box-sizing: border-box;
 	max-width: 100%;
 	content: "";
@@ -12016,9 +11965,8 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0 16px;
 	color: #191919;
 	font-weight: 400;
-	
-	
-	border-radius: 4px;
+
+border-radius: 4px;
 	border: 1px solid #c5c5c5;
 	border-top-color: #c5c5c5;
 	border-bottom-color: #bcbcbc;

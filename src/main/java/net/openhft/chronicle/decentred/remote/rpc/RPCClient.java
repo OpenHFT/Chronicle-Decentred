@@ -80,7 +80,8 @@ public class RPCClient<U extends T, T> extends AbstractCloseable implements TCPC
     }
 
     public void write(VanillaSignedMessage message) { throwExceptionIfClosed();
-        try {
+
+ try {
             if (message.protocol() == 0) {
                 int pmt = registry.protocolMessageTypeFor(message.getClass());
                 message.protocol(pmt >>> 16);
@@ -98,12 +99,14 @@ public class RPCClient<U extends T, T> extends AbstractCloseable implements TCPC
 
     @Override
     public void write(BytesStore<?, ByteBuffer> bytes) throws IOException { throwExceptionIfClosed();
-        tcpClient.write(bytes);
+
+ tcpClient.write(bytes);
     }
 
     @Override
     public void write(ByteBuffer buffer) throws IOException { throwExceptionIfClosed();
-        tcpClient.write(buffer);
+
+ tcpClient.write(buffer);
     }
 
     @Override
@@ -121,7 +124,8 @@ public class RPCClient<U extends T, T> extends AbstractCloseable implements TCPC
     }
 
     public TimeProvider timeProvider() { throwExceptionIfClosed();
-        return timeProvider;
+
+ return timeProvider;
     }
 
     public RPCClient<U, T> timeProvider(TimeProvider timeProvider) {
@@ -133,7 +137,8 @@ public class RPCClient<U extends T, T> extends AbstractCloseable implements TCPC
 
         @Override
         public void onMessage(TCPConnection client, Bytes bytes) throws IOException { throwExceptionIfClosed();
-            bytes.readSkip(-4);
+
+ bytes.readSkip(-4);
             try {
                 parser.parseOne(bytes, listener);
 

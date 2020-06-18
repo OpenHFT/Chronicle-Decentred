@@ -71,8 +71,7 @@ public class ThreePeersConnectionTest {
 
     }
 
-
-    private static Peer startPeer(List<InetSocketAddress> socketAddresses, int myAddressIndex) {
+private static Peer startPeer(List<InetSocketAddress> socketAddresses, int myAddressIndex) {
         int peerSeedOffset = 1000;
         IntUnaryOperator seedForPeerIdx = i -> i + peerSeedOffset;
 
@@ -83,8 +82,7 @@ public class ThreePeersConnectionTest {
             .mapToObj(Node::addressFromSeed)
             .collect(toList());
 
-
-        final InetSocketAddress myAddress = socketAddresses.get(myAddressIndex);
+final InetSocketAddress myAddress = socketAddresses.get(myAddressIndex);
 
         final Peer peer = new Peer(seedForPeerIdx.applyAsInt(myAddressIndex), myAddress, balanceStore);
 
@@ -108,8 +106,7 @@ public class ThreePeersConnectionTest {
         return peer;
     }
 
-
-    @Test
+@Test
     public void testFull() {
         List<InetSocketAddress> addresses = IntStream.range(9090, 9093).mapToObj(InetSocketAddress::new).collect(toList());
 
@@ -135,8 +132,7 @@ public class ThreePeersConnectionTest {
             return client;
         }).collect(Collectors.toList());
 
-
-        double startAmount = 1000;
+double startAmount = 1000;
 
         clients.forEach(client -> {
             final OpeningBalance ob = new OpeningBalance()

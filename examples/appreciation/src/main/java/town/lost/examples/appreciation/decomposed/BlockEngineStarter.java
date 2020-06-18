@@ -83,8 +83,7 @@ public class BlockEngineStarter {
             }
         };
 
-
-        final BalanceStore balanceStore = new VanillaBalanceStore();
+final BalanceStore balanceStore = new VanillaBalanceStore();
         final Gateway gateway = new VanillaAppreciationGateway(region, mainBlockEngine, localBlockEngine, messageRouter, blockChain, balanceStore);
 
         final GatewayNode gatewayNode = new GatewayNode(seed, "gateway", port, gateway);
@@ -111,9 +110,7 @@ public class BlockEngineStarter {
         }
     }
 
-
-
-    public static final class RemoteClientBlockEngine implements BlockEngine {
+public static final class RemoteClientBlockEngine implements BlockEngine {
 
         public final String inetAddredd;
 
@@ -193,6 +190,5 @@ public class BlockEngineStarter {
 
     }
 */
-
 
 }

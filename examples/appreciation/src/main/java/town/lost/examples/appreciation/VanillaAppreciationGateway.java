@@ -13,7 +13,6 @@ import town.lost.examples.appreciation.dto.*;
 import town.lost.examples.appreciation.util.BalanceStore;
 import town.lost.examples.appreciation.util.Balances;
 
-
 /**
  * Run as a gateway before the blockchain.
  */

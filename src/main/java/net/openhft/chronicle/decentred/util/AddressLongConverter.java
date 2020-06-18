@@ -8,8 +8,7 @@ public class AddressLongConverter implements LongConverter {
         return DecentredUtil.parseAddress(text);
     }
 
-
-    @Override
+@Override
     public void append(StringBuilder text, long value) {
         DecentredUtil.appendAddress(text, value);
     }

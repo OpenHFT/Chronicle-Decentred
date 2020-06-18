@@ -14,7 +14,6 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 final class VerifyIPTest {
     static void test(String basename) {
         TextMethodTester<VerifyIPTester> tester = new TextMethodTester<>(

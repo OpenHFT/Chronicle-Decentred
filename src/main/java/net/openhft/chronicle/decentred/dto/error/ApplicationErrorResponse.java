@@ -39,8 +39,7 @@ public final class ApplicationErrorResponse extends VanillaSignedMessage<Applica
         return origMessage;
     }
 
-
-    public DtoParser dtoParser() {
+public DtoParser dtoParser() {
         return dtoParser;
     }
 
@@ -107,6 +106,5 @@ public final class ApplicationErrorResponse extends VanillaSignedMessage<Applica
             }
         }
     }
-
 
 }

@@ -11,8 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class TransactionBlockGossipEventTest {
 
-
-    @Test
+@Test
     void marshalUnmarshal() {
         final KeyPair kp = new KeyPair(1);
 
@@ -54,6 +53,5 @@ final class TransactionBlockGossipEventTest {
                 "  }");
 
     }
-
 
 }

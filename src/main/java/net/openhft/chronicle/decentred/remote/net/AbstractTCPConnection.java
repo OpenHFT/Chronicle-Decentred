@@ -34,7 +34,8 @@ public abstract class AbstractTCPConnection extends AbstractCloseable implements
     }
 
     public AbstractTCPConnection channel(SocketChannel channel) { throwExceptionIfClosed();
-        iSocketChannel = channel == null ? null : ISocketChannel.wrap(channel);
+
+ iSocketChannel = channel == null ? null : ISocketChannel.wrap(channel);
         this.channel = channel;
         return this;
     }
@@ -46,7 +47,8 @@ public abstract class AbstractTCPConnection extends AbstractCloseable implements
 
     @Override
     public void write(BytesStore<?, ByteBuffer> bytes) throws IOException { throwExceptionIfClosed();
-        if (!running)
+
+ if (!running)
             throw new IOException("closed");
 
         waitForReconnect();
@@ -73,7 +75,8 @@ public abstract class AbstractTCPConnection extends AbstractCloseable implements
 
     @Override
     public void write(ByteBuffer buffer) throws IOException { throwExceptionIfClosed();
-        if (!running)
+
+ if (!running)
             throw new IOException("closed");
 
         waitForReconnect();
@@ -81,8 +84,7 @@ public abstract class AbstractTCPConnection extends AbstractCloseable implements
         if (buffer.remaining() > MAX_MESSAGE_SIZE)
             throw new IOException("Message too long " + buffer.remaining());
 
-
-        while (buffer.remaining() > 0 && running) {
+while (buffer.remaining() > 0 && running) {
             if (iSocketChannel.write(buffer) < 0) {
                 channel.close();
                 throw new EOFException("Failed to write");

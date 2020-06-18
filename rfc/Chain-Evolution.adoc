@@ -76,6 +76,3 @@ the transaction has to be confirmed by the chain which created the token.
 Initially, all tokens will be on the first "main" chain,
 however over time chains might pass tokens to each other via a third chain.
 
-
-
-

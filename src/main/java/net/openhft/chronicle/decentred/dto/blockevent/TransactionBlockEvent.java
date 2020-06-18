@@ -138,8 +138,7 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
         return this;
     }
 
-
-    // Handling of transient fields
+// Handling of transient fields
 
     private final transient TransientFieldHandler<TransactionBlockEvent<T>> transientFieldHandler = new CustomTransientFieldHandler();
 
@@ -148,8 +147,7 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
         return transientFieldHandler;
     }
 
-
-    private final class CustomTransientFieldHandler implements TransientFieldHandler<TransactionBlockEvent<T>> {
+private final class CustomTransientFieldHandler implements TransientFieldHandler<TransactionBlockEvent<T>> {
 
         @Override
         public void reset(TransactionBlockEvent<T> original) {
@@ -193,6 +191,5 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
             original.transactions.write(bytes);
         }
     }
-
 
 }

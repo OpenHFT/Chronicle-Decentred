@@ -77,14 +77,12 @@ public class Client extends Node<AppreciationMessages, AppreciationResponses> im
             .init(client.address(), START_AMOUNT * seed);
         client.sendMsg(openingBalance);
 
-
-        final Give give = new Give()
+final Give give = new Give()
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             .address(client.address())
             .init(otherAddress, seed);
 
-
-        waitForKey("Start benchmark.");
+waitForKey("Start benchmark.");
 
         for (Stage stage: Stage.values()) {
             System.out.println("Benchmarking Give: stage " + stage);

@@ -1,6 +1,5 @@
 package net.openhft.chronicle.decentred.api;
 
-
 import net.openhft.chronicle.bytes.MethodId;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;

@@ -1,6 +1,5 @@
 package net.openhft.chronicle.decentred.server;
 
-
 import net.openhft.chronicle.decentred.api.MessageListener;
 import net.openhft.chronicle.decentred.dto.base.SignedMessage;
 import net.openhft.chronicle.decentred.dto.blockevent.TransactionBlockEvent;
@@ -60,6 +59,5 @@ public interface Chainer<T> extends MessageListener {
     static <T> Chainer<T> createQueuing(long chainAddress, @NotNull DtoRegistry<T> dtoRegistry) {
         return new QueuingChainer<>(chainAddress, dtoRegistry);
     }
-
 
 }

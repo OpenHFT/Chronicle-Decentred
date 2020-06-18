@@ -84,8 +84,7 @@ public class Traffic {
 
         Thread.sleep(10000);
 
-
-        RPCClient<AppreciationMessages, AppreciationRequests> client = getRpcBuilder()
+RPCClient<AppreciationMessages, AppreciationRequests> client = getRpcBuilder()
             .createAccountClient(GIVER, secretKeys.get(GIVER), socketAddress, new ResponseSink());
 
                 client.write(new Give()

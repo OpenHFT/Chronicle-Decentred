@@ -36,5 +36,4 @@ public final class CreateChainRequest extends VanillaSignedMessage<CreateChainRe
         return this;
     }
 
-
 }

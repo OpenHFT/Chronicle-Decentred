@@ -49,8 +49,7 @@ public final class Peer extends Node<AppreciationMessages, AppreciationRequests>
     private final BalanceStore balanceStore;
     private final TimeProvider timeProvider = UniqueMicroTimeProvider.INSTANCE;
 
-
-    public Peer(long seed, InetSocketAddress socketAddress, BalanceStore balanceStore) {
+public Peer(long seed, InetSocketAddress socketAddress, BalanceStore balanceStore) {
         super(seed, AppreciationMessages.class, AppreciationRequests.class);
 
         this.socketAddress = socketAddress;
@@ -113,8 +112,7 @@ public final class Peer extends Node<AppreciationMessages, AppreciationRequests>
 
     }
 
-
-    @Override
+@Override
     public void close() {
         rpcServer.close();
     }
@@ -130,8 +128,7 @@ public final class Peer extends Node<AppreciationMessages, AppreciationRequests>
         rpcServer.setRoute(address, client);
     }
 
-
-    private void setOpeningBalances() throws InterruptedException {
+private void setOpeningBalances() throws InterruptedException {
         //Thread.sleep(10000);
 /*
 
@@ -186,8 +183,7 @@ public final class Peer extends Node<AppreciationMessages, AppreciationRequests>
 
         Thread.sleep(10000);
 
-
-        RPCClient<AppreciationMessages, AppreciationRequests> client = getRpcBuilder()
+RPCClient<AppreciationMessages, AppreciationRequests> client = getRpcBuilder()
             .createAccountClient(GIVER, secretKeys.get(GIVER), socketAddress, new ResponseSink());
 
                 client.write(new Give()
@@ -259,9 +255,7 @@ public final class Peer extends Node<AppreciationMessages, AppreciationRequests>
         }
     }
 
-
-
-    public final static class ResponseSink implements AppreciationResponses {
+public final static class ResponseSink implements AppreciationResponses {
         @Override
         public void onBalance(OnBalance onBalance) {
             System.out.println("RequestsSink.onBalance = " + onBalance);
@@ -350,8 +344,7 @@ public final class Peer extends Node<AppreciationMessages, AppreciationRequests>
                 )
             );
 
-
-        final InetSocketAddress myAddress = socketAddresses.get(myAddressIndex);
+final InetSocketAddress myAddress = socketAddresses.get(myAddressIndex);
 
         final Peer peer = new Peer(seedForPeerIdx.applyAsInt(myAddressIndex), myAddress, balanceStore);
 

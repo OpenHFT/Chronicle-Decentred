@@ -51,8 +51,7 @@ final class Benchmark extends Thread {
     private int messageType;
     private int protocol;
 
-
-    Benchmark(
+Benchmark(
         final InetSocketAddress socketAddress,
         final long firstSeed,
         final long secondSeed,
@@ -122,8 +121,7 @@ final class Benchmark extends Thread {
 
         Stream.of(workerThreads).forEach(WorkerThread::start);
 
-
-        this.start = System.nanoTime(); // Reset start
+this.start = System.nanoTime(); // Reset start
         while (running.get() && !Thread.interrupted() && !isCompleted()) {
 /*            while (!isCompleted()) {
                 kickBalance(); // Todo: Remove this condition when real read of balance is done
@@ -193,8 +191,7 @@ final class Benchmark extends Thread {
         }
     }
 
-
-    private void sendCreateAddress(Traffic.Client client) {
+private void sendCreateAddress(Traffic.Client client) {
         log("Creating address " + client.address());
         client.toDefault().createAddressRequest(new CreateAddressRequest()
             .address(client.address())
@@ -226,8 +223,7 @@ final class Benchmark extends Thread {
         return 0d;
     }
 
-
-    private final class WorkerThread extends Thread {
+private final class WorkerThread extends Thread {
 
         private final List<Give> giveList;
         private final Traffic.Client c0;
@@ -278,6 +274,5 @@ final class Benchmark extends Thread {
         }
 
     }
-
 
 }

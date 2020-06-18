@@ -65,21 +65,25 @@ public class RPCServer<U extends T, T> extends AbstractCloseable implements Dece
     }
 
     public int getPort() { throwExceptionIfClosed();
-        return tcpServer.getPort();
+
+ return tcpServer.getPort();
     }
 
     @Override
     public void register(long address, BytesStore publicKey) { throwExceptionIfClosed();
-        publicKeyRegistry.register(address, publicKey);
+
+ publicKeyRegistry.register(address, publicKey);
     }
 
     @Override
     public Boolean verify(long address, BytesStore sigAndMsg) { throwExceptionIfClosed();
-        return publicKeyRegistry.verify(address, sigAndMsg);
+
+ return publicKeyRegistry.verify(address, sigAndMsg);
     }
 
     public boolean internal() { throwExceptionIfClosed();
-        return publicKeyRegistry.internal();
+
+ return publicKeyRegistry.internal();
     }
 
     public RPCServer<U, T> internal(boolean internal) {
@@ -94,7 +98,8 @@ public class RPCServer<U extends T, T> extends AbstractCloseable implements Dece
      * @param tcpConnection   to connect to.
      */
     public void addTCPConnection(long addressOrRegion, TCPConnection tcpConnection) { throwExceptionIfClosed();
-        System.out.println("Registered " + DecentredUtil.toAddressString(addressOrRegion) + " as " + tcpConnection);
+
+ System.out.println("Registered " + DecentredUtil.toAddressString(addressOrRegion) + " as " + tcpConnection);
         synchronized (remoteMap) {
             remoteMap.justPut(addressOrRegion, tcpConnection);
         }
@@ -102,12 +107,14 @@ public class RPCServer<U extends T, T> extends AbstractCloseable implements Dece
 
     @Override
     public void subscribe(long address) { throwExceptionIfClosed();
-        addTCPConnection(address, DEFAULT_CONNECTION_TL.get());
+
+ addTCPConnection(address, DEFAULT_CONNECTION_TL.get());
     }
 
     @Override
     public U to(long addressOrRegion) { throwExceptionIfClosed();
-        synchronized (toCache) {
+
+ synchronized (toCache) {
             Object proxy0 = toCache.get(addressOrRegion);
             if (proxy0 != null)
                 return (U) proxy0;
@@ -198,7 +205,8 @@ public class RPCServer<U extends T, T> extends AbstractCloseable implements Dece
     }
 
     public void setRoute(long address, TCPConnection connection) { throwExceptionIfClosed();
-        synchronized (connections) {
+
+ synchronized (connections) {
             connections.justPut(address, connection);
         }
     }
@@ -212,7 +220,8 @@ public class RPCServer<U extends T, T> extends AbstractCloseable implements Dece
 
         @Override
         public void onMessage(TCPServer server, TCPConnection channel, Bytes bytes) throws IOException { throwExceptionIfClosed();
-            DEFAULT_CONNECTION_TL.set(channel);
+
+ DEFAULT_CONNECTION_TL.set(channel);
             bytes.readSkip(-4);
             try {
                 dtoParserTL.get().parseOne(bytes, serverComponent);

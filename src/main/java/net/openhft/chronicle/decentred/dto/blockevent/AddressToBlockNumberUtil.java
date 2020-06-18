@@ -84,5 +84,4 @@ enum AddressToBlockNumberUtil {
         setter.accept(map);
     }
 
-
 }

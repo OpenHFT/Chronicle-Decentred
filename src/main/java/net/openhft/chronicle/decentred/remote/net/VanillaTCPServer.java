@@ -31,7 +31,8 @@ public class VanillaTCPServer extends AbstractCloseable implements TCPServer {
 
     @Override
     public int getPort() { throwExceptionIfClosed();
-        if (serverChannel == null) {
+
+ if (serverChannel == null) {
             throw new IllegalStateException("Not yet bound");
         }
         return serverChannel.socket().getLocalPort();
@@ -64,6 +65,7 @@ public class VanillaTCPServer extends AbstractCloseable implements TCPServer {
 
     @Override
     public TCPServerConnectionListener connectionListener() { throwExceptionIfClosed();
-        return connectionListener;
+
+ return connectionListener;
     }
 }

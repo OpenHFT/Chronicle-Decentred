@@ -36,7 +36,6 @@ public interface TransientFieldHandler<T extends VanillaSignedMessage<T>> {
 //     */
 //    void deepCopy(@NotNull T original, @NotNull T target);
 
-
 //   void dereference(T target) ;
 
     // Wire

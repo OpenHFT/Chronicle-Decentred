@@ -248,14 +248,12 @@ public class EndToEndConversationTest {
             .address(c2.address())
             .init(c1.address(), 3));
 
-
-        System.out.println("c1 = " + formatBalance(balanceStore, c1.address()));
+System.out.println("c1 = " + formatBalance(balanceStore, c1.address()));
         System.out.println("c2 = " + formatBalance(balanceStore, c2.address()));
         Thread.sleep(3000);
         System.out.println("done");
         System.out.println("c1 = " + formatBalance(balanceStore, c1.address()));
         System.out.println("c2 = " + formatBalance(balanceStore, c2.address()));
 
-
-    }
+}
 }

@@ -51,8 +51,7 @@ public class GatewayStarter {
         final String localBlockEngineAddress = args[3];
         System.out.println("localBlockEngineAddress is " + localBlockEngineAddress);
 
-
-        final long region = DecentredUtil.parseAddress(DecomposedUtil.REGION);
+final long region = DecentredUtil.parseAddress(DecomposedUtil.REGION);
         final BlockEngine mainBlockEngine = new RemoteClientBlockEngine(mainBlockEngineAddress);
         final BlockEngine localBlockEngine = new RemoteClientBlockEngine(localBlockEngineAddress);
 
@@ -90,8 +89,7 @@ public class GatewayStarter {
             }
         };
 
-
-        final BalanceStore balanceStore = new VanillaBalanceStore();
+final BalanceStore balanceStore = new VanillaBalanceStore();
         final Gateway gateway = new VanillaAppreciationGateway(region, mainBlockEngine, localBlockEngine, messageRouter, blockChain, balanceStore);
 
         final GatewayNode gatewayNode = new GatewayNode(seed, "gateway", port, gateway);
@@ -120,9 +118,7 @@ public class GatewayStarter {
         }
     }
 
-
-
-    public static final class RemoteClientBlockEngine implements BlockEngine {
+public static final class RemoteClientBlockEngine implements BlockEngine {
 
         public final String inetAddredd;
 
@@ -205,7 +201,5 @@ public class GatewayStarter {
             throw unsupportedOperationException();
         }
     }
-
-
 
 }

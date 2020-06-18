@@ -20,6 +20,5 @@ public interface TCPServerConnectionListener<C extends TCPConnection & Runnable>
         return (C) new VanillaTCPServerConnection(server, accept);
     }
 
-
-    void onMessage(TCPServer server, C channel, Bytes bytes) throws IOException;
+void onMessage(TCPServer server, C channel, Bytes bytes) throws IOException;
 }

@@ -171,8 +171,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertFalse(instance.signed());
     }
 
-
-    @Test
+@Test
     void testToHexString() {
         initialize(instance);
         instance.sign(KEY_PAIR.secretKey);
@@ -306,8 +305,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertTrue(bb.capacity() > 0);
     }
 
-
-     /// AbstractBytesMarshallable
+/// AbstractBytesMarshallable
 
     @Test
     @Disabled("TODO FIX")
@@ -324,8 +322,7 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEqualsDoubleSided(instance, actual);
     }
 
-
-    /// Marshallable
+/// Marshallable
 
     @Test
     void testDeepCopy() {
@@ -418,7 +415,6 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
         assertEquals(other, instance);
     }
 
-
 /*    private <R> void assertThrowsBeforeSign(Function<T, R> mapper) {
         try {
             final R actual = mapper.apply(instance);
@@ -427,7 +423,5 @@ public abstract class AbstractFundamentalDtoTest<T extends VanillaSignedMessage<
             // Do nothing
         }
     }*/
-
-
 
 }
