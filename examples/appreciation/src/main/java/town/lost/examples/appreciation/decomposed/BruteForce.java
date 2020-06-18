@@ -82,8 +82,7 @@ private static void eval(final long from) {
                     System.out.println(String.format("%,d @ %,.0f ops/s avg after %d s", evaluated, tps, elapsed/1000));
                 }
             }
-
-        }
+ }
     }
 
 }

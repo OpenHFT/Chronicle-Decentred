@@ -64,8 +64,7 @@ public class EndToEndConversationTest {
         public RPCBuilder<U, T> getRpcBuilder() {
             return rpcBuilder;
         }
-
-    }
+ }
 
     static class TransactionsImpl extends VanillaAppreciationTransactions implements AppreciationRequests, TransactionProcessor {
         private BlockchainPhase blockchainPhase;
@@ -155,8 +154,7 @@ public class EndToEndConversationTest {
             ((TransactionProcessor) mainProcessor).messageRouter(rpcServer);
             ((TransactionProcessor) localProcessor).messageRouter(rpcServer);
         }
-
-    }
+ }
 
     private static class ClientNode extends Node<AppreciationMessages, AppreciationResponses> implements AppreciationResponses {
         private final RPCClient<AppreciationMessages, AppreciationResponses> rpcClient;

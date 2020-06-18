@@ -192,8 +192,7 @@ public class VanillaBlockEngine<T> extends AbstractCloseable implements BlockEng
 */
 
             }
-
-        } catch (Throwable t) {
+ } catch (Throwable t) {
             t.printStackTrace();
         }
     }

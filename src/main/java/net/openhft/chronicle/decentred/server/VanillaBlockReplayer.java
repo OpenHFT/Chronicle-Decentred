@@ -95,8 +95,7 @@ public class VanillaBlockReplayer<T> implements BlockReplayer {
                 tbe.replay(postBlockChainProcessor);
             }
         }
-
-    }
+ }
 
     static class TransactionLog {
         // To be replaced by some other off-heap map

@@ -70,8 +70,7 @@ public class VanillaTCPClient extends AbstractTCPConnection {
                     }
                 }
             }
-
-        } catch (Throwable t) {
+ } catch (Throwable t) {
             t.printStackTrace();
         } finally {
             readBytes.release();

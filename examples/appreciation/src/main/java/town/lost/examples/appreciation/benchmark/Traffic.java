@@ -77,8 +77,7 @@ public final class Traffic  {
         public BytesStore secretKey() {
             return secretKey;
         }
-
-    }
+ }
 
     public static void main(String[] args) {
         if (args.length < 2) {

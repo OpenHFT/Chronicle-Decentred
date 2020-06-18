@@ -18,8 +18,7 @@ public class MethodCall {
                 this.params[i] = params[i];
             }
         }
-
-    }
+ }
 
     public String getMethodName() {
         return methodName;

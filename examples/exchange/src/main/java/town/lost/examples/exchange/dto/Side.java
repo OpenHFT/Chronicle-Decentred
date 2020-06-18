@@ -27,8 +27,7 @@ public enum Side {
         public Side other() {
             return SELL;
         }
-
-    },
+ },
     SELL {
         @Override
         public int compare(double newPrice, double referencePrice, double precision) {
@@ -45,8 +44,7 @@ public enum Side {
         public Side other() {
             return BUY;
         }
-
-    };
+ };
 
     static final double DEFAULT_PRECISION_FACTOR = 1E-7;
 

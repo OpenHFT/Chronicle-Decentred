@@ -237,8 +237,7 @@ final String[] addrPair = gatewayAddress.getValue().split(":");
         private void shutDown() {
             running.set(false);
         }
-
-    }
+ }
 
     private final class IntStringTuple {
         private final int intValue;

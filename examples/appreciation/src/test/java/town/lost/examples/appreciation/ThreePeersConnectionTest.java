@@ -68,8 +68,7 @@ public class ThreePeersConnectionTest {
         private AppreciationMessages toDefault() {
             return client.toDefault();
         }
-
-    }
+ }
 
 private static Peer startPeer(List<InetSocketAddress> socketAddresses, int myAddressIndex) {
         int peerSeedOffset = 1000;

@@ -272,7 +272,6 @@ private final class WorkerThread extends Thread {
         boolean completed() {
             return completed.get();
         }
-
-    }
+ }
 
 }

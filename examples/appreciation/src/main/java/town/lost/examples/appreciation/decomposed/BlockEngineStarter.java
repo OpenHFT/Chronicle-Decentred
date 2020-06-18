@@ -187,8 +187,7 @@ public static final class RemoteClientBlockEngine implements BlockEngine {
         private UnsupportedOperationException unsupportedOperationException() {
             return new UnsupportedOperationException("Not supported on a " + getClass().getSimpleName());
         }
-
-    }
+ }
 */
 
 }
