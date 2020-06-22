@@ -286,7 +286,7 @@ if (ENFORCE_TRANSIENT_OVERRIDE_INVARIANT) {
         dump.comment("protocol").writeUnsignedShort(protocol);
         writeMarshallableInternal(dump);
         String text = dump.toHexString();
-        dump.release();
+        dump.releaseLast();
         return text;
     }
 

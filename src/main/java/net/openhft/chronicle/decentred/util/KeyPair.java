@@ -28,7 +28,7 @@ public class KeyPair extends AbstractMarshallable {
         privateKey.writeLong(Ed25519.PRIVATE_KEY_LENGTH - (long) Long.BYTES, id);
         privateKey.writeSkip(Ed25519.PRIVATE_KEY_LENGTH);
         Ed25519.privateToPublicAndSecret((Bytes) publicKey, (Bytes) secretKey, privateKey);
-        privateKey.release();
+        privateKey.releaseLast();
     }
 
     @Deprecated
@@ -37,7 +37,7 @@ public class KeyPair extends AbstractMarshallable {
         while (privateKey.writeRemaining() > 0)
             privateKey.append(ch);
         Ed25519.privateToPublicAndSecret((Bytes) publicKey, (Bytes) secretKey, privateKey);
-        privateKey.release();
+        privateKey.releaseLast();
     }
 
     public long address() {
