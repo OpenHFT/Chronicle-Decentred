@@ -49,7 +49,7 @@
 
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>chronicle-bytes</artifactId>
+            <artifactId>chronicle-network</artifactId>
         </dependency>
 
         <dependency>

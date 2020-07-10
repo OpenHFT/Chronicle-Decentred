@@ -4,7 +4,8 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.AbstractCloseable;
 import net.openhft.chronicle.core.io.Closeable;
-import net.openhft.chronicle.core.tcp.ISocketChannel;
+import net.openhft.chronicle.network.tcp.ChronicleSocketChannel;
+import net.openhft.chronicle.network.tcp.ChronicleSocketChannelFactory;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -17,7 +18,7 @@ public abstract class AbstractTCPConnection extends AbstractCloseable implements
     private final ThreadLocal<ByteBuffer[]> headerBytesTL = ThreadLocal.withInitial(AbstractTCPConnection::createHeaderArray);
 
     protected volatile SocketChannel channel;
-    protected ISocketChannel iSocketChannel;
+    protected ChronicleSocketChannel iSocketChannel;
     volatile boolean running = true;
 
     protected AbstractTCPConnection(SocketChannel channel) {
@@ -36,7 +37,7 @@ public abstract class AbstractTCPConnection extends AbstractCloseable implements
     public AbstractTCPConnection channel(SocketChannel channel) {
         throwExceptionIfClosed();
 
-        iSocketChannel = channel == null ? null : ISocketChannel.wrap(channel);
+        iSocketChannel = channel == null ? null : ChronicleSocketChannelFactory.wrap(channel);
         this.channel = channel;
         return this;
     }
