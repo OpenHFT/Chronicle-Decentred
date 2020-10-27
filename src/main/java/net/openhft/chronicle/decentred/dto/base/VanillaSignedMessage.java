@@ -403,7 +403,7 @@ if (ENFORCE_TRANSIENT_OVERRIDE_INVARIANT) {
             return result;
 
         } catch (ReflectiveOperationException e) {
-            Jvm.rethrow(e);
+            throw Jvm.rethrow(e);
         }
         throw new IllegalStateException("We should never end up here");
     }
