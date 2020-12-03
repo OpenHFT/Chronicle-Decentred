@@ -31,8 +31,8 @@ public class KeyPair extends AbstractMarshallable {
         privateKey.releaseLast();
     }
 
-    @Deprecated
-    public KeyPair(char ch) {
+    @Deprecated(/* to be removed in x.22 */)
+public KeyPair(char ch) {
         Bytes<Void> privateKey = Bytes.allocateDirect(Ed25519.PRIVATE_KEY_LENGTH);
         while (privateKey.writeRemaining() > 0)
             privateKey.append(ch);

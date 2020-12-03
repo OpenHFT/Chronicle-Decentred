@@ -11,7 +11,7 @@ import net.openhft.chronicle.wire.LongConversion;
  * This message states this node verifies a given public key after connecting to it successfully.
  *
  */
-@Deprecated
+@Deprecated(/* to be removed in x.22 */)
 public class VerificationEvent extends SelfSignedMessage<VerificationEvent> {
 
     @LongConversion(AddressLongConverter.class)
