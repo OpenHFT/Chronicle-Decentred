@@ -34,5 +34,4 @@ final class CancelOrderRequestTest {
         CancelOrderRequest cor2 = Marshallable.fromString(cor.toString());
         assertEquals(cor2, cor);
     }
-
 }

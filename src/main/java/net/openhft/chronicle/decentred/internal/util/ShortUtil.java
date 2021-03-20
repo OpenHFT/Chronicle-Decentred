@@ -64,5 +64,4 @@ public enum ShortUtil {;
         }
         return (short) value;
     }
-
 }

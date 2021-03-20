@@ -53,5 +53,4 @@ final class TransactionBlockGossipEventFundamentalTest extends AbstractFundament
                 entry("chainAddress", m -> m.chainAddress(1))
             );
     }
-
 }

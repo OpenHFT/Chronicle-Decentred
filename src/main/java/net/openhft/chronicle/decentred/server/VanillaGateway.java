@@ -207,5 +207,4 @@ public class VanillaGateway extends AbstractCloseable implements Gateway {
  Gateway.super.onConnection(connection);
         verifyIP.onConnection(connection);
     }
-
 }

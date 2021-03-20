@@ -30,5 +30,4 @@ public static String toAddressString(long address) {
     private static void base32(StringBuilder text, long value) {
         LetterBase32.encode(text, value);
     }
-
 }

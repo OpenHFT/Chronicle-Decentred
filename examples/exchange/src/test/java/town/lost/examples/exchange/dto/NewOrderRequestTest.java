@@ -40,5 +40,4 @@ final class NewOrderRequestTest {
         NewOrderRequest nor2 = Marshallable.fromString(nor.toString());
         assertEquals(nor2, nor);
     }
-
 }

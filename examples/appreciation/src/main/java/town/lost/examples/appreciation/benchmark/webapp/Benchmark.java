@@ -273,5 +273,4 @@ private final class WorkerThread extends Thread {
             return completed.get();
         }
  }
-
 }

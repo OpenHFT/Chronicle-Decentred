@@ -176,5 +176,4 @@ private static void setOpeningBalances(String serverHost) {
 
         client.close();
     }
-
 }

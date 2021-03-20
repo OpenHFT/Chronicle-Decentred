@@ -35,5 +35,4 @@ final class CancelOrderEventTest {
         CancelOrderEvent cor2 = Marshallable.fromString(cor.toString());
         assertEquals(cor2, cor);
     }
-
 }

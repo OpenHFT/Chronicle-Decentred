@@ -73,5 +73,4 @@ public final class UnmodifiableLongLongMap extends net.openhft.chronicle.decentr
     @Override public void readMarshallable(BytesIn bytes) throws IORuntimeException { throw newUnsupportedOperationException(); }
     @Override public void writeMarshallable(BytesOut bytes) { inner.writeMarshallable(bytes); }
     @Override public String $toString() { return inner.$toString();}
-
 }

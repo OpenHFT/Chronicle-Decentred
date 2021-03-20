@@ -77,5 +77,4 @@ final class VanillaDtoParser<T> implements DtoParser<T> {
         final int messageType =  (protocolMessageType & 0xFFFF);
         Jvm.warn().on(getClass(), String.format("Unable to find a parselet for protocol %d messageType %d (0x%04x)", protocol, messageType, messageType));
     }
-
 }

@@ -36,5 +36,4 @@ public class VerificationEvent extends SelfSignedMessage<VerificationEvent> {
     public BytesStore keyVerified() {
         return keyVerified;
     }
-
 }

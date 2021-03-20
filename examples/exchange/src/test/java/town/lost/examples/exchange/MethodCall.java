@@ -32,5 +32,4 @@ public class MethodCall {
     public <T> T getParams(int index) {
         return (T) params[index];
     }
-
 }

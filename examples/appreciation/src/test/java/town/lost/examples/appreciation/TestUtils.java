@@ -31,5 +31,4 @@ public enum TestUtils {
         VanillaAppreciationTransactions blockchain = new VanillaAppreciationTransactions(tester, balanceStore);
         return new VanillaAppreciationGateway(0, null, null, tester, blockchain, balanceStore);
     }
-
 }

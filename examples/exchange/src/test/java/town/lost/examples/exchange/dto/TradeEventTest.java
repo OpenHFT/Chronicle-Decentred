@@ -43,5 +43,4 @@ final class TradeEventTest {
         TradeEvent te2 = Marshallable.fromString(te.toString());
         assertEquals(te2, te);
     }
-
 }

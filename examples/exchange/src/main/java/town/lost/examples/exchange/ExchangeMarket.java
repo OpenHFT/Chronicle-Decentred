@@ -180,5 +180,4 @@ private TreeSet<Order> getMarket(Side side) {
     public interface TradeListener {
         void onTrade(Order aggressive, Order initiator, double qty);
     }
-
 }

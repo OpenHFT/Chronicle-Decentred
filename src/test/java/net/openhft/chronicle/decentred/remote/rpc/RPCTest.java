@@ -53,5 +53,4 @@ final class RPCTest {
         client.close();
         server.close();
     }
-
 }

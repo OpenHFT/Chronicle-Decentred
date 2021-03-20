@@ -83,5 +83,4 @@ public class Order extends AbstractMarshallable {
         assert obj instanceof Order;
         return (this == obj) || (orderId == ((Order) obj).orderId);
     }
-
 }

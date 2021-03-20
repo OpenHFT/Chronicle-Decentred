@@ -281,5 +281,4 @@ final String[] addrPair = gatewayAddress.getValue().split(":");
     @VaadinServletConfiguration(ui = ChronicleDecentredAppreciationDemoUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
-
 }

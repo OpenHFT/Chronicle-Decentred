@@ -18,5 +18,4 @@ public final class CreateAddressEvent extends VanillaSignedMessage<CreateAddress
         this.createAddressRequest = createAddressRequest;
         return this;
     }
-
 }

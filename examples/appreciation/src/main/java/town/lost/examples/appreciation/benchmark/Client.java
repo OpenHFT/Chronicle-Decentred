@@ -111,5 +111,4 @@ waitForKey("Start benchmark.");
 
         }
     }
-
 }

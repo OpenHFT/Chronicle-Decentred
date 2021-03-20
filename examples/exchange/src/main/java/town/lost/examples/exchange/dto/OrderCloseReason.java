@@ -15,5 +15,4 @@ public enum OrderCloseReason {
     public byte value() {
         return value;
     }
-
 }

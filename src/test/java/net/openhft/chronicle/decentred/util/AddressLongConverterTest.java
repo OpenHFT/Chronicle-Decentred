@@ -20,5 +20,4 @@ final class AddressLongConverterTest {
             assertEquals(s, sb.toString());
         }
     }
-
 }

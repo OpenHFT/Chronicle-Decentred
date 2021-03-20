@@ -42,5 +42,4 @@ public interface VoteTaker extends HasTcpMessageListener {
                             @NotNull DtoRegistry dtoRegistry) {
         return new VanillaVoteTaker(address, chainAddress, clusterAddresses, replayer, secretKey, dtoRegistry);
     }
-
 }

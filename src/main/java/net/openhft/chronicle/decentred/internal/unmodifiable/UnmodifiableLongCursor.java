@@ -20,5 +20,4 @@ public final class UnmodifiableLongCursor implements LongCursor {
     @Override public long elem() { return inner.elem(); }
     @Override public boolean moveNext() { return inner.moveNext(); }
     @Override public void remove() { throw newUnsupportedOperationException(); }
-
 }

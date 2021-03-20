@@ -130,5 +130,4 @@ final class VanillaGatewayTest {
     void endOfRoundBlockEvent() {
         test("gateway/endOfRoundBlockEvent");
     }
-
 }

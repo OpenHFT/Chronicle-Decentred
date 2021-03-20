@@ -56,5 +56,4 @@ public final class UnmodifiableLongSet implements LongSet {
     @Override public long sizeAsLong() { return inner.sizeAsLong(); }
     @Override public boolean ensureCapacity(long minSize) { throw newUnsupportedOperationException(); }
     @Override public boolean shrink() { throw newUnsupportedOperationException(); }
-
 }

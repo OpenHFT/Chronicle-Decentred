@@ -44,5 +44,4 @@ public interface BlockEngine extends SystemMessages, MessageListener, HasTcpMess
         assert LongStream.of(clusterAddresses).distinct().count() == clusterAddresses.length;
         return new VanillaBlockEngine<>(dtoRegistry, keyPair, chainAddress, periodMS, postBlockChainProcessor, clusterAddresses, timeProvider);
     }
-
 }

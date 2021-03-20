@@ -191,5 +191,4 @@ private final class CustomTransientFieldHandler implements TransientFieldHandler
             original.transactions.write(bytes);
         }
     }
-
 }

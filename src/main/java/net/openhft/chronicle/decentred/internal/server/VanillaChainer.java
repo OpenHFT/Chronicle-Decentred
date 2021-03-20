@@ -45,5 +45,4 @@ public final class VanillaChainer<T> implements Chainer<T> {
             .dtoParser(dtoRegistry.get());
         return tbe;
     }
-
 }

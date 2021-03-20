@@ -48,5 +48,4 @@ public final class CreateTokenRequest extends VanillaSignedMessage<CreateTokenRe
         this.granularity = granularity;
         return this;
     }
-
 }

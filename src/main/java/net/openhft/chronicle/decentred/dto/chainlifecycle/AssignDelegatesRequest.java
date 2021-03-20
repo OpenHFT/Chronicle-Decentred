@@ -95,5 +95,4 @@ public final class AssignDelegatesRequest extends VanillaSignedMessage<AssignDel
             }
         }
     }
-
 }

@@ -35,5 +35,4 @@ public final class CreateChainRequest extends VanillaSignedMessage<CreateChainRe
         this.roundsPerDay = roundsPerDay;
         return this;
     }
-
 }

@@ -446,5 +446,4 @@ if (ENFORCE_TRANSIENT_OVERRIDE_INVARIANT) {
     T self() {
         return (T) this;
     }
-
 }

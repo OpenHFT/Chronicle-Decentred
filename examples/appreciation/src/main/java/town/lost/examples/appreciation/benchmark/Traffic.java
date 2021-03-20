@@ -255,5 +255,4 @@ public static Client createClient(long accountSeed, InetSocketAddress socketAddr
 
         return new Client(accountSeed, address, rpcClient);
     }
-
 }

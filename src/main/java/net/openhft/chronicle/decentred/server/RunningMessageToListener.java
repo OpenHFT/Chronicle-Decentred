@@ -18,5 +18,4 @@ public interface RunningMessageToListener extends MessageToListener {
     static RunningMessageToListener createMulti(int count, @NotNull MessageToListener server) {
         return new MultiMessageToListener(count, server);
     }
-
 }

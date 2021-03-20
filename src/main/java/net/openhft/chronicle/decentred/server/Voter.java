@@ -32,5 +32,4 @@ public interface Voter extends HasTcpMessageListener {
                                        @NotNull DtoRegistry dtoRegistry) {
         return new LastGossipVoter(address, clusterAddresses, voteTaker, secretKey, dtoRegistry);
     }
-
 }

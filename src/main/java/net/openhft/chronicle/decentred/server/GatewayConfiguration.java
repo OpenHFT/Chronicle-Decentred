@@ -59,5 +59,4 @@ public interface GatewayConfiguration<U> {
             }
         };
     }
-
 }

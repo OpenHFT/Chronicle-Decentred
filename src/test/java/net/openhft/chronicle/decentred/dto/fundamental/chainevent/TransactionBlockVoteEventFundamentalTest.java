@@ -39,5 +39,4 @@ final class TransactionBlockVoteEventFundamentalTest extends AbstractFundamental
                 entry("gosipEvent", m -> m.gossipEvent(null))
             );
     }
-
 }

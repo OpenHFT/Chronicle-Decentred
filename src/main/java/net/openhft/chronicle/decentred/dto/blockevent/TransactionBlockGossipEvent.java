@@ -97,5 +97,4 @@ public final class TransactionBlockGossipEvent extends VanillaSignedMessage<Tran
             AddressToBlockNumberUtil.readMap(bytes, ADDRESS_TO_BLOCK_NUMBER_MAP_NAME, m -> original.addressToBlockNumberMap = m);
         }
     }
-
 }

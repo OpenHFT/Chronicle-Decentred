@@ -24,5 +24,4 @@ public interface    ConnectionStatusListener {
     default void onDisconnection(TCPConnection connection) {
         Jvm.debug().on(getClass(), "Disconnected " + connection);
     }
-
 }

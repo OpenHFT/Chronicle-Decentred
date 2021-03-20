@@ -24,5 +24,4 @@ public final class MutedTCPConnection implements TCPConnection {
     public static TCPConnection get() {
         return INSTANCE;
     }
-
 }
