@@ -23,8 +23,7 @@ public class BruteForce {
 List<Thread> threadList = LongStream.rangeClosed(0, THREADS)
             .map(i -> i * STEP + OFFSET)
             .mapToObj(i -> new Thread(() -> eval(i), "from " + i))
-            .collect(Collectors.toList())
-            ;
+            .collect(Collectors.toList());
 
         System.out.println(
             threadList.stream()

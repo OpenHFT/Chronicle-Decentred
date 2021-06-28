@@ -8,8 +8,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public enum TestUtils {
-    ;
+public enum TestUtils {;
 
     public static void test(String basename) {
         TextMethodTester<AppreciationTester> tester = new TextMethodTester<>(

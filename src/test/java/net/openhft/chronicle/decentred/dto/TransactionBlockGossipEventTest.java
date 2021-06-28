@@ -22,8 +22,7 @@ final class TransactionBlockGossipEventTest {
             .protocol(17)
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             //.blockNumber(42)
-            .chainAddress(43)
-            ;
+            .chainAddress(43);
 
         expected.addressToBlockNumberMap().justPut(+1, 1);
         expected.addressToBlockNumberMap().justPut(Long.MAX_VALUE, 2);

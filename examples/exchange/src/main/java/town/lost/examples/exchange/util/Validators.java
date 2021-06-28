@@ -3,8 +3,7 @@ package town.lost.examples.exchange.util;
 import static java.lang.Double.isInfinite;
 import static java.lang.Double.isNaN;
 
-public enum Validators {
-    ;
+public enum Validators {;
 
     public static double notNaN(double value) {
         return notNaN(value, "");

@@ -11,8 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-enum AddressToBlockNumberUtil {
-    ;
+enum AddressToBlockNumberUtil {;
 
     public static final String ADDRESS_TO_BLOCK_NUMBER_MAP_NAME = "addressToBlockNumberMap";
 

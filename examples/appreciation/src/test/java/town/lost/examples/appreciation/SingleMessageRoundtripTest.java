@@ -84,8 +84,7 @@ final class SingleMessageRoundtripTest {
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             .address(CLIENT_ADDRESS)
             .init(OTHER_CLIENT_ADDRESS, GIVE_AMOUNT)
-            .sign(KEY_PAIR.secretKey)
-            ;
+            .sign(KEY_PAIR.secretKey);
 
         client.sendMsg(give);
 
@@ -117,8 +116,7 @@ final class SingleMessageRoundtripTest {
         final OpeningBalance openingBalance = registry.create(OpeningBalance.class)
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
             .init(address, amount)
-            .sign(MGMT_KEY_PAIR.secretKey)
-            ;
+            .sign(MGMT_KEY_PAIR.secretKey);
         final long start = System.nanoTime();
         client.sendMsg(openingBalance);
         waitFor(() -> balanceEquals(address, amount));

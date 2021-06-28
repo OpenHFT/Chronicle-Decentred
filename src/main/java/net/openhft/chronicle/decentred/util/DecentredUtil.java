@@ -4,8 +4,7 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.salt.Ed25519;
 
-public enum DecentredUtil {
-    ;
+public enum DecentredUtil {;
     public static final long MASK_32 = 0x0000_0000_FFFF_FFFFL;
     public static final int MASK_16 = 0xFFFF;
 

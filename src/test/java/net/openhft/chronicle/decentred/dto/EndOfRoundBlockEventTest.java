@@ -65,8 +65,7 @@ final class EndOfRoundBlockEventTest {
             .messageType(0xFFF3)
             .protocol(17)
             .timestampUS(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros())
-            .chainAddress(43)
-            ;
+            .chainAddress(43);
 
         expected.addressToBlockNumberMap().justPut(+1, 1);
         expected.addressToBlockNumberMap().justPut(Long.MAX_VALUE, 2);

@@ -2,8 +2,7 @@ package town.lost.examples.exchange.dto;
 
 import net.openhft.chronicle.core.pool.ClassAliasPool;
 
-public enum DtoAliases {
-    ;
+public enum DtoAliases {;
 
     static {
         ClassAliasPool.CLASS_ALIASES.addAlias(
