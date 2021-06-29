@@ -2,7 +2,8 @@ package net.openhft.chronicle.decentred.util;
 
 import java.util.Arrays;
 
-public enum LetterBase32 {;
+public enum LetterBase32 {
+    ; // none
 
     private static final int MASK_5 = 0x1F;
     private static final ThreadLocal<StringBuilder> SB_TL = ThreadLocal.withInitial(StringBuilder::new);

@@ -12,7 +12,8 @@ import net.openhft.chronicle.decentred.dto.chainlifecycle.CreateChainRequest;
 import net.openhft.chronicle.decentred.dto.address.InvalidationEvent;
 import net.openhft.chronicle.decentred.dto.error.ApplicationErrorResponse;
 
-public enum DtoAliases {;
+public enum DtoAliases {
+    ; // none
 
     static {
         ClassAliasPool.CLASS_ALIASES.addAlias(

@@ -1,6 +1,7 @@
 package net.openhft.chronicle.decentred.internal.util;
 
-public enum ShortUtil {;
+public enum ShortUtil {
+    ; // none
 
     private static int MAX_UNSIGNED_VALUE = (1 << Short.SIZE) - 1;
 
