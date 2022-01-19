@@ -66,7 +66,6 @@ public final class UnmodifiableLongLongMap extends net.openhft.chronicle.decentr
     @Override public <T extends Marshallable> T copyTo(@NotNull T t) { return inner.copyTo(t); }
     @Override public <K, T extends Marshallable> T mergeToMap(@NotNull Map<K, T> map, @NotNull Function<T, K> getKey) { return inner.mergeToMap(map, getKey); }
     @Override @NotNull public List<FieldInfo> $fieldInfos() { return inner.$fieldInfos(); }
-    @Override public String getClassName() { return inner.getClassName(); }
     @Override public void reset() { throw newUnsupportedOperationException(); }
     @Override public void writeValue(@NotNull ValueOut out) { inner.writeValue(out); }
     @Override public void unexpectedField(Object event, ValueIn valueIn) { inner.unexpectedField(event, valueIn); }

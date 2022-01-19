@@ -405,7 +405,6 @@ if (ENFORCE_TRANSIENT_OVERRIDE_INVARIANT) {
         } catch (ReflectiveOperationException e) {
             throw Jvm.rethrow(e);
         }
-        throw new IllegalStateException("We should never end up here");
     }
 
     /// Overloaded hash, toString etc.

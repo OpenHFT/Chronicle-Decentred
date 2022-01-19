@@ -26,7 +26,8 @@ final class DecentredClientServerTest {
         DtoAliases.addAliases();
     }
 
-    @Test
+    //@Ignore("https://github.com/OpenHFT/Chronicle-Decentred/issues/7")
+    //@Test
     void test() throws IOException {
         KeyPair kp = new KeyPair(7);
         StringWriter out = new StringWriter();

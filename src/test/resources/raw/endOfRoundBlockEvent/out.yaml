@@ -1,3 +1,4 @@
+---
 endOfRoundBlockEvent: {
   timestampUS: 2018-08-20T12:53:04.076123,
   address: phccofmpy6ci,
@@ -8,4 +9,4 @@ endOfRoundBlockEvent: {
     zzz: 195
   }
 }
----
+...

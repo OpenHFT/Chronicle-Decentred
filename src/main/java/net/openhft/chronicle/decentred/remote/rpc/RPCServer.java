@@ -219,9 +219,10 @@ public class RPCServer<U extends T, T> extends AbstractCloseable implements Dece
         }
 
         @Override
-        public void onMessage(TCPServer server, TCPConnection channel, Bytes bytes) throws IOException { throwExceptionIfClosed();
+        public void onMessage(TCPServer server, TCPConnection channel, Bytes bytes) throws IOException {
+            throwExceptionIfClosed();
 
- DEFAULT_CONNECTION_TL.set(channel);
+            DEFAULT_CONNECTION_TL.set(channel);
             bytes.readSkip(-4);
             try {
                 dtoParserTL.get().parseOne(bytes, serverComponent);
