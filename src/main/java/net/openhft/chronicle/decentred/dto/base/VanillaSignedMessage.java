@@ -22,8 +22,8 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
 
-public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends AbstractBytesMarshallable
-    implements SignedMessage, HasTransientFieldHandler<T> {
+public abstract class VanillaSignedMessage<T extends VanillaSignedMessage<T>> extends BytesInBinaryMarshallable
+        implements SignedMessage, HasTransientFieldHandler<T> {
 
     private static final int INITIAL_BYTES_CAPACITY = 4 << 10;
     private static final int LENGTH = 0;
