@@ -19,7 +19,7 @@ public final class SingleMessageToListener implements RunningMessageToListener, 
 
     private final Pauser pauser = new LongPauser(0, 10, 1, 20, TimeUnit.MILLISECONDS);
     private final MessageToListener server;
-    private final AtomicReference<Bytes> writeLock = new AtomicReference<>();
+    private final AtomicReference<Bytes<?>> writeLock = new AtomicReference<>();
     private final VanillaSignedMessage signedMessage = new VanillaSignedMessage(){};
     private final Bytes bytes1 = Bytes.allocateElasticDirect(32 << 20).unchecked(true);
     private final Bytes bytes2 = Bytes.allocateElasticDirect(32 << 20).unchecked(true);

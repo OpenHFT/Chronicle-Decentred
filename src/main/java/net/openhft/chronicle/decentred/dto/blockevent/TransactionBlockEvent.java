@@ -74,7 +74,7 @@ public final class TransactionBlockEvent<T> extends VanillaSignedMessage<Transac
      * @throws IllegalStateException if this message has
      * not been signed before this method is called.
      */
-    private void replay(@NotNull Consumer<Bytes> consumer) {
+    private void replay(@NotNull Consumer<Bytes<?>> consumer) {
         assertSigned();
         transactions.readPosition(0);
         final long originalLimit = transactions.readLimit();
