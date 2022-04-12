@@ -132,8 +132,8 @@ private void setOpeningBalances() throws InterruptedException {
         //Thread.sleep(10000);
 /*
 
-        Map<String, Bytes> publicKeys = new HashMap<>();
-        Map<String, Bytes> secretKeys = new HashMap<>();
+        Map<String, Bytes<?>> publicKeys = new HashMap<>();
+        Map<String, Bytes<?>> secretKeys = new HashMap<>();
 
         Stream.of(GIVER*/
 /*ACCOUNTS*//*
